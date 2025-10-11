@@ -398,31 +398,112 @@
             element.innerHTML = `<span class="score ${className}">${score}分</span>`;
         }
 
-        // 获取IP地址（优先国内连通性，失败再用海外 ipify）
-        async function getIPAddress(version) {
-            // 先尝试国内 JSONP（ipw.cn）
+        // 已移除独立 IP 获取：IP 地址由“国内连通性”直接提供
+        
+        // 尝试单个服务获取IP：优先文本解析，失败再尝试 JSON/JSONP
+        async function tryService(serviceUrl, version) {
             try {
-                const type = version === 4 ? 'domestic-ipv4' : 'domestic-ipv6';
-                const res = await jsonp(type);
-                if (res && res.ok) {
-                    const ip = res.ip ? String(res.ip).trim() : '';
+                const response = await fetch(serviceUrl, {
+                    method: 'GET',
+                    redirect: 'follow',
+                    cache: 'no-cache',
+                    signal: AbortSignal.timeout(3000)
+                });
+                // 宽松接受 2xx/3xx
+                if (response.status < 200 || response.status >= 400) throw new Error('HTTP错误');
+
+                // 先按文本尝试提取（兼容 text/plain、text/html、JSONP 包裹等）
+                const rawText = await response.text();
+                let ip = extractIPFromText(rawText, version);
+                if (ip) return ip;
+
+                // 若文本未提取到，再尝试解析 JSON 或 JSONP
+                const tryParseJson = (s) => {
+                    try { return JSON.parse(s); } catch { return null; }
+                };
+                let data = tryParseJson(rawText);
+                if (!data) {
+                    // 处理 JSONP：提取 {...} 内部对象
+                    const objMatch = rawText.match(/\{[\s\S]*\}/);
+                    if (objMatch) data = tryParseJson(objMatch[0]);
+                }
+                if (data) {
+                    ip = extractIPFromJson(data, version);
                     if (ip) return ip;
                 }
-            } catch (_) { /* 忽略，继续海外 */ }
-            // 回退到海外 ipify
-            try {
-                const url = version === 4 ? 'https://api.ipify.org/' : 'https://api6.ipify.org/';
-                const response = await fetch(url, {
-                    method: 'GET',
-                    signal: AbortSignal.timeout(5000)
-                });
-                if (!response.ok) throw new Error('获取失败');
-                const text = await response.text();
-                const ip = (text || '').trim();
-                if (!ip) throw new Error('获取失败');
-                return ip;
+
+                // 兜底：尝试从文本中匹配常见键值形式 "ip":"..."
+                const kvMatch = rawText.match(/"ip"\s*:\s*"([^"]+)"/i);
+                if (kvMatch) {
+                    ip = extractIPFromText(kvMatch[1], version);
+                    if (ip) return ip;
+                }
+
+                throw new Error('无法解析IP');
             } catch (error) {
-                throw new Error('获取失败');
+                throw new Error('服务请求失败');
+            }
+        }
+
+        // 仅做可达性判定（忽略跨域限制，无法读取状态/内容）
+        async function checkReachable(url, timeout = 3000) {
+            try {
+                const resp = await fetch(url, {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    redirect: 'follow',
+                    signal: AbortSignal.timeout(timeout)
+                });
+                // 在 no-cors 情况下无法读取状态码，但只要能完成请求即视为可达
+                return !!resp;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // 从JSON数据中提取IP
+        function extractIPFromJson(data, version) {
+            const candidates = [];
+            if (!data) return '';
+            if (typeof data === 'string') candidates.push(data);
+            if (data.ip) candidates.push(data.ip);
+            if (data.data && data.data.ip) candidates.push(data.data.ip);
+            if (data.origin) candidates.push(data.origin);
+            if (data.query) candidates.push(data.query);
+
+            const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
+            const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
+            for (const cand of candidates) {
+                if (typeof cand !== 'string') continue;
+                const s = cand.trim().replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
+                if (version === 4) {
+                    const m = s.match(ipv4Regex);
+                    if (m) return m[0];
+                } else {
+                    const m = s.match(ipv6Regex);
+                    if (m) return m[0];
+                }
+            }
+            return '';
+        }
+        
+        
+        
+        // 从文本中提取IP
+        function extractIPFromText(text, version) {
+            const clean = (text || '').replace(/\uFEFF/g, '').trim();
+            if (!clean) return '';
+            if (version === 4) {
+                const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
+                const m = clean.match(ipv4Regex);
+                return m ? m[0] : '';
+            } else {
+                // 先去掉 IPv6 方括号包裹形式
+                const debracket = clean.replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
+                const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
+                const m = debracket.match(ipv6Regex);
+                return m ? m[0] : '';
             }
         }
 
@@ -443,134 +524,49 @@
             }
         }
 
-        // 简易 JSONP 工具（后端按 callback(data) 返回，data 为 {ok, ip}）
-        function jsonp(type) {
-            return new Promise((resolve, reject) => {
-                const cbName = `cb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-                const script = document.createElement('script');
-                window[cbName] = function(data) {
-                    try { resolve(data); } finally {
-                        delete window[cbName];
-                        if (script && script.parentNode) script.parentNode.removeChild(script);
-                    }
-                };
-                script.onerror = () => {
-                    try { reject(new Error('JSONP请求失败')); } finally {
-                        delete window[cbName];
-                        if (script && script.parentNode) script.parentNode.removeChild(script);
-                    }
-                };
-                script.src = `/api/jsonp?type=${encodeURIComponent(type)}&callback=${encodeURIComponent(cbName)}`;
-                document.body.appendChild(script);
-            });
-        }
+        
 
-        // 前端直接 JSONP（用于绝对 URL，目标需支持 callback 参数返回可执行 JS）
-        function jsonpDirect(rawUrl, timeout = 5000) {
-            return new Promise((resolve, reject) => {
-                const cbName = `cb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-                const script = document.createElement('script');
-                let finished = false;
-                let timer = setTimeout(() => { if (!finished) { finished = true; cleanup(); reject(new Error('JSONP超时')); } }, timeout);
+        
 
-                function cleanup() {
-                    if (timer) clearTimeout(timer);
-                    delete window[cbName];
-                    if (script && script.parentNode) script.parentNode.removeChild(script);
-                }
-
-                // 若目标真的支持 JSONP，将调用回调；否则，我们以脚本加载成功（包括 429 返回 HTML）作为“可达”
-                window[cbName] = function(data) {
-                    if (finished) return; finished = true;
-                    try { resolve(data || true); } finally { cleanup(); }
-                };
-
-                script.onload = () => { // 加载完成（不论是否执行回调、状态码是否为 429/4xx），视为成功可达
-                    if (finished) return; finished = true;
-                    try { resolve(true); } finally { cleanup(); }
-                };
-                script.onerror = () => { // 仅网络错误或加载失败视为不可达
-                    if (finished) return; finished = true;
-                    try { reject(new Error('JSONP请求失败')); } finally { cleanup(); }
-                };
-
-                const url = rawUrl + (rawUrl.includes('?') ? '&' : '?') + `callback=${encodeURIComponent(cbName)}`;
-                script.src = url;
-                script.referrerPolicy = 'no-referrer';
-                document.body.appendChild(script);
-            });
-        }
-
-        // 获取连通性IP地址或检查连通性
+        // 获取连通性IP地址或检查连通性（按你的指定地址）
         async function getConnectivityResult(type) {
             try {
                 switch (type) {
                     case 'domestic-ipv4': {
-                        const res = await jsonp(type);
-                        if (res && res.ok) {
-                            const ip = res.ip ? String(res.ip).trim() : '';
-                            return ip || '可达';
-                        }
+                        // 国内 IPv4：仅使用 DNSPod 获取 IP，失败则判定为失败
+                        const ip = await tryService('https://ipv4.ddnspod.com/', 4);
+                        if (ip) return ip;
                         throw new Error('连接失败');
                     }
                     case 'domestic-ipv6': {
-                        // 前端直接 JSONP 尝试 6.ipw.cn，不支持则回退到图片探测，再回退后端 JSONP
-                        try {
-                            await jsonpDirect('https://6.ipw.cn/', 5000);
-                            return '可达';
-                        } catch (_) {
-                            try {
-                                await probeViaImage('https://ipv6.ipw.cn/favicon.ico', 5000);
-                                return '可达';
-                            } catch (_) {
-                                const res = await jsonp(type);
-                                if (res && res.ok) {
-                                    const ip = res.ip ? String(res.ip).trim() : '';
-                                    return ip || '可达';
-                                }
-                                throw new Error('连接失败');
-                            }
-                        }
+                        // 国内 IPv6：仅使用 DNSPod 获取 IP，失败则判定为失败
+                        const ip6 = await tryService('https://ipv6.ddnspod.com/', 6);
+                        if (ip6) return ip6;
+                        throw new Error('连接失败');
+                    }
+                    case 'overseas-ipv4': {
+                        // 海外 IPv4：ipify
+                        const ip = await tryService('https://api.ipify.org/', 4);
+                        if (!ip) throw new Error('连接失败');
+                        return ip;
+                    }
+                    case 'overseas-ipv6': {
+                        // 海外 IPv6：ipify
+                        const ip = await tryService('https://api6.ipify.org/', 6);
+                        if (!ip) throw new Error('连接失败');
+                        return ip;
                     }
                     case 'google-ipv4': {
-                        const res = await jsonp(type);
-                        if (res && res.ok) {
-                            const ip = res.ip ? String(res.ip).trim() : '';
-                            return ip || '可达';
-                        }
+                        // 谷歌 IPv4：只检查 https://www.google.com/ 是否可达（200/302 即视为成功）
+                        const ok = await checkReachable('https://www.google.com/');
+                        if (ok) return '可达';
                         throw new Error('连接失败');
                     }
                     case 'google-ipv6': {
-                        // 前端直接 JSONP 尝试 Google Sorry 页面，不支持则回退到图片探测，再回退后端 JSONP
-                        try {
-                            await jsonpDirect('https://ipv6.google.com/sorry/index?continue=https://maxmind.com&sclient=gws-wiz-serp', 5000);
-                            return '可达';
-                        } catch (_) {
-                            try {
-                                await probeViaImage('https://ipv6.google.com/favicon.ico', 5000);
-                                return '可达';
-                            } catch (_) {
-                                const res = await jsonp(type);
-                                if (res && res.ok) {
-                                    const ip = res.ip ? String(res.ip).trim() : '';
-                                    return ip || '可达';
-                                }
-                                throw new Error('连接失败');
-                            }
-                        }
-                    }
-                    case 'overseas-ipv4':
-                    case 'overseas-ipv6': {
-                        const url = type === 'overseas-ipv4' ? 'https://api.ipify.org/' : 'https://api6.ipify.org/';
-                        const response = await fetch(url, {
-                            method: 'GET',
-                            signal: AbortSignal.timeout(5000)
-                        });
-                        if (!response.ok) throw new Error('连接失败');
-                        const text = await response.text();
-                        const ip = (text || '').trim();
-                        if (!ip) throw new Error('连接失败');
-                        return ip;
+                        // 谷歌 IPv6：检查 IPv6 直连地址是否可达
+                        const ok = await checkReachable('https://[2001:4860:4860::8888]/');
+                        if (ok) return '可达';
+                        throw new Error('连接失败');
                     }
                     default:
                         throw new Error('不支持的类型');
@@ -617,18 +613,22 @@
             
             updateProgress();
 
-            // 存储IP地址用于ASN查询
+            // ASN 查询依赖国内连通性的 IP
             let ipv4Address = null;
             let ipv6Address = null;
 
+            // 预先创建海外连通性 Promise，便于失败时回退使用 IP
+            const overseasIPv4Promise = getConnectivityResult('overseas-ipv4');
+            const overseasIPv6Promise = getConnectivityResult('overseas-ipv6');
+
             // IPv4 测试 - 并行执行
             const ipv4Tests = [
-                // IPv4 IP地址获取
-                getIPAddress(4).then(ip => {
+                // IPv4 国内连通性
+                getConnectivityResult('domestic-ipv4').then(ip => {
                     ipv4Address = ip;
+                    updateResult('ipv4-domestic', true, ip, 20);
                     updateResult('ipv4-address', true, ip, 20);
                     updateDNSByIP(4, ip);
-                    // 获取到IP后立即查询ASN（后端代理）
                     return getASNInfo(ip).then(asnData => {
                         updateResult('ipv4-asn-code', true, asnData.ASN, 0);
                         updateResult('ipv4-asn-isp', true, asnData.as_info, 0);
@@ -637,21 +637,29 @@
                         updateResult('ipv4-asn-isp', false, '查询失败', 0);
                     });
                 }).catch(() => {
-                    updateResult('ipv4-address', false, '获取失败', 0);
-                    updateDNSByIP(4, null);
-                    updateResult('ipv4-asn-code', false, '查询失败', 0);
-                    updateResult('ipv4-asn-isp', false, '查询失败', 0);
-                }),
-
-                // IPv4 国内连通性
-                getConnectivityResult('domestic-ipv4').then(ip => {
-                    updateResult('ipv4-domestic', true, ip, 20);
-                }).catch(() => {
                     updateResult('ipv4-domestic', false, '连接失败', 0);
+                    // 国内失败则 IP 地址回退使用海外连通性结果
+                    overseasIPv4Promise.then(ip => {
+                        ipv4Address = ip;
+                        updateResult('ipv4-address', true, ip, 20);
+                        updateDNSByIP(4, ip);
+                        return getASNInfo(ip).then(asnData => {
+                            updateResult('ipv4-asn-code', true, asnData.ASN, 0);
+                            updateResult('ipv4-asn-isp', true, asnData.as_info, 0);
+                        }).catch(() => {
+                            updateResult('ipv4-asn-code', false, '查询失败', 0);
+                            updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                        });
+                    }).catch(() => {
+                        updateResult('ipv4-address', false, '获取失败', 0);
+                        updateDNSByIP(4, null);
+                        updateResult('ipv4-asn-code', false, '查询失败', 0);
+                        updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                    });
                 }),
 
                 // IPv4 海外连通性
-                getConnectivityResult('overseas-ipv4').then(ip => {
+                overseasIPv4Promise.then(ip => {
                     updateResult('ipv4-international', true, ip, 20);
                 }).catch(() => {
                     updateResult('ipv4-international', false, '连接失败', 0);
@@ -667,12 +675,12 @@
 
             // IPv6 测试 - 并行执行
             const ipv6Tests = [
-                // IPv6 IP地址获取
-                getIPAddress(6).then(ip => {
+                // IPv6 国内连通性
+                getConnectivityResult('domestic-ipv6').then(ip => {
                     ipv6Address = ip;
+                    updateResult('ipv6-domestic', true, ip, 20);
                     updateResult('ipv6-address', true, ip, 20);
                     updateDNSByIP(6, ip);
-                    // 获取到IP后立即查询ASN（后端代理）
                     return getASNInfo(ip).then(asnData => {
                         updateResult('ipv6-asn-code', true, asnData.ASN, 0);
                         updateResult('ipv6-asn-isp', true, asnData.as_info, 0);
@@ -681,21 +689,29 @@
                         updateResult('ipv6-asn-isp', false, '查询失败', 0);
                     });
                 }).catch(() => {
-                    updateResult('ipv6-address', false, '获取失败', 0);
-                    updateDNSByIP(6, null);
-                    updateResult('ipv6-asn-code', false, '查询失败', 0);
-                    updateResult('ipv6-asn-isp', false, '查询失败', 0);
-                }),
-
-                // IPv6 国内连通性
-                getConnectivityResult('domestic-ipv6').then(ip => {
-                    updateResult('ipv6-domestic', true, ip, 20);
-                }).catch(() => {
                     updateResult('ipv6-domestic', false, '连接失败', 0);
+                    // 国内失败则 IP 地址回退使用海外连通性结果
+                    overseasIPv6Promise.then(ip => {
+                        ipv6Address = ip;
+                        updateResult('ipv6-address', true, ip, 20);
+                        updateDNSByIP(6, ip);
+                        return getASNInfo(ip).then(asnData => {
+                            updateResult('ipv6-asn-code', true, asnData.ASN, 0);
+                            updateResult('ipv6-asn-isp', true, asnData.as_info, 0);
+                        }).catch(() => {
+                            updateResult('ipv6-asn-code', false, '查询失败', 0);
+                            updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                        });
+                    }).catch(() => {
+                        updateResult('ipv6-address', false, '获取失败', 0);
+                        updateDNSByIP(6, null);
+                        updateResult('ipv6-asn-code', false, '查询失败', 0);
+                        updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                    });
                 }),
 
                 // IPv6 海外连通性
-                getConnectivityResult('overseas-ipv6').then(ip => {
+                overseasIPv6Promise.then(ip => {
                     updateResult('ipv6-international', true, ip, 20);
                 }).catch(() => {
                     updateResult('ipv6-international', false, '连接失败', 0);
