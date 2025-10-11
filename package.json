@@ -2,14 +2,30 @@
   "name": "IPConfigWork",
   "type": "module",
   "scripts": {
+    "dev-js": "tsx watch src/basic.ts",
+    "build-js": "webpack --mode production",
+    "deploy-js": "node dist/bundle.js",
+    "dev-cf": "wrangler dev",
+    "deploy-cf": "wrangler deploy --minify",
+    "dev-eo": "edgeone pages dev",
+    "build-eo": "edgeone pages build",
+    "deploy-eo": "edgeone pages deploy ./ -n workacme-web -t ",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "hono": "^4.9.10"
+    "@edgeone/ef-types": "^1.0.5",
+    "@hono/node-server": "^1.16.0",
+    "hono": "^4.9.10",
+    "edgeone": "^1.1.16",
+    "dotenv": "^17.0.1"
   },
   "devDependencies": {
-    "wrangler": "^4.4.0"
+    "@types/node": "^22.14.1",
+    "esbuild": "^0.25.5",
+    "wrangler": "^4.4.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   }
 }
