@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ipconfig-work",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-10-11",
+  "site": {
+    "bucket": "./public"
+  },
+   "compatibility_flags": [
+     "nodejs_compat"
+   ]
+  // "vars": {
+  //   "MY_VAR": "my-variable"
+  // },
+}

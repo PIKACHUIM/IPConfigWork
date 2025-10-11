@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>获取我的IP地址</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .results-table td {
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1em;
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .results-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .test-item {
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            background: #f8f9fa !important;
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.testing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status.pending {
+            background-color: #e2e3e5;
+            color: #6c757d;
+        }
+
+        .score {
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .score.excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .score.good {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .score.poor {
+            background: linear-gradient(135deg, #fd7e14, #dc3545);
+        }
+
+        .score.failed {
+            background: linear-gradient(135deg, #dc3545, #6f42c1);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            display: block;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .asn-info {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            .asn-info {
+                font-size: 0.75em;
+            }
+        }
+
+        /* 页脚样式 */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .footer .notice {
+            margin: 0;
+        }
+
+        .footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            color: #000;
+        }
+
+        .footer svg {
+            width: 22px;
+            height: 22px;
+            fill: #333;
+            transition: fill 0.2s ease;
+        }
+
+        .footer a:hover svg {
+            fill: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 获取我的IP地址</h1>
+            <p>检测您的IPv4和IPv6连接状态及网络质量</p>
+        </div>
+        
+        <div class="content">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">准备开始检测...</div>
+            </div>
+
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">检测项目</th>
+                        <th style="width: 37.5%;">IPv4</th>
+                        <th style="width: 37.5%;">IPv6</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="test-item">IP地址</td>
+                        <td id="ipv4-address"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-address"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">ASN编号</td>
+                        <td id="ipv4-asn-code"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-asn-code"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">运营商</td>
+                        <td id="ipv4-asn-isp"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-asn-isp"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">DNS解析支持</td>
+                        <td id="ipv4-dns"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-dns"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">国内连通性</td>
+                        <td id="ipv4-domestic"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-domestic"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">海外连通性</td>
+                        <td id="ipv4-international"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-international"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">谷歌连通性</td>
+                        <td id="ipv4-google"><span class="status pending">检测中...</span></td>
+                        <td id="ipv6-google"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item"><strong>总分</strong></td>
+                        <td id="ipv4-score"><span class="score pending">计算中...</span></td>
+                        <td id="ipv6-score"><span class="score pending">计算中...</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="refresh-btn" onclick="runTests()">🔄 重新检测</button>
+        </div>
+        <div class="footer">
+            <p class="notice">本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。</p>
+            <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库">
+                <!-- GitHub 图标（Octocat 简化标志） -->
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let totalTests = 14; // IPv4和IPv6各7项测试（ASN拆分为两项）
+        let completedTests = 0;
+        let ipv4Score = 0;
+        let ipv6Score = 0;
+
+        // 更新进度条
+        function updateProgress() {
+            const progress = (completedTests / totalTests) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `检测进度: ${completedTests}/${totalTests} (${Math.round(progress)}%)`;
+        }
+
+        // 更新结果显示
+        function updateResult(elementId, success, message, score = 0) {
+            const element = document.getElementById(elementId);
+            if (success) {
+                element.innerHTML = `<span class="status success">${message}</span>`;
+                if (elementId.includes('ipv4')) {
+                    ipv4Score += score;
+                } else if (elementId.includes('ipv6')) {
+                    ipv6Score += score;
+                }
+            } else {
+                element.innerHTML = `<span class="status error">${message}</span>`;
+            }
+            completedTests++;
+            updateProgress();
+            updateScores();
+        }
+
+        // ASN 信息分拆后，直接使用通用 updateResult 分别填充编号与运营商
+
+        // 更新分数显示
+        function updateScores() {
+            updateScoreDisplay('ipv4-score', ipv4Score);
+            updateScoreDisplay('ipv6-score', ipv6Score);
+        }
+
+        function updateScoreDisplay(elementId, score) {
+            const element = document.getElementById(elementId);
+            let className = 'failed';
+            if (score >= 80) className = 'excellent';
+            else if (score >= 40) className = 'good';
+            else if (score >= 20) className = 'poor';
+            
+            element.innerHTML = `<span class="score ${className}">${score}分</span>`;
+        }
+
+        // 获取IP地址（优先国内连通性，失败再用海外 ipify）
+        async function getIPAddress(version) {
+            // 先尝试国内 JSONP（ipw.cn）
+            try {
+                const type = version === 4 ? 'domestic-ipv4' : 'domestic-ipv6';
+                const res = await jsonp(type);
+                if (res && res.ok) {
+                    const ip = res.ip ? String(res.ip).trim() : '';
+                    if (ip) return ip;
+                }
+            } catch (_) { /* 忽略，继续海外 */ }
+            // 回退到海外 ipify
+            try {
+                const url = version === 4 ? 'https://api.ipify.org/' : 'https://api6.ipify.org/';
+                const response = await fetch(url, {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000)
+                });
+                if (!response.ok) throw new Error('获取失败');
+                const text = await response.text();
+                const ip = (text || '').trim();
+                if (!ip) throw new Error('获取失败');
+                return ip;
+            } catch (error) {
+                throw new Error('获取失败');
+            }
+        }
+
+        // 查询ASN信息
+        async function getASNInfo(ip) {
+            try {
+                const response = await fetch('/api/asn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `ip=${encodeURIComponent(ip)}`
+                });
+                const data = await response.text();
+                return JSON.parse(data);
+            } catch (error) {
+                throw new Error('查询失败');
+            }
+        }
+
+        // 简易 JSONP 工具（后端按 callback(data) 返回，data 为 {ok, ip}）
+        function jsonp(type) {
+            return new Promise((resolve, reject) => {
+                const cbName = `cb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+                const script = document.createElement('script');
+                window[cbName] = function(data) {
+                    try { resolve(data); } finally {
+                        delete window[cbName];
+                        if (script && script.parentNode) script.parentNode.removeChild(script);
+                    }
+                };
+                script.onerror = () => {
+                    try { reject(new Error('JSONP请求失败')); } finally {
+                        delete window[cbName];
+                        if (script && script.parentNode) script.parentNode.removeChild(script);
+                    }
+                };
+                script.src = `/api/jsonp?type=${encodeURIComponent(type)}&callback=${encodeURIComponent(cbName)}`;
+                document.body.appendChild(script);
+            });
+        }
+
+        // 前端直接 JSONP（用于绝对 URL，目标需支持 callback 参数返回可执行 JS）
+        function jsonpDirect(rawUrl, timeout = 5000) {
+            return new Promise((resolve, reject) => {
+                const cbName = `cb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+                const script = document.createElement('script');
+                let finished = false;
+                let timer = setTimeout(() => { if (!finished) { finished = true; cleanup(); reject(new Error('JSONP超时')); } }, timeout);
+
+                function cleanup() {
+                    if (timer) clearTimeout(timer);
+                    delete window[cbName];
+                    if (script && script.parentNode) script.parentNode.removeChild(script);
+                }
+
+                // 若目标真的支持 JSONP，将调用回调；否则，我们以脚本加载成功（包括 429 返回 HTML）作为“可达”
+                window[cbName] = function(data) {
+                    if (finished) return; finished = true;
+                    try { resolve(data || true); } finally { cleanup(); }
+                };
+
+                script.onload = () => { // 加载完成（不论是否执行回调、状态码是否为 429/4xx），视为成功可达
+                    if (finished) return; finished = true;
+                    try { resolve(true); } finally { cleanup(); }
+                };
+                script.onerror = () => { // 仅网络错误或加载失败视为不可达
+                    if (finished) return; finished = true;
+                    try { reject(new Error('JSONP请求失败')); } finally { cleanup(); }
+                };
+
+                const url = rawUrl + (rawUrl.includes('?') ? '&' : '?') + `callback=${encodeURIComponent(cbName)}`;
+                script.src = url;
+                script.referrerPolicy = 'no-referrer';
+                document.body.appendChild(script);
+            });
+        }
+
+        // 获取连通性IP地址或检查连通性
+        async function getConnectivityResult(type) {
+            try {
+                switch (type) {
+                    case 'domestic-ipv4': {
+                        const res = await jsonp(type);
+                        if (res && res.ok) {
+                            const ip = res.ip ? String(res.ip).trim() : '';
+                            return ip || '可达';
+                        }
+                        throw new Error('连接失败');
+                    }
+                    case 'domestic-ipv6': {
+                        // 前端直接 JSONP 尝试 6.ipw.cn，不支持则回退到图片探测，再回退后端 JSONP
+                        try {
+                            await jsonpDirect('https://6.ipw.cn/', 5000);
+                            return '可达';
+                        } catch (_) {
+                            try {
+                                await probeViaImage('https://ipv6.ipw.cn/favicon.ico', 5000);
+                                return '可达';
+                            } catch (_) {
+                                const res = await jsonp(type);
+                                if (res && res.ok) {
+                                    const ip = res.ip ? String(res.ip).trim() : '';
+                                    return ip || '可达';
+                                }
+                                throw new Error('连接失败');
+                            }
+                        }
+                    }
+                    case 'google-ipv4': {
+                        const res = await jsonp(type);
+                        if (res && res.ok) {
+                            const ip = res.ip ? String(res.ip).trim() : '';
+                            return ip || '可达';
+                        }
+                        throw new Error('连接失败');
+                    }
+                    case 'google-ipv6': {
+                        // 前端直接 JSONP 尝试 Google Sorry 页面，不支持则回退到图片探测，再回退后端 JSONP
+                        try {
+                            await jsonpDirect('https://ipv6.google.com/sorry/index?continue=https://maxmind.com&sclient=gws-wiz-serp', 5000);
+                            return '可达';
+                        } catch (_) {
+                            try {
+                                await probeViaImage('https://ipv6.google.com/favicon.ico', 5000);
+                                return '可达';
+                            } catch (_) {
+                                const res = await jsonp(type);
+                                if (res && res.ok) {
+                                    const ip = res.ip ? String(res.ip).trim() : '';
+                                    return ip || '可达';
+                                }
+                                throw new Error('连接失败');
+                            }
+                        }
+                    }
+                    case 'overseas-ipv4':
+                    case 'overseas-ipv6': {
+                        const url = type === 'overseas-ipv4' ? 'https://api.ipify.org/' : 'https://api6.ipify.org/';
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            signal: AbortSignal.timeout(5000)
+                        });
+                        if (!response.ok) throw new Error('连接失败');
+                        const text = await response.text();
+                        const ip = (text || '').trim();
+                        if (!ip) throw new Error('连接失败');
+                        return ip;
+                    }
+                    default:
+                        throw new Error('不支持的类型');
+                }
+            } catch (error) {
+                throw new Error('连接失败');
+            }
+        }
+
+        // DNS解析支持判定：若 IP 获取成功，则视为支持；否则判定为未正确解析DNS
+        function updateDNSByIP(version, ip) {
+            const id = version === 4 ? 'ipv4-dns' : 'ipv6-dns';
+            if (ip) {
+                updateResult(id, true, '支持', 20);
+            } else {
+                updateResult(id, false, '没有正确解析DNS', 0);
+            }
+        }
+
+        // 运行所有测试
+        async function runTests() {
+            // 重置状态
+            completedTests = 0;
+            ipv4Score = 0;
+            ipv6Score = 0;
+            
+            // 重置所有状态为检测中
+            const testIds = [
+                'ipv4-address', 'ipv6-address',
+                'ipv4-asn-code', 'ipv6-asn-code',
+                'ipv4-asn-isp', 'ipv6-asn-isp',
+                'ipv4-dns', 'ipv6-dns',
+                'ipv4-domestic', 'ipv6-domestic',
+                'ipv4-international', 'ipv6-international',
+                'ipv4-google', 'ipv6-google'
+            ];
+            
+            testIds.forEach(id => {
+                document.getElementById(id).innerHTML = '<span class="status testing">检测中...</span>';
+            });
+            
+            document.getElementById('ipv4-score').innerHTML = '<span class="score pending">计算中...</span>';
+            document.getElementById('ipv6-score').innerHTML = '<span class="score pending">计算中...</span>';
+            
+            updateProgress();
+
+            // 存储IP地址用于ASN查询
+            let ipv4Address = null;
+            let ipv6Address = null;
+
+            // IPv4 测试 - 并行执行
+            const ipv4Tests = [
+                // IPv4 IP地址获取
+                getIPAddress(4).then(ip => {
+                    ipv4Address = ip;
+                    updateResult('ipv4-address', true, ip, 20);
+                    updateDNSByIP(4, ip);
+                    // 获取到IP后立即查询ASN（后端代理）
+                    return getASNInfo(ip).then(asnData => {
+                        updateResult('ipv4-asn-code', true, asnData.ASN, 0);
+                        updateResult('ipv4-asn-isp', true, asnData.as_info, 0);
+                    }).catch(() => {
+                        updateResult('ipv4-asn-code', false, '查询失败', 0);
+                        updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                    });
+                }).catch(() => {
+                    updateResult('ipv4-address', false, '获取失败', 0);
+                    updateDNSByIP(4, null);
+                    updateResult('ipv4-asn-code', false, '查询失败', 0);
+                    updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                }),
+
+                // IPv4 国内连通性
+                getConnectivityResult('domestic-ipv4').then(ip => {
+                    updateResult('ipv4-domestic', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv4-domestic', false, '连接失败', 0);
+                }),
+
+                // IPv4 海外连通性
+                getConnectivityResult('overseas-ipv4').then(ip => {
+                    updateResult('ipv4-international', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv4-international', false, '连接失败', 0);
+                }),
+
+                // IPv4 谷歌连通性
+                getConnectivityResult('google-ipv4').then(ip => {
+                    updateResult('ipv4-google', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv4-google', false, '不可达', 0);
+                })
+            ];
+
+            // IPv6 测试 - 并行执行
+            const ipv6Tests = [
+                // IPv6 IP地址获取
+                getIPAddress(6).then(ip => {
+                    ipv6Address = ip;
+                    updateResult('ipv6-address', true, ip, 20);
+                    updateDNSByIP(6, ip);
+                    // 获取到IP后立即查询ASN（后端代理）
+                    return getASNInfo(ip).then(asnData => {
+                        updateResult('ipv6-asn-code', true, asnData.ASN, 0);
+                        updateResult('ipv6-asn-isp', true, asnData.as_info, 0);
+                    }).catch(() => {
+                        updateResult('ipv6-asn-code', false, '查询失败', 0);
+                        updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                    });
+                }).catch(() => {
+                    updateResult('ipv6-address', false, '获取失败', 0);
+                    updateDNSByIP(6, null);
+                    updateResult('ipv6-asn-code', false, '查询失败', 0);
+                    updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                }),
+
+                // IPv6 国内连通性
+                getConnectivityResult('domestic-ipv6').then(ip => {
+                    updateResult('ipv6-domestic', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv6-domestic', false, '连接失败', 0);
+                }),
+
+                // IPv6 海外连通性
+                getConnectivityResult('overseas-ipv6').then(ip => {
+                    updateResult('ipv6-international', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv6-international', false, '连接失败', 0);
+                }),
+
+                // IPv6 谷歌连通性
+                getConnectivityResult('google-ipv6').then(ip => {
+                    updateResult('ipv6-google', true, ip, 20);
+                }).catch(() => {
+                    updateResult('ipv6-google', false, '不可达', 0);
+                })
+            ];
+
+            // 并行执行所有测试
+            Promise.allSettled([...ipv4Tests, ...ipv6Tests]);
+        }
+
+        // 页面加载完成后自动运行测试
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
