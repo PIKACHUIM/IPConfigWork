@@ -226,6 +226,33 @@
             }
         }
 
+        .results-table-stacked {
+            display: none;
+        }
+
+        #ipv4-asn-isp, #ipv6-asn-isp,
+        #ipv4-asn-isp-m, #ipv6-asn-isp-m {
+            text-align: center;
+        }
+        #ipv4-asn-isp .status, #ipv6-asn-isp .status,
+        #ipv4-asn-isp-m .status, #ipv6-asn-isp-m .status {
+            background-color: #f5f5f5 !important;
+            border: 1px solid #ddd !important;
+            padding: 6px 10px !important;
+            border-radius: 8px !important;
+            color: #333 !important;
+            font-size: 0.85em;
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .results-table { display: none !important; }
+            .results-table.results-table-stacked { display: table !important; }
+        }
+
         /* 页脚样式 */
         .footer {
             display: flex;
@@ -308,7 +335,7 @@
                         <td id="ipv6-asn-isp"><span class="status pending">检测中...</span></td>
                     </tr>
                     <tr>
-                        <td class="test-item">DNS解析支持</td>
+                        <td class="test-item">DNS解析</td>
                         <td id="ipv4-dns"><span class="status pending">检测中...</span></td>
                         <td id="ipv6-dns"><span class="status pending">检测中...</span></td>
                     </tr>
@@ -331,6 +358,92 @@
                         <td class="test-item"><strong>总分</strong></td>
                         <td id="ipv4-score"><span class="score pending">计算中...</span></td>
                         <td id="ipv6-score"><span class="score pending">计算中...</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="results-table results-table-stacked" id="results-table-ipv4">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">检测项目</th>
+                        <th>IPv4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="test-item">IP地址</td>
+                        <td id="ipv4-address-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">ASN编号</td>
+                        <td id="ipv4-asn-code-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">运营商</td>
+                        <td id="ipv4-asn-isp-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">DNS解析</td>
+                        <td id="ipv4-dns-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">国内连通性</td>
+                        <td id="ipv4-domestic-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">海外连通性</td>
+                        <td id="ipv4-international-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">谷歌连通性</td>
+                        <td id="ipv4-google-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item"><strong>总分</strong></td>
+                        <td id="ipv4-score-m"><span class="score pending">计算中...</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="results-table results-table-stacked" id="results-table-ipv6" style="margin-top: 16px;">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">检测项目</th>
+                        <th>IPv6</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="test-item">IP地址</td>
+                        <td id="ipv6-address-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">ASN编号</td>
+                        <td id="ipv6-asn-code-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">运营商</td>
+                        <td id="ipv6-asn-isp-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">DNS解析</td>
+                        <td id="ipv6-dns-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">国内连通性</td>
+                        <td id="ipv6-domestic-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">海外连通性</td>
+                        <td id="ipv6-international-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item">谷歌连通性</td>
+                        <td id="ipv6-google-m"><span class="status pending">检测中...</span></td>
+                    </tr>
+                    <tr>
+                        <td class="test-item"><strong>总分</strong></td>
+                        <td id="ipv6-score-m"><span class="score pending">计算中...</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -365,15 +478,16 @@
         // 更新结果显示
         function updateResult(elementId, success, message, score = 0) {
             const element = document.getElementById(elementId);
+            const elementMobile = document.getElementById(elementId + '-m');
+            const html = success ? `<span class="status success">${message}</span>` : `<span class="status error">${message}</span>`;
+            if (element) element.innerHTML = html;
+            if (elementMobile) elementMobile.innerHTML = html;
             if (success) {
-                element.innerHTML = `<span class="status success">${message}</span>`;
                 if (elementId.includes('ipv4')) {
                     ipv4Score += score;
                 } else if (elementId.includes('ipv6')) {
                     ipv6Score += score;
                 }
-            } else {
-                element.innerHTML = `<span class="status error">${message}</span>`;
             }
             completedTests++;
             updateProgress();
@@ -390,12 +504,15 @@
 
         function updateScoreDisplay(elementId, score) {
             const element = document.getElementById(elementId);
+            const elementMobile = document.getElementById(elementId + '-m');
             let className = 'failed';
             if (score >= 80) className = 'excellent';
             else if (score >= 40) className = 'good';
             else if (score >= 20) className = 'poor';
             
-            element.innerHTML = `<span class="score ${className}">${score}分</span>`;
+            const html = `<span class="score ${className}">${score}分</span>`;
+            if (element) element.innerHTML = html;
+            if (elementMobile) elementMobile.innerHTML = html;
         }
 
         // 已移除独立 IP 获取：IP 地址由“国内连通性”直接提供
@@ -605,11 +722,20 @@
             ];
             
             testIds.forEach(id => {
-                document.getElementById(id).innerHTML = '<span class="status testing">检测中...</span>';
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<span class="status testing">检测中...</span>';
+                const elM = document.getElementById(id + '-m');
+                if (elM) elM.innerHTML = '<span class="status testing">检测中...</span>';
             });
             
-            document.getElementById('ipv4-score').innerHTML = '<span class="score pending">计算中...</span>';
-            document.getElementById('ipv6-score').innerHTML = '<span class="score pending">计算中...</span>';
+            const s4 = document.getElementById('ipv4-score');
+            if (s4) s4.innerHTML = '<span class="score pending">计算中...</span>';
+            const s6 = document.getElementById('ipv6-score');
+            if (s6) s6.innerHTML = '<span class="score pending">计算中...</span>';
+            const s4m = document.getElementById('ipv4-score-m');
+            if (s4m) s4m.innerHTML = '<span class="score pending">计算中...</span>';
+            const s6m = document.getElementById('ipv6-score-m');
+            if (s6m) s6m.innerHTML = '<span class="score pending">计算中...</span>';
             
             updateProgress();
 
