@@ -8,8 +8,9 @@
   },
    "compatibility_flags": [
      "nodejs_compat"
-   ]
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
+   ],
+   "vars": {
+     "ABUSEIPDB_KEY": "",
+     "IPQS_KEY": ""
+   }
 }
