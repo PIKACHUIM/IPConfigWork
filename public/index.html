@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>获取我的IP地址</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>" type="image/svg+xml">
     <style>
         * {
             margin: 0;
@@ -228,6 +229,23 @@
 
         .results-table-stacked {
             display: none;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .results-table-stacked th,
+        .results-table-stacked td {
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .results-table-stacked .status {
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
 
         #ipv4-asn-isp, #ipv6-asn-isp,
@@ -293,6 +311,42 @@
         .footer a:hover svg {
             fill: #000;
         }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.quality {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .nav-btn.quality:hover {
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -300,6 +354,10 @@
         <div class="header">
             <h1>🌐 获取我的IP地址</h1>
             <p>检测您的IPv4和IPv6连接状态及网络质量</p>
+            <div class="nav-buttons">
+                <a href="/" class="nav-btn">🏠 首页</a>
+                <a href="/check.html" class="nav-btn quality">🔍 IP质量检测</a>
+            </div>
         </div>
         
         <div class="content">

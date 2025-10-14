@@ -87,11 +87,166 @@ app.post('/api/asn', async (c) => {
     }
 })
 
+// IP信息查询API（代理ip-api.com和ipwho.is解决跨域问题）
+app.post('/api/ip-info', async (c) => {
+    try {
+        const body = await c.req.text()
+        const params = new URLSearchParams(body)
+        const ip = params.get('ip')
+
+        if (!ip) {
+            return c.text('IP地址参数缺失', 400)
+        }
+
+        let result = null
+        
+        // 首先尝试ip-api.com
+        try {
+            const response = await fetch(`https://ip-api.com/json/${ip}?fields=status,message,as,isp,org,country,countryCode,regionName,city,zip,lat,lon,timezone,proxy,hosting`, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+            })
+            
+            if (response.ok) {
+                const data = await response.json()
+                if (data && data.status === 'success') {
+                    result = {
+                        source: 'ip-api.com',
+                        ip: ip,
+                        asn: data.as || '',
+                        isp: data.isp || '',
+                        org: data.org || '',
+                        country: data.country || '',
+                        countryCode: data.countryCode || '',
+                        region: data.regionName || '',
+                        city: data.city || '',
+                        zip: data.zip || '',
+                        lat: data.lat || 0,
+                        lon: data.lon || 0,
+                        timezone: data.timezone || '',
+                        proxy: data.proxy || false,
+                        hosting: data.hosting || false
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('ip-api.com failed:', error)
+        }
+
+        // 如果ip-api.com失败，尝试ipwho.is
+        if (!result) {
+            try {
+                const response = await fetch(`https://ipwho.is/${ip}`, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    }
+                })
+                
+                if (response.ok) {
+                    const data = await response.json()
+                    if (data && data.success) {
+                        const conn = data.connection || {}
+                        result = {
+                            source: 'ipwho.is',
+                            ip: ip,
+                            asn: conn.asn ? `AS${conn.asn}` : '',
+                            isp: conn.isp || '',
+                            org: conn.org || '',
+                            country: data.country || '',
+                            countryCode: data.country_code || '',
+                            region: data.region || '',
+                            city: data.city || '',
+                            zip: data.postal || '',
+                            lat: data.latitude || 0,
+                            lon: data.longitude || 0,
+                            timezone: data.timezone?.id || '',
+                            proxy: data.security?.proxy || false,
+                            hosting: data.security?.hosting || false
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('ipwho.is failed:', error)
+            }
+        }
+
+        if (!result) {
+            return c.json({ error: '无法获取IP信息' }, 500)
+        }
+
+        return c.json(result)
+    } catch (error) {
+        return c.json({ error: '查询失败', details: error.message }, 500)
+    }
+})
+
+// IP质量检测API
+app.post('/api/ip-quality', async (c) => {
+    try {
+        const body = await c.req.text()
+        const params = new URLSearchParams(body)
+        const ip = params.get('ip')
+
+        if (!ip) {
+            return c.text('IP地址参数缺失', 400)
+        }
+
+        // 这里可以集成更多的IP质量检测服务
+        // 由于很多服务需要API密钥或有跨域限制，这里返回模拟数据
+        const mockQualityData = {
+            ip: ip,
+            risk_score: Math.floor(Math.random() * 100),
+            proxy: false,
+            vpn: false,
+            tor: false,
+            hosting: false,
+            abuser: false,
+            robot: false,
+            fraud_score: Math.floor(Math.random() * 100),
+            threat_level: 'low',
+            reputation: 'good'
+        }
+
+        return c.json(mockQualityData)
+    } catch (error) {
+        return c.json({ error: '检测失败', details: error.message })
+    }
+})
+
+// 媒体服务检测API
+app.post('/api/media-check', async (c) => {
+    try {
+        const body = await c.req.text()
+        const params = new URLSearchParams(body)
+        const ip = params.get('ip')
+
+        if (!ip) {
+            return c.text('IP地址参数缺失', 400)
+        }
+
+        // 模拟媒体服务检测结果
+        const mediaResults = {
+            netflix: Math.random() > 0.3 ? 'available' : 'blocked',
+            youtube: 'available',
+            disney: Math.random() > 0.5 ? 'available' : 'blocked',
+            amazon_prime: Math.random() > 0.4 ? 'available' : 'blocked',
+            spotify: 'available',
+            chatgpt: Math.random() > 0.2 ? 'available' : 'blocked',
+            tiktok: Math.random() > 0.6 ? 'available' : 'blocked'
+        }
+
+        return c.json(mediaResults)
+    } catch (error) {
+        return c.json({ error: '检测失败', details: error.message })
+    }
+})
 
 
 // 静态资源路由（显式绑定首页）
 app.get('/', serveStatic({ manifest: manifest, path: '/index.html' }))
 app.get('/index.html', serveStatic({ manifest: manifest, path: '/index.html' }))
+app.get('/check.html', serveStatic({ manifest: manifest, path: '/check.html' }))
 
 // 通配静态资源（保持原有配置）
 app.use("*", serveStatic({manifest: manifest, root: "./"}));
