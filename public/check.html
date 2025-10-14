@@ -1,661 +1,1321 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>检测我的IP质量</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>" type="image/svg+xml">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>检测我的IP质量</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>"
+          type="image/svg+xml">
+    <!-- Emoji 字体：Noto Emoji（用于彩色旗帜等） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@400&display=swap" rel="stylesheet">
+    <!-- SVG 旗帜图标库：flag-icons（提供稳定彩色旗帜显示） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .container {
-      max-width: 1600px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-    .header {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-      color: white;
-      text-align: center;
-      padding: 30px;
-    }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
 
-    .header h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    .header p {
-      font-size: 1.1em;
-      opacity: 0.9;
-    }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
 
-    .content {
-      padding: 30px;
-    }
+        .content {
+            padding: 30px;
+        }
 
-    .progress-container {
-      margin-bottom: 30px;
-    }
+        .progress-container {
+            margin-bottom: 30px;
+        }
 
-    .progress-bar {
-      width: 100%;
-      height: 20px;
-      background-color: #e0e0e0;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%);
-      width: 0%;
-      transition: width 0.3s ease;
-      border-radius: 10px;
-    }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
 
-    .progress-text {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: 600;
-      color: #333;
-    }
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #333;
+        }
 
-    .card {
-      border: 1px solid #e0e0e0;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-      background: white;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    }
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
 
-    .card h2 {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 15px;
-      margin: -20px -20px 20px -20px;
-      border-radius: 15px 15px 0 0;
-      font-size: 1.2em;
-      font-weight: 600;
-    }
+        .card h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: -20px -20px 20px -20px;
+            border-radius: 15px 15px 0 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
 
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-      gap: 15px; 
-    }
+        /* 风险概览卡内的 H3 子标题使用普通样式 */
+        #risk-summary h3 {
+        }
 
-    .row { 
-      display: flex; 
-      gap: 12px; 
-      align-items: baseline;
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border-left: 4px solid #667eea;
-    }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
 
-    .label { 
-      width: 140px; 
-      color: #333;
-      font-weight: 600;
-    }
+        /* 基础信息每行两格、媒体解锁每行四格 */
+        #basic .grid {
+            grid-template-columns: repeat(2, minmax(300px, 1fr));
+        }
+        #media .grid {
+            grid-template-columns: repeat(4, minmax(220px, 1fr));
+        }
 
-    .mono { 
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      background: #e9ecef;
-      padding: 4px 8px;
-      border-radius: 4px;
-    }
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: baseline;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
 
-    .ok { color: #155724; background: #d4edda; padding: 4px 8px; border-radius: 4px; }
-    .bad { color: #721c24; background: #f8d7da; padding: 4px 8px; border-radius: 4px; }
-    .warn { color: #856404; background: #fff3cd; padding: 4px 8px; border-radius: 4px; }
-    .muted { color: #6c757d; }
-    .small { font-size: 12px; }
+        .label {
+            width: 140px;
+            color: #333;
+            font-weight: 600;
+        }
 
-    .actions { 
-      display: flex; 
-      gap: 12px; 
-      align-items: center; 
-      margin-bottom: 20px;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 15px;
-      border: 1px solid #dee2e6;
-    }
+        .link-icon {
+            margin-left: 8px;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 0.95em;
+        }
+        .link-icon:hover {
+            text-decoration: underline;
+        }
 
-    input[type="text"] { 
-      flex: 1;
-      padding: 12px 16px;
-      border: 2px solid #dee2e6;
-      border-radius: 8px;
-      font-size: 1em;
-      transition: border-color 0.3s ease;
-    }
+        /* 五项合并为一行的内联网格布局 */
+        .row.inline-five {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .row.inline-five .item {
+            display: flex;
+            gap: 8px;
+            align-items: baseline;
+        }
+        .row.inline-five .label {
+            width: auto;
+        }
 
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-    button { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 1em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
+        .ok {
+            color: #155724;
+            background: #d4edda;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
+        .bad {
+            color: #721c24;
+            background: #f8d7da;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-    button:active {
-      transform: translateY(0);
-    }
+        .warn {
+            color: #856404;
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
-    a { 
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
+        .muted {
+            color: #6c757d;
+        }
 
-    a:hover {
-      text-decoration: underline;
-    }
+        .small {
+            font-size: 12px;
+        }
 
-    .status {
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 15px;
-      font-size: 0.9em;
-    }
+        .actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+        }
 
-    .status.success { background: #d4edda; color: #155724; }
-    .status.error { background: #f8d7da; color: #721c24; }
-    .status.testing { background: #fff3cd; color: #856404; }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
 
-    /* 加载动画 */
-    .loading {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #667eea;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
 
-    /* 导航按钮样式 */
-    .nav-buttons {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      gap: 10px;
-      z-index: 1000;
-    }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
 
-    .nav-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-      border: none;
-      cursor: pointer;
-    }
+        button:active {
+            transform: translateY(0);
+        }
 
-    .nav-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-      text-decoration: none;
-    }
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-    .nav-btn.index {
-      background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
-      box-shadow: 0 4px 12px rgba(86, 171, 47, 0.3);
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    .nav-btn.index:hover {
-      box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
-    }
-    .status.testing { background: #fff3cd; color: #856404; }
-    .status.pending { background: #e2e3e5; color: #6c757d; }
+        .status {
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
 
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #667eea;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
 
-    .map-placeholder {
-      width: 100%;
-      height: 200px;
-      background: #f0f0f0;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666;
-      font-size: 1.1em;
-      border: 2px dashed #ccc;
-      margin-top: 15px;
-    }
+        .status.testing {
+            background: #fff3cd;
+            color: #856404;
+        }
 
-    .factor-table table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 0.9em;
-    }
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
 
-    .factor-table th,
-    .factor-table td {
-      padding: 8px 12px;
-      border: 1px solid #e0e0e0;
-      text-align: center;
-    }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-    .factor-table th {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      font-weight: 600;
-    }
+        /* 导航按钮样式 */
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
 
-    .factor-table tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            border: none;
+            cursor: pointer;
+        }
 
-    .factor-table tr:hover {
-      background-color: #e9ecef;
-    }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+        }
 
-    .data-sources,
-    .risk-sources,
-    .factor-sources {
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid #e0e0e0;
-    }
+        .nav-btn.index {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            box-shadow: 0 4px 12px rgba(86, 171, 47, 0.3);
+        }
 
-    .data-sources h3,
-    .risk-sources h3,
-    .factor-sources h3 {
-      color: #667eea;
-      margin-bottom: 15px;
-      font-size: 1.1em;
-    }
+        .nav-btn.index:hover {
+            box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+        }
 
-    @media (max-width: 768px) {
-      .container {
-        margin: 10px;
-        border-radius: 15px;
-      }
+        .status.testing {
+            background: #fff3cd;
+            color: #856404;
+        }
 
-      .header h1 {
-        font-size: 2em;
-      }
+        .status.pending {
+            background: #e2e3e5;
+            color: #6c757d;
+        }
 
-      .content {
-        padding: 20px;
-      }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-      .grid {
-        grid-template-columns: 1fr;
-      }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-      .row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
+        .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.1em;
+            border: 2px dashed #ccc;
+            margin-top: 15px;
+        }
 
-      .label {
-        width: auto;
-      }
+        .simple-table table,
+        .factor-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
 
-      .actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
+        .simple-table th,
+        .simple-table td,
+        .factor-table th,
+        .factor-table td {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
 
-      input[type="text"] {
-        width: 100%;
-      }
+        .simple-table th,
+        .factor-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
 
-      .factor-table {
-        overflow-x: auto;
-      }
-      
-      .factor-table table {
-        min-width: 800px;
-      }
-      
-      .data-sources .grid,
-      .risk-sources .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        .simple-table tr:nth-child(even),
+        .factor-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .simple-table tr:hover,
+        .factor-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* 简单表格样式，复用与因子表一致 */
+        .simple-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .simple-table th,
+        .simple-table td {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .simple-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* IP详细信息区域表格沿用蓝色表头；为子标题提供样式 */
+        .ipapi-detail .sub-title {
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+        /* IP详细信息区域表头样式：浅蓝背景 + 黑色字体 */
+        .ipapi-detail .simple-table th {
+            background: #e6f0ff;
+            color: #000;
+        }
+        /* 地区旗帜显示优化：强制使用彩色emoji兼容字体 */
+        #ip2locationRegion,
+        #ipapiRegion,
+        #ipregistryRegion,
+        #ipqsRegion,
+        #scamalyticsRegion,
+        #ipdataRegion,
+        #ipinfoRegion,
+        #ipwhoisRegion {
+            font-family: "Noto Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", system-ui, sans-serif;
+        }
+        /* 旗帜图标与文本的间距与对齐 */
+        .fi { vertical-align: -0.1em; margin-right: 6px; }
+
+        .simple-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .simple-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .data-sources,
+        .risk-sources,
+        .factor-sources {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .data-sources h3,
+        .risk-sources h3,
+        .factor-sources h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .label {
+                width: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input[type="text"] {
+                width: 100%;
+            }
+
+            .factor-table {
+                overflow-x: auto;
+            }
+
+            .factor-table table {
+                min-width: 800px;
+            }
+
+            .data-sources .grid,
+            .risk-sources .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- 导航按钮 -->
-  <div class="nav-buttons">
-    <a href="/" class="nav-btn index">🏠 返回首页</a>
-  </div>
-  
-  <div class="container">
+
+
+<div class="container">
     <div class="header">
-      <h1>【检测我的IP质量】</h1>
-      <p>全面检测您的IP地址质量、风险评分和各项服务可用性</p>
+        <h1>检测我的IP质量</h1>
+        <p>全面检测您的IP地址质量、风险评分和各项服务可用性</p>
+        <div style="margin-top:12px;">
+            <a href="/" class="nav-btn index">🌐 获取我的IP地址</a>
+        </div>
     </div>
-    
+
     <div class="content">
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">准备开始检测...</div>
         </div>
-        <div class="progress-text" id="progressText">准备开始检测...</div>
-      </div>
 
-      <div class="actions">
-        <input id="ipInput" type="text" placeholder="输入要检测的 IP（留空使用自动获取）" />
-        <button id="runBtn">开始检测</button>
-        <span id="status" class="status pending">就绪</span>
-      </div>
+        <div class="actions">
+            <input id="ipInput" type="text" placeholder="输入要检测的 IP（留空使用自动获取）"/>
+            <button id="runBtn">开始检测</button>
+            <span id="status" class="status pending">就绪</span>
+        </div>
 
-      <div class="card" id="basic">
-        <h2>📍 地址信息</h2>
-        <div class="grid">
-          <div class="row"><div class="label">访问IP</div><div id="ip" class="mono"></div></div>
-          <div class="row"><div class="label">自治系统号</div><div id="asn" class="mono"></div></div>
-          <div class="row"><div class="label">组织</div><div id="org"></div></div>
-          <div class="row"><div class="label">坐标</div><div id="coords" class="mono"></div></div>
-          <div class="row"><div class="label">地图</div><div id="map"></div></div>
-          <div class="row"><div class="label">城市</div><div id="city"></div></div>
-          <div class="row"><div class="label">使用地</div><div id="usageRegion"></div></div>
-          <div class="row"><div class="label">注册地</div><div id="regRegion"></div></div>
-          <div class="row"><div class="label">时区</div><div id="timezone"></div></div>
-          <div class="row"><div class="label">IP类型</div><div id="ipType"></div></div>
-        </div>
-        <div class="map-container" id="mapContainer">
-          <iframe id="mapFrame" width="100%" height="300" frameborder="0" style="border:0; border-radius: 10px;" allowfullscreen></iframe>
-        </div>
-      </div>
+        <div class="card" id="basic">
+            <h2>📍 IP地址信息</h2>
+            <div class="grid">
+                <div class="row">
+                    <div class="label">访问IP</div>
+                    <div id="ip" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">自治系统号</div>
+                    <div id="asn" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">组织</div>
+                    <div id="org" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">坐标</div>
+                    <div id="coords" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">城市</div>
+                    <div id="city" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">时区</div>
+                    <div id="timezone" class="mono"></div>
+                </div>
+                <div class="row">
+                    <div class="label">邮编</div>
+                    <div id="postal" class="mono"></div>
+                </div>
+                <div class="row inline-five">
+                    <div class="item">
+                        <div class="label">机房IP</div>
+                        <div id="ipType"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">任播IP</div>
+                        <div id="isAnycast"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">移动IP</div>
+                        <div id="isMobile"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">匿名IP</div>
+                        <div id="isAnonymous"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">卫星IP</div>
+                        <div id="isSatellite"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="provider-info" style="margin-top:16px;">
+                <h3 style="color:#667eea; margin-bottom:8px;">IP网络中心</h3>
+                <div class="simple-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>提供商名称</th>
+                            <th>域名</th>
+                            <th>类型</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="companyName" class="mono"></td>
+                            <td id="companyDomain" class="mono"></td>
+                            <td id="companyTypeRow" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="abuse-info" style="margin-top:16px;">
+                <h3 style="color:#667eea; margin-bottom:8px;">IP联系信息</h3>
+                <div class="simple-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>组织</th>
+                            <th>Email</th>
+                            <th>电话</th>
+                            <th>地址</th>
+                            <th>网络</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="abuseName" class="mono"></td>
+                            <td id="abuseEmail" class="mono"></td>
+                            <td id="abusePhone" class="mono"></td>
+                            <td id="abuseAddress" class="mono"></td>
+                            <td id="abuseNetwork" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="abuse-info" style="margin-top:16px;">
+                <h3 style="color:#667eea; margin-bottom:8px;">IP物理地址</h3>
+                <div class="map-container" id="mapContainer">
 
-      <div class="card" id="attrs">
-        <h2>🏢 地址属性</h2>
-        <div class="grid">
-          <div class="row"><div class="label">数据库</div><div id="dbSources" class="small muted"></div></div>
-          <div class="row"><div class="label">使用类型</div><div id="usageType"></div></div>
-          <div class="row"><div class="label">公司类型</div><div id="companyType"></div></div>
-        </div>
-        <div class="data-sources">
-          <h3>📊 多数据源对比</h3>
-          <div class="grid">
-            <div class="row"><div class="label">IPinfo</div><div id="ipinfoUsageType"></div></div>
-            <div class="row"><div class="label">ipregistry</div><div id="ipregistryUsageType"></div></div>
-            <div class="row"><div class="label">ipapi</div><div id="ipapiUsageType"></div></div>
-            <div class="row"><div class="label">IP2Location</div><div id="ip2locationUsageType"></div></div>
-            <div class="row"><div class="label">AbuseIPDB</div><div id="abuseipdbUsageType"></div></div>
-            <div class="row"><div class="label">IPQS</div><div id="ipqsUsageType"></div></div>
-            <div class="row"><div class="label">SCAMALYTICS</div><div id="scamalyticsUsageType"></div></div>
-            <div class="row"><div class="label">ipdata</div><div id="ipdataUsageType"></div></div>
-            <div class="row"><div class="label">IPWHOIS</div><div id="ipwhoisUsageType"></div></div>
-          </div>
-        </div>
-      </div>
+                    <iframe id="mapFrame" width="100%" height="300" frameborder="0"
+                            style="border:0; border-radius: 10px;"
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
 
-      <div class="card" id="scores">
-        <h2>⚠️ 风险评分</h2>
-        <div class="grid">
-          <div class="row"><div class="label">综合风险评分</div><div id="riskScore"></div></div>
-          <div class="row"><div class="label">风险等级</div><div id="riskLevel"></div></div>
-        </div>
-        <div class="risk-sources">
-          <h3>📈 多数据源风险评分</h3>
-          <div class="grid">
-            <div class="row"><div class="label">IP2Location</div><div id="ip2locationScore"></div></div>
-            <div class="row"><div class="label">SCAMALYTICS</div><div id="scamalyticsScore"></div></div>
-            <div class="row"><div class="label">ipapi</div><div id="ipapiScore"></div></div>
-            <div class="row"><div class="label">AbuseIPDB</div><div id="abuseipdbScore"></div></div>
-            <div class="row"><div class="label">IPQS</div><div id="ipqsScore"></div></div>
-            <div class="row"><div class="label">Cloudflare</div><div id="cloudflareScore"></div></div>
-            <div class="row"><div class="label">DB-IP</div><div id="dbipScore"></div></div>
-            <div class="row"><div class="label">ipregistry</div><div id="ipregistryScore"></div></div>
-            <div class="row"><div class="label">IPinfo</div><div id="ipinfoScore"></div></div>
-          </div>
-        </div>
-      </div>
+            <!-- 新增：IP详细信息（来自 api.ipapi.is） -->
+            <div class="ipapi-detail" style="margin-top:16px;">
+                <h3 style="color:#667eea; margin-bottom:8px;">IP详细信息</h3>
+                <!-- 1、is_* 状态（单行展示） -->
+                <div class="simple-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>保留IP</th>
+                            <th>移动网络</th>
+                            <th>卫星网络</th>
+                            <th>爬虫</th>
+                            <th>数据中心</th>
+                            <th>洋葱路由</th>
+                            <th>代理</th>
+                            <th>VPN</th>
+                            <th>滥用</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiIsBogon"></td>
+                            <td id="ipapiIsMobile"></td>
+                            <td id="ipapiIsSatellite"></td>
+                            <td id="ipapiIsCrawler"></td>
+                            <td id="ipapiIsDatacenter"></td>
+                            <td id="ipapiIsTor"></td>
+                            <td id="ipapiIsProxy"></td>
+                            <td id="ipapiIsVPN"></td>
+                            <td id="ipapiIsAbuser"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-      <div class="card" id="factors">
-        <h2>🔍 风险因子</h2>
-        <div class="grid">
-          <div class="row"><div class="label">代理</div><div id="factorProxy"></div></div>
-          <div class="row"><div class="label">VPN</div><div id="factorVPN"></div></div>
-          <div class="row"><div class="label">Tor</div><div id="factorTor"></div></div>
-          <div class="row"><div class="label">机房</div><div id="factorDC"></div></div>
-          <div class="row"><div class="label">滥用</div><div id="factorAbuser"></div></div>
-          <div class="row"><div class="label">爬虫</div><div id="factorRobot"></div></div>
-        </div>
-        <div class="factor-sources">
-          <h3>🔬 多数据源风险因子检测</h3>
-          <div class="factor-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>数据源</th>
-                  <th>地区</th>
-                  <th>代理</th>
-                  <th>VPN</th>
-                  <th>Tor</th>
-                  <th>机房</th>
-                  <th>滥用</th>
-                  <th>爬虫</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>IP2Location</td><td id="ip2locationRegion"></td><td id="ip2locationProxy"></td><td id="ip2locationVPN"></td><td id="ip2locationTor"></td><td id="ip2locationDC"></td><td id="ip2locationAbuser"></td><td id="ip2locationRobot"></td></tr>
-                <tr><td>ipapi</td><td id="ipapiRegion"></td><td id="ipapiProxy"></td><td id="ipapiVPN"></td><td id="ipapiTor"></td><td id="ipapiDC"></td><td id="ipapiAbuser"></td><td id="ipapiRobot"></td></tr>
-                <tr><td>ipregistry</td><td id="ipregistryRegion"></td><td id="ipregistryProxy"></td><td id="ipregistryVPN"></td><td id="ipregistryTor"></td><td id="ipregistryDC"></td><td id="ipregistryAbuser"></td><td id="ipregistryRobot"></td></tr>
-                <tr><td>IPQS</td><td id="ipqsRegion"></td><td id="ipqsProxy"></td><td id="ipqsVPN"></td><td id="ipqsTor"></td><td id="ipqsDC"></td><td id="ipqsAbuser"></td><td id="ipqsRobot"></td></tr>
-                <tr><td>SCAMALYTICS</td><td id="scamalyticsRegion"></td><td id="scamalyticsProxy"></td><td id="scamalyticsVPN"></td><td id="scamalyticsTor"></td><td id="scamalyticsDC"></td><td id="scamalyticsAbuser"></td><td id="scamalyticsRobot"></td></tr>
-                <tr><td>ipdata</td><td id="ipdataRegion"></td><td id="ipdataProxy"></td><td id="ipdataVPN"></td><td id="ipdataTor"></td><td id="ipdataDC"></td><td id="ipdataAbuser"></td><td id="ipdataRobot"></td></tr>
-                <tr><td>IPinfo</td><td id="ipinfoRegion"></td><td id="ipinfoProxy"></td><td id="ipinfoVPN"></td><td id="ipinfoTor"></td><td id="ipinfoDC"></td><td id="ipinfoAbuser"></td><td id="ipinfoRobot"></td></tr>
-                <tr><td>IPWHOIS</td><td id="ipwhoisRegion"></td><td id="ipwhoisProxy"></td><td id="ipwhoisVPN"></td><td id="ipwhoisTor"></td><td id="ipwhoisDC"></td><td id="ipwhoisAbuser"></td><td id="ipwhoisRobot"></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+                <!-- IP数据中心（三列：名称 / 域名 / 网络） -->
+                <div class="sub-title">IP数据中心</div>
+                <div class="simple-table" style="margin-top:6px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>域名</th>
+                            <th>网络</th>
+                            <th>风险分</th>
+                            <th>类型</th>
+                            <th>WHOIS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 数据中心行（合并公司字段：风险分、类型、WHOIS） -->
+                        <tr>
+                            <td id="ipapiDCName" class="mono"></td>
+                            <td id="ipapiDCDomain" class="mono"></td>
+                            <td id="ipapiDCNetwork" class="mono"></td>
+                            <td id="ipapiCompanyAbuserScore" class="mono"></td>
+                            <td id="ipapiCompanyType" class="mono"></td>
+                            <td id="ipapiCompanyWhois" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-      <div class="card" id="media">
-        <h2>🎬 媒体解锁</h2>
-        <div class="small warn">由于跨域与站点限制，前端无法解析地区与解锁类型，暂仅检查可达性：</div>
-        <div class="grid">
-          <div class="row"><div class="label">TikTok</div><div id="mediaTikTok"></div></div>
-          <div class="row"><div class="label">Disney+</div><div id="mediaDisney"></div></div>
-          <div class="row"><div class="label">Netflix</div><div id="mediaNetflix"></div></div>
-          <div class="row"><div class="label">YouTube</div><div id="mediaYouTube"></div></div>
-          <div class="row"><div class="label">Prime Video</div><div id="mediaPrime"></div></div>
-          <div class="row"><div class="label">Spotify</div><div id="mediaSpotify"></div></div>
-          <div class="row"><div class="label">ChatGPT</div><div id="mediaChatGPT"></div></div>
+                <!-- 4、IP滥用投诉（abuse） -->
+                <div class="sub-title">IP滥用投诉</div>
+                <div class="simple-table" style="margin-top:12px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>组织</th>
+                            <th>地址</th>
+                            <th>Email</th>
+                            <th>电话</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiAbuseName" class="mono"></td>
+                            <td id="ipapiAbuseAddress" class="mono"></td>
+                            <td id="ipapiAbuseEmail" class="mono"></td>
+                            <td id="ipapiAbusePhone" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 5、IP自治信息（asn） 第一行 -->
+                <div class="sub-title">IP自治信息</div>
+                <div class="simple-table" style="margin-top:12px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ASN</th>
+                            <th>风险分</th>
+                            <th>路由</th>
+                            <th>描述</th>
+                            <th>国家</th>
+                            <th>活跃</th>
+                            <th>组织</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiASN" class="mono"></td>
+                            <td id="ipapiASNAbuserScore" class="mono"></td>
+                            <td id="ipapiASNRoute" class="mono"></td>
+                            <td id="ipapiASNDescr" class="mono"></td>
+                            <td id="ipapiASNCountry" class="mono"></td>
+                            <td id="ipapiASNActive" class="mono"></td>
+                            <td id="ipapiASNOrg" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 5、IP自治信息（asn） 第二行 -->
+                <div class="simple-table" style="margin-top:8px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>域名</th>
+                            <th>Abuse</th>
+                            <th>类型</th>
+                            <th>更新</th>
+                            <th>RIR</th>
+                            <th>WHOIS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiASNDomain" class="mono"></td>
+                            <td id="ipapiASNAbuse" class="mono"></td>
+                            <td id="ipapiASNType" class="mono"></td>
+                            <td id="ipapiASNUpdated" class="mono"></td>
+                            <td id="ipapiASNRIR" class="mono"></td>
+                            <td id="ipapiASNWhois" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 6、IP位置信息（location） 第一行 -->
+                <div class="sub-title">IP位置信息</div>
+                <div class="simple-table" style="margin-top:12px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>欧盟</th>
+                            <th>区号</th>
+                            <th>货币</th>
+                            <th>洲</th>
+                            <th>国家</th>
+                            <th>国家码</th>
+                            <th>州/省</th>
+                            <th>城市</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiIsEU" class="mono"></td>
+                            <td id="ipapiCallingCode" class="mono"></td>
+                            <td id="ipapiCurrencyCode" class="mono"></td>
+                            <td id="ipapiContinent" class="mono"></td>
+                            <td id="ipapiCountry" class="mono"></td>
+                            <td id="ipapiCountryCode" class="mono"></td>
+                            <td id="ipapiState" class="mono"></td>
+                            <td id="ipapiCity" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 6、IP位置信息（location） 第二行 -->
+                <div class="simple-table" style="margin-top:8px;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>纬度</th>
+                            <th>经度</th>
+                            <th>邮编</th>
+                            <th>时区</th>
+                            <th>本地时间</th>
+                            <th>夏令时</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="ipapiLatitude" class="mono"></td>
+                            <td id="ipapiLongitude" class="mono"></td>
+                            <td id="ipapiZip" class="mono"></td>
+                            <td id="ipapiTimezone" class="mono"></td>
+                            <td id="ipapiLocalTime" class="mono"></td>
+                            <td id="ipapiIsDST" class="mono"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="card" id="risk-summary">
+            <h2>📍 IP地址风险</h2>
+            <div id="attrs">
+            <h3>IP原生检测</h3>
+            <div class="simple-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>数据源</th>
+                        <th>使用类型</th>
+                        <th>公司类型</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>IPinfo</td>
+                        <td id="ipinfoUsageType"></td>
+                        <td id="ipinfoCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>ipregistry</td>
+                        <td id="ipregistryUsageType"></td>
+                        <td id="ipregistryCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>ipapi</td>
+                        <td id="ipapiUsageType"></td>
+                        <td id="ipapiCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>IP2Location</td>
+                        <td id="ip2locationUsageType"></td>
+                        <td id="ip2locationCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>AbuseIPDB</td>
+                        <td id="abuseipdbUsageType"></td>
+                        <td id="abuseipdbCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>IPQS</td>
+                        <td id="ipqsUsageType"></td>
+                        <td id="ipqsCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>SCAMALYTICS</td>
+                        <td id="scamalyticsUsageType"></td>
+                        <td id="scamalyticsCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>ipdata</td>
+                        <td id="ipdataUsageType"></td>
+                        <td id="ipdataCompanyType"></td>
+                    </tr>
+                    <tr>
+                        <td>IPWHOIS</td>
+                        <td id="ipwhoisUsageType"></td>
+                        <td id="ipwhoisCompanyType"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div id="scores">
+            <h3>IP风险评分</h3>
+            <div class="simple-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>数据源</th>
+                        <th>风险评分</th>
+                        <th>风险等级</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>IP2Location</td>
+                        <td id="ip2locationScore"></td>
+                        <td id="ip2locationRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>SCAMALYTICS</td>
+                        <td id="scamalyticsScore"></td>
+                        <td id="scamalyticsRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>ipapi</td>
+                        <td id="ipapiScore"></td>
+                        <td id="ipapiRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>AbuseIPDB</td>
+                        <td id="abuseipdbScore"></td>
+                        <td id="abuseipdbRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>IPQS</td>
+                        <td id="ipqsScore"></td>
+                        <td id="ipqsRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare</td>
+                        <td id="cloudflareScore"></td>
+                        <td id="cloudflareRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>DB-IP</td>
+                        <td id="dbipScore"></td>
+                        <td id="dbipRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>ipregistry</td>
+                        <td id="ipregistryScore"></td>
+                        <td id="ipregistryRisk"></td>
+                    </tr>
+                    <tr>
+                        <td>IPinfo</td>
+                        <td id="ipinfoScore"></td>
+                        <td id="ipinfoRisk"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div id="factors">
+            <h3>IP风险详情</h3>
+            <div class="factor-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>数据源</th>
+                        <th>地区</th>
+                        <th>代理</th>
+                        <th>VPN</th>
+                        <th>Tor</th>
+                        <th>服务器</th>
+                        <th>滥用</th>
+                        <th>机器人</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>IP2Location</td>
+                        <td id="ip2locationRegion"></td>
+                        <td id="ip2locationProxy"></td>
+                        <td id="ip2locationVPN"></td>
+                        <td id="ip2locationTor"></td>
+                        <td id="ip2locationDC"></td>
+                        <td id="ip2locationAbuser"></td>
+                        <td id="ip2locationRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>ipapi</td>
+                        <td id="ipapiRegion"></td>
+                        <td id="ipapiProxy"></td>
+                        <td id="ipapiVPN"></td>
+                        <td id="ipapiTor"></td>
+                        <td id="ipapiDC"></td>
+                        <td id="ipapiAbuser"></td>
+                        <td id="ipapiRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>ipregistry</td>
+                        <td id="ipregistryRegion"></td>
+                        <td id="ipregistryProxy"></td>
+                        <td id="ipregistryVPN"></td>
+                        <td id="ipregistryTor"></td>
+                        <td id="ipregistryDC"></td>
+                        <td id="ipregistryAbuser"></td>
+                        <td id="ipregistryRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>IPQS</td>
+                        <td id="ipqsRegion"></td>
+                        <td id="ipqsProxy"></td>
+                        <td id="ipqsVPN"></td>
+                        <td id="ipqsTor"></td>
+                        <td id="ipqsDC"></td>
+                        <td id="ipqsAbuser"></td>
+                        <td id="ipqsRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>SCAMALYTICS</td>
+                        <td id="scamalyticsRegion"></td>
+                        <td id="scamalyticsProxy"></td>
+                        <td id="scamalyticsVPN"></td>
+                        <td id="scamalyticsTor"></td>
+                        <td id="scamalyticsDC"></td>
+                        <td id="scamalyticsAbuser"></td>
+                        <td id="scamalyticsRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>ipdata</td>
+                        <td id="ipdataRegion"></td>
+                        <td id="ipdataProxy"></td>
+                        <td id="ipdataVPN"></td>
+                        <td id="ipdataTor"></td>
+                        <td id="ipdataDC"></td>
+                        <td id="ipdataAbuser"></td>
+                        <td id="ipdataRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>IPinfo</td>
+                        <td id="ipinfoRegion"></td>
+                        <td id="ipinfoProxy"></td>
+                        <td id="ipinfoVPN"></td>
+                        <td id="ipinfoTor"></td>
+                        <td id="ipinfoDC"></td>
+                        <td id="ipinfoAbuser"></td>
+                        <td id="ipinfoRobot"></td>
+                    </tr>
+                    <tr>
+                        <td>IPWHOIS</td>
+                        <td id="ipwhoisRegion"></td>
+                        <td id="ipwhoisProxy"></td>
+                        <td id="ipwhoisVPN"></td>
+                        <td id="ipwhoisTor"></td>
+                        <td id="ipwhoisDC"></td>
+                        <td id="ipwhoisAbuser"></td>
+                        <td id="ipwhoisRobot"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+
+        
+
+        <div class="card" id="media">
+            <h2>🌐 IP网站可达</h2>
+            <div class="grid">
+                <div class="row">
+                    <div class="label">TikTok</div>
+                    <div id="mediaTikTok"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Disney+</div>
+                    <div id="mediaDisney"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Netflix</div>
+                    <div id="mediaNetflix"></div>
+                </div>
+                <div class="row">
+                    <div class="label">YouTube</div>
+                    <div id="mediaYouTube"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Prime Video</div>
+                    <div id="mediaPrime"></div>
+                </div>
+                <div class="row">
+                    <div class="label">Spotify</div>
+                    <div id="mediaSpotify"></div>
+                </div>
+                <div class="row">
+                    <div class="label">ChatGPT</div>
+                    <div id="mediaChatGPT"></div>
+                </div>
+                <div class="row">
+                    <div class="label">动画疯</div>
+                    <div id="mediaAniGamer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手动输入IP时的不可用提示（默认隐藏） -->
+        <div class="card" id="mediaManualNotice" style="display:none">
+            <h2>🌐 IP网站可达</h2>
+            <div class="row">
+                <div class="label">状态</div>
+                <div class="bad">手动输入时不可用</div>
+            </div>
+        </div>
 
 
     </div>
-  </div>
+</div>
 
-  <script>
+<script>
     const els = {
-      ip: document.getElementById('ip'),
-      asn: document.getElementById('asn'),
-      org: document.getElementById('org'),
-      coords: document.getElementById('coords'),
-      map: document.getElementById('map'),
-      city: document.getElementById('city'),
-      usageRegion: document.getElementById('usageRegion'),
-      regRegion: document.getElementById('regRegion'),
-      timezone: document.getElementById('timezone'),
-      ipType: document.getElementById('ipType'),
-      dbSources: document.getElementById('dbSources'),
-      usageType: document.getElementById('usageType'),
-      companyType: document.getElementById('companyType'),
-      riskScore: document.getElementById('riskScore'),
-      riskLevel: document.getElementById('riskLevel'),
-      factorProxy: document.getElementById('factorProxy'),
-      factorVPN: document.getElementById('factorVPN'),
-      factorTor: document.getElementById('factorTor'),
-      factorDC: document.getElementById('factorDC'),
-      factorAbuser: document.getElementById('factorAbuser'),
-      factorRobot: document.getElementById('factorRobot'),
-      factorSources: document.getElementById('factorSources'),
-      media: {
-        TikTok: document.getElementById('mediaTikTok'),
-        Disney: document.getElementById('mediaDisney'),
-        Netflix: document.getElementById('mediaNetflix'),
-        YouTube: document.getElementById('mediaYouTube'),
-        Prime: document.getElementById('mediaPrime'),
-        Spotify: document.getElementById('mediaSpotify'),
-        ChatGPT: document.getElementById('mediaChatGPT'),
-      },
-      status: document.getElementById('status'),
-      ipInput: document.getElementById('ipInput'),
-      runBtn: document.getElementById('runBtn'),
-      // 新增的数据源元素
-      ipinfoUsageType: document.getElementById('ipinfoUsageType'),
-      ipregistryUsageType: document.getElementById('ipregistryUsageType'),
-      ipapiUsageType: document.getElementById('ipapiUsageType'),
-      ip2locationUsageType: document.getElementById('ip2locationUsageType'),
-      abuseipdbUsageType: document.getElementById('abuseipdbUsageType'),
-      ipqsUsageType: document.getElementById('ipqsUsageType'),
-      scamalyticsUsageType: document.getElementById('scamalyticsUsageType'),
-      ipdataUsageType: document.getElementById('ipdataUsageType'),
-      ipwhoisUsageType: document.getElementById('ipwhoisUsageType'),
-      
-      ip2locationScore: document.getElementById('ip2locationScore'),
-      scamalyticsScore: document.getElementById('scamalyticsScore'),
-      ipapiScore: document.getElementById('ipapiScore'),
-      abuseipdbScore: document.getElementById('abuseipdbScore'),
-      ipqsScore: document.getElementById('ipqsScore'),
-      cloudflareScore: document.getElementById('cloudflareScore'),
-      dbipScore: document.getElementById('dbipScore'),
-      ipregistryScore: document.getElementById('ipregistryScore'),
-      ipinfoScore: document.getElementById('ipinfoScore'),
-      
-      // 风险因子表格元素
-      ip2locationRegion: document.getElementById('ip2locationRegion'),
-      ip2locationProxy: document.getElementById('ip2locationProxy'),
-      ip2locationVPN: document.getElementById('ip2locationVPN'),
-      ip2locationTor: document.getElementById('ip2locationTor'),
-      ip2locationDC: document.getElementById('ip2locationDC'),
-      ip2locationAbuser: document.getElementById('ip2locationAbuser'),
-      ip2locationRobot: document.getElementById('ip2locationRobot'),
-      
-      ipapiRegion: document.getElementById('ipapiRegion'),
-      ipapiProxy: document.getElementById('ipapiProxy'),
-      ipapiVPN: document.getElementById('ipapiVPN'),
-      ipapiTor: document.getElementById('ipapiTor'),
-      ipapiDC: document.getElementById('ipapiDC'),
-      ipapiAbuser: document.getElementById('ipapiAbuser'),
-      ipapiRobot: document.getElementById('ipapiRobot'),
-      
-      ipregistryRegion: document.getElementById('ipregistryRegion'),
-      ipregistryProxy: document.getElementById('ipregistryProxy'),
-      ipregistryVPN: document.getElementById('ipregistryVPN'),
-      ipregistryTor: document.getElementById('ipregistryTor'),
-      ipregistryDC: document.getElementById('ipregistryDC'),
-      ipregistryAbuser: document.getElementById('ipregistryAbuser'),
-      ipregistryRobot: document.getElementById('ipregistryRobot'),
-      
-      ipqsRegion: document.getElementById('ipqsRegion'),
-      ipqsProxy: document.getElementById('ipqsProxy'),
-      ipqsVPN: document.getElementById('ipqsVPN'),
-      ipqsTor: document.getElementById('ipqsTor'),
-      ipqsDC: document.getElementById('ipqsDC'),
-      ipqsAbuser: document.getElementById('ipqsAbuser'),
-      ipqsRobot: document.getElementById('ipqsRobot'),
-      
-      scamalyticsRegion: document.getElementById('scamalyticsRegion'),
-      scamalyticsProxy: document.getElementById('scamalyticsProxy'),
-      scamalyticsVPN: document.getElementById('scamalyticsVPN'),
-      scamalyticsTor: document.getElementById('scamalyticsTor'),
-      scamalyticsDC: document.getElementById('scamalyticsDC'),
-      scamalyticsAbuser: document.getElementById('scamalyticsAbuser'),
-      scamalyticsRobot: document.getElementById('scamalyticsRobot'),
-      
-      ipdataRegion: document.getElementById('ipdataRegion'),
-      ipdataProxy: document.getElementById('ipdataProxy'),
-      ipdataVPN: document.getElementById('ipdataVPN'),
-      ipdataTor: document.getElementById('ipdataTor'),
-      ipdataDC: document.getElementById('ipdataDC'),
-      ipdataAbuser: document.getElementById('ipdataAbuser'),
-      ipdataRobot: document.getElementById('ipdataRobot'),
-      
-      ipinfoRegion: document.getElementById('ipinfoRegion'),
-      ipinfoProxy: document.getElementById('ipinfoProxy'),
-      ipinfoVPN: document.getElementById('ipinfoVPN'),
-      ipinfoTor: document.getElementById('ipinfoTor'),
-      ipinfoDC: document.getElementById('ipinfoDC'),
-      ipinfoAbuser: document.getElementById('ipinfoAbuser'),
-      ipinfoRobot: document.getElementById('ipinfoRobot'),
-      
-      ipwhoisRegion: document.getElementById('ipwhoisRegion'),
-      ipwhoisProxy: document.getElementById('ipwhoisProxy'),
-      ipwhoisVPN: document.getElementById('ipwhoisVPN'),
-      ipwhoisTor: document.getElementById('ipwhoisTor'),
-      ipwhoisDC: document.getElementById('ipwhoisDC'),
-      ipwhoisAbuser: document.getElementById('ipwhoisAbuser'),
-      ipwhoisRobot: document.getElementById('ipwhoisRobot'),
+        ip: document.getElementById('ip'),
+        asn: document.getElementById('asn'),
+        org: document.getElementById('org'),
+        coords: document.getElementById('coords'),
+        city: document.getElementById('city'),
+        timezone: document.getElementById('timezone'),
+        postal: document.getElementById('postal'),
+        ipType: document.getElementById('ipType'),
+        isAnycast: document.getElementById('isAnycast'),
+        isMobile: document.getElementById('isMobile'),
+        isAnonymous: document.getElementById('isAnonymous'),
+        isSatellite: document.getElementById('isSatellite'),
+        media: {
+            TikTok: document.getElementById('mediaTikTok'),
+            Disney: document.getElementById('mediaDisney'),
+            Netflix: document.getElementById('mediaNetflix'),
+            YouTube: document.getElementById('mediaYouTube'),
+            Prime: document.getElementById('mediaPrime'),
+            Spotify: document.getElementById('mediaSpotify'),
+            ChatGPT: document.getElementById('mediaChatGPT'),
+            AniGamer: document.getElementById('mediaAniGamer'),
+        },
+        status: document.getElementById('status'),
+        ipInput: document.getElementById('ipInput'),
+        runBtn: document.getElementById('runBtn'),
+        // 新增的数据源元素
+        ipinfoUsageType: document.getElementById('ipinfoUsageType'),
+        ipregistryUsageType: document.getElementById('ipregistryUsageType'),
+        ipapiUsageType: document.getElementById('ipapiUsageType'),
+        ip2locationUsageType: document.getElementById('ip2locationUsageType'),
+        abuseipdbUsageType: document.getElementById('abuseipdbUsageType'),
+        ipqsUsageType: document.getElementById('ipqsUsageType'),
+        scamalyticsUsageType: document.getElementById('scamalyticsUsageType'),
+        ipdataUsageType: document.getElementById('ipdataUsageType'),
+        ipwhoisUsageType: document.getElementById('ipwhoisUsageType'),
+
+        ip2locationScore: document.getElementById('ip2locationScore'),
+        scamalyticsScore: document.getElementById('scamalyticsScore'),
+        ipapiScore: document.getElementById('ipapiScore'),
+        abuseipdbScore: document.getElementById('abuseipdbScore'),
+        ipqsScore: document.getElementById('ipqsScore'),
+        cloudflareScore: document.getElementById('cloudflareScore'),
+        dbipScore: document.getElementById('dbipScore'),
+        ipregistryScore: document.getElementById('ipregistryScore'),
+        ipinfoScore: document.getElementById('ipinfoScore'),
+
+        // 风险因子表格元素
+        ip2locationRegion: document.getElementById('ip2locationRegion'),
+        ip2locationProxy: document.getElementById('ip2locationProxy'),
+        ip2locationVPN: document.getElementById('ip2locationVPN'),
+        ip2locationTor: document.getElementById('ip2locationTor'),
+        ip2locationDC: document.getElementById('ip2locationDC'),
+        ip2locationAbuser: document.getElementById('ip2locationAbuser'),
+        ip2locationRobot: document.getElementById('ip2locationRobot'),
+
+        ipapiRegion: document.getElementById('ipapiRegion'),
+        ipapiProxy: document.getElementById('ipapiProxy'),
+        ipapiVPN: document.getElementById('ipapiVPN'),
+        ipapiTor: document.getElementById('ipapiTor'),
+        ipapiDC: document.getElementById('ipapiDC'),
+        ipapiAbuser: document.getElementById('ipapiAbuser'),
+        ipapiRobot: document.getElementById('ipapiRobot'),
+
+        ipregistryRegion: document.getElementById('ipregistryRegion'),
+        ipregistryProxy: document.getElementById('ipregistryProxy'),
+        ipregistryVPN: document.getElementById('ipregistryVPN'),
+        ipregistryTor: document.getElementById('ipregistryTor'),
+        ipregistryDC: document.getElementById('ipregistryDC'),
+        ipregistryAbuser: document.getElementById('ipregistryAbuser'),
+        ipregistryRobot: document.getElementById('ipregistryRobot'),
+
+        ipqsRegion: document.getElementById('ipqsRegion'),
+        ipqsProxy: document.getElementById('ipqsProxy'),
+        ipqsVPN: document.getElementById('ipqsVPN'),
+        ipqsTor: document.getElementById('ipqsTor'),
+        ipqsDC: document.getElementById('ipqsDC'),
+        ipqsAbuser: document.getElementById('ipqsAbuser'),
+        ipqsRobot: document.getElementById('ipqsRobot'),
+
+        scamalyticsRegion: document.getElementById('scamalyticsRegion'),
+        scamalyticsProxy: document.getElementById('scamalyticsProxy'),
+        scamalyticsVPN: document.getElementById('scamalyticsVPN'),
+        scamalyticsTor: document.getElementById('scamalyticsTor'),
+        scamalyticsDC: document.getElementById('scamalyticsDC'),
+        scamalyticsAbuser: document.getElementById('scamalyticsAbuser'),
+        scamalyticsRobot: document.getElementById('scamalyticsRobot'),
+
+        ipdataRegion: document.getElementById('ipdataRegion'),
+        ipdataProxy: document.getElementById('ipdataProxy'),
+        ipdataVPN: document.getElementById('ipdataVPN'),
+        ipdataTor: document.getElementById('ipdataTor'),
+        ipdataDC: document.getElementById('ipdataDC'),
+        ipdataAbuser: document.getElementById('ipdataAbuser'),
+        ipdataRobot: document.getElementById('ipdataRobot'),
+
+        ipinfoRegion: document.getElementById('ipinfoRegion'),
+        ipinfoProxy: document.getElementById('ipinfoProxy'),
+        ipinfoVPN: document.getElementById('ipinfoVPN'),
+        ipinfoTor: document.getElementById('ipinfoTor'),
+        ipinfoDC: document.getElementById('ipinfoDC'),
+        ipinfoAbuser: document.getElementById('ipinfoAbuser'),
+        ipinfoRobot: document.getElementById('ipinfoRobot'),
+
+        ipwhoisRegion: document.getElementById('ipwhoisRegion'),
+        ipwhoisProxy: document.getElementById('ipwhoisProxy'),
+        ipwhoisVPN: document.getElementById('ipwhoisVPN'),
+        ipwhoisTor: document.getElementById('ipwhoisTor'),
+        ipwhoisDC: document.getElementById('ipwhoisDC'),
+        ipwhoisAbuser: document.getElementById('ipwhoisAbuser'),
+        ipwhoisRobot: document.getElementById('ipwhoisRobot'),
+        // 公司与联系信息
+        companyName: document.getElementById('companyName'),
+        companyDomain: document.getElementById('companyDomain'),
+        companyTypeRow: document.getElementById('companyTypeRow'),
+        abuseName: document.getElementById('abuseName'),
+        abuseEmail: document.getElementById('abuseEmail'),
+        abusePhone: document.getElementById('abusePhone'),
+        abuseAddress: document.getElementById('abuseAddress'),
+        abuseNetwork: document.getElementById('abuseNetwork'),
     };
+
+    // 可达性检测的站点映射（供链接和检测复用）
+    const MEDIA_SITES = {
+        TikTok: 'https://www.tiktok.com/',
+        Disney: 'https://www.disneyplus.com/',
+        Netflix: 'https://www.netflix.com/',
+        YouTube: 'https://www.youtube.com/',
+        Prime: 'https://www.primevideo.com/',
+        Spotify: 'https://open.spotify.com/',
+        ChatGPT: 'https://chat.openai.com/',
+        AniGamer: 'https://ani.gamer.com.tw/'
+    };
+
+    // 在每个媒体项目名称后添加链接图标（幂等：避免重复追加）
+    function addMediaLinks() {
+        Object.entries(MEDIA_SITES).forEach(([name, url]) => {
+            const statusEl = els.media[name];
+            if (!statusEl) return;
+            const row = statusEl.parentElement;
+            const labelEl = row?.querySelector('.label');
+            if (!labelEl) return;
+            // 若已存在链接图标则更新链接并跳过追加
+            const existing = labelEl.querySelector('a.link-icon');
+            if (existing) {
+                existing.href = url;
+                existing.title = '访问被检测的网站';
+                existing.textContent = '🔗';
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.className = 'link-icon';
+            a.title = '访问被检测的网站';
+            a.textContent = '🔗';
+            labelEl.appendChild(a);
+        });
+    }
 
     // 进度条相关元素
     const progressFill = document.getElementById('progressFill');
@@ -664,432 +1324,706 @@
     const totalSteps = 15;
 
     function updateProgress(message, increment = 1) {
-      currentProgress += increment;
-      const percentage = Math.min((currentProgress / totalSteps) * 100, 100);
-      progressFill.style.width = percentage + '%';
-      progressText.textContent = message;
+        currentProgress += increment;
+        const percentage = Math.min((currentProgress / totalSteps) * 100, 100);
+        progressFill.style.width = percentage + '%';
+        progressText.textContent = message;
     }
 
     function resetProgress() {
-      currentProgress = 0;
-      progressFill.style.width = '0%';
-      progressText.textContent = '准备开始检测...';
+        currentProgress = 0;
+        progressFill.style.width = '0%';
+        progressText.textContent = '准备开始检测...';
     }
 
     function toDMS(lat, lon) {
-      function convertSingle(value, dirPositive, dirNegative) {
-        const v = Math.abs(value);
-        const deg = Math.floor(v);
-        const minFloat = (v - deg) * 60;
-        const min = Math.floor(minFloat);
-        const sec = Math.round((minFloat - min) * 60);
-        const dir = value >= 0 ? dirPositive : dirNegative;
-        return `${deg}°${min}′${sec}″${dir}`;
-      }
-      return `${convertSingle(lon, 'E', 'W')}, ${convertSingle(lat, 'N', 'S')}`;
+        function convertSingle(value, dirPositive, dirNegative) {
+            const v = Math.abs(value);
+            const deg = Math.floor(v);
+            const minFloat = (v - deg) * 60;
+            const min = Math.floor(minFloat);
+            const sec = Math.round((minFloat - min) * 60);
+            const dir = value >= 0 ? dirPositive : dirNegative;
+            return `${deg}°${min}′${sec}″${dir}`;
+        }
+
+        return `${convertSingle(lon, 'E', 'W')}, ${convertSingle(lat, 'N', 'S')}`;
     }
 
     async function fetchJSON(url) {
-      try {
-        const resp = await fetch(url, { 
-          method: 'GET', 
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        return await resp.json();
-      } catch (error) {
-        console.warn(`API调用失败: ${url}`, error);
-        return null;
-      }
+        try {
+            const resp = await fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            return await resp.json();
+        } catch (error) {
+            console.warn(`API调用失败: ${url}`, error);
+            return null;
+        }
     }
 
     async function getPublicIP() {
-      // 优先 IPv4；失败再试 IPv6
-      try { 
-        const response = await fetch('https://api.ipify.org/?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (_) {}
-      try { 
-        const response = await fetch('https://api6.ipify.org/?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (_) {}
-      throw new Error('无法获取公网IP');
+        // 优先 IPv4；失败再试 IPv6
+        try {
+            const response = await fetch('https://api.ipify.org/?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (_) {
+        }
+        try {
+            const response = await fetch('https://api6.ipify.org/?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (_) {
+        }
+        throw new Error('无法获取公网IP');
     }
 
-    // 获取IP信息（通过后端API避免跨域问题）
+    // 获取IP信息（改为直接调用 ipinfo.io widget demo）
     async function getIPInfo(ip) {
-      try {
-        const response = await fetch('/api/ip-info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `ip=${ip}`
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data && !data.error) {
-            return data;
-          }
+        try {
+            const response = await fetch(`https://ipinfo.io/widget/demo/${ip}`);
+            if (response.ok) {
+                const payload = await response.json();
+                const d = payload?.data;
+                if (d) {
+                    const locParts = (d.loc || '').split(',');
+                    const lat = parseFloat(locParts[0] || '0');
+                    const lon = parseFloat(locParts[1] || '0');
+                    return {
+                        source: 'ipinfo.io',
+                        ip: d.ip || ip,
+                        asn: d.asn || null,
+                        org: d.org || '',
+                        country: d.country || '',
+                        countryCode: d.country || '',
+                        region: d.region || '',
+                        city: d.city || '',
+                        postal: d.postal || '',
+                        lat: isNaN(lat) ? 0 : lat,
+                        lon: isNaN(lon) ? 0 : lon,
+                        timezone: d.timezone || '',
+                        company: d.company || null,
+                        abuse: d.abuse || null,
+                        is_anycast: d.is_anycast,
+                        is_mobile: d.is_mobile,
+                        is_anonymous: d.is_anonymous,
+                        is_satellite: d.is_satellite
+                    };
+                }
+            }
+            return null;
+        } catch (error) {
+            console.error('IP信息获取失败:', error);
+            return null;
         }
-        return null;
-      } catch (error) {
-        console.error('IP信息获取失败:', error);
-        return null;
-      }
     }
 
     // 获取ASN信息
     async function getASN(ip) {
-      try {
-        // 使用ipinfo.io获取ASN信息（允许跨域）
-        const response = await fetch(`https://ipinfo.io/widget/demo/${ip}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.data) {
-            return {
-              asn: data.data.asn?.asn || '未知',
-              org: data.data.asn?.name || '未知'
-            };
-          }
+        try {
+            // 使用ipinfo.io获取ASN信息（允许跨域）
+            const response = await fetch(`https://ipinfo.io/widget/demo/${ip}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.data) {
+                    return {
+                        asn: data.data.asn?.asn || '未知',
+                        org: data.data.asn?.name || '未知'
+                    };
+                }
+            }
+            return {asn: '未知', org: '未知'};
+        } catch (error) {
+            console.warn('ASN信息获取失败:', error);
+            return {asn: '未知', org: '未知'};
         }
-        return { asn: '未知', org: '未知' };
-      } catch (error) {
-        console.warn('ASN信息获取失败:', error);
-        return { asn: '未知', org: '未知' };
-      }
     }
 
-    // 获取IPAPI信息（风险评分和因子）
+    // 获取IPAPI信息（风险评分与原始详情，复用一次查询）
     async function getIpapi(ip) {
-      try {
-        const data = await fetchJSON(`https://api.ipapi.is/?q=${ip}`);
-        if (data) {
-          return {
-            is_proxy: data.is_proxy,
-            is_vpn: data.is_vpn,
-            is_tor: data.is_tor,
-            is_datacenter: data.is_datacenter,
-            is_abuser: data.is_abuser,
-            is_crawler: data.is_crawler,
-            company: {
-              abuser_score: data.company?.abuser_score,
-              type: data.company?.type
-            },
-            asn: {
-              type: data.asn?.type
+        try {
+            const data = await fetchJSON(`https://api.ipapi.is/?q=${ip}`);
+            if (data) {
+                return {
+                    is_proxy: data.is_proxy,
+                    is_vpn: data.is_vpn,
+                    is_tor: data.is_tor,
+                    is_datacenter: data.is_datacenter,
+                    is_abuser: data.is_abuser,
+                    is_crawler: data.is_crawler,
+                    company: {
+                        abuser_score: data.company?.abuser_score,
+                        type: data.company?.type
+                    },
+                    asn: {
+                        type: data.asn?.type
+                    },
+                    // 原始数据用于“IP详细信息”表格渲染
+                    raw: data
+                };
             }
-          };
+            return null;
+        } catch (error) {
+            console.warn('IPAPI信息获取失败:', error);
+            return null;
         }
-        return null;
-      } catch (error) {
-        console.warn('IPAPI信息获取失败:', error);
-        return null;
-      }
+    }
+
+    function fillIpapiDetail(raw) {
+        if (!raw) return;
+        const truthy = (v) => v === true || v === 'true' || v === 1 || v === '1';
+        const yesNoText = (v) => truthy(v) ? '是' : '否';
+        const yesNoClass = (v) => truthy(v) ? 'bad' : 'ok';
+
+        // 1、is_* 状态
+        const setYN = (id, v) => {
+            const el = document.getElementById(id);
+            if (el) setText(el, yesNoText(v), yesNoClass(v));
+        };
+        setYN('ipapiIsBogon', raw.is_bogon);
+        setYN('ipapiIsMobile', raw.is_mobile);
+        setYN('ipapiIsSatellite', raw.is_satellite);
+        setYN('ipapiIsCrawler', raw.is_crawler);
+        setYN('ipapiIsDatacenter', raw.is_datacenter);
+        setYN('ipapiIsTor', raw.is_tor);
+        setYN('ipapiIsProxy', raw.is_proxy);
+        setYN('ipapiIsVPN', raw.is_vpn);
+        setYN('ipapiIsAbuser', raw.is_abuser);
+
+        // 2、IP数据中心
+        setText(document.getElementById('ipapiDCName'), raw.datacenter?.datacenter || '');
+        setText(document.getElementById('ipapiDCDomain'), raw.datacenter?.domain || '');
+        setText(document.getElementById('ipapiDCNetwork'), raw.datacenter?.network || '');
+
+        // 3、IP提供信息（company）
+        setText(document.getElementById('ipapiCompanyName'), raw.company?.name || '');
+        setText(document.getElementById('ipapiCompanyAbuserScore'), raw.company?.abuser_score || '');
+        setText(document.getElementById('ipapiCompanyDomain'), raw.company?.domain || '');
+        setText(document.getElementById('ipapiCompanyType'), raw.company?.type || '');
+        setText(document.getElementById('ipapiCompanyNetwork'), raw.company?.network || '');
+        const companyWhois = document.getElementById('ipapiCompanyWhois');
+        if (companyWhois) {
+            const whoisUrl = raw.company?.whois || '';
+            companyWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g,'').trim()}" target="_blank">查看</a>` : '';
+        }
+
+        // 4、IP滥用投诉（abuse）
+        setText(document.getElementById('ipapiAbuseName'), raw.abuse?.name || '');
+        setText(document.getElementById('ipapiAbuseAddress'), raw.abuse?.address || '');
+        setText(document.getElementById('ipapiAbuseEmail'), raw.abuse?.email || '');
+        setText(document.getElementById('ipapiAbusePhone'), raw.abuse?.phone || '');
+
+        // 5、IP自治信息（asn）
+        setText(document.getElementById('ipapiASN'), (raw.asn?.asn ?? '').toString());
+        setText(document.getElementById('ipapiASNAbuserScore'), raw.asn?.abuser_score || '');
+        setText(document.getElementById('ipapiASNRoute'), raw.asn?.route || '');
+        setText(document.getElementById('ipapiASNDescr'), raw.asn?.descr || '');
+        setText(document.getElementById('ipapiASNCountry'), raw.asn?.country || '');
+        setText(document.getElementById('ipapiASNActive'), raw.asn?.active === true ? '是' : raw.asn?.active === false ? '否' : '');
+        setText(document.getElementById('ipapiASNOrg'), raw.asn?.org || '');
+        setText(document.getElementById('ipapiASNDomain'), raw.asn?.domain || '');
+        setText(document.getElementById('ipapiASNAbuse'), raw.asn?.abuse || '');
+        setText(document.getElementById('ipapiASNType'), raw.asn?.type || '');
+        setText(document.getElementById('ipapiASNUpdated'), raw.asn?.updated || '');
+        setText(document.getElementById('ipapiASNRIR'), (raw.asn?.rir || raw.rir || ''));
+        const asnWhois = document.getElementById('ipapiASNWhois');
+        if (asnWhois) {
+            const whoisUrl = raw.asn?.whois || '';
+            asnWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g,'').trim()}" target="_blank">查看</a>` : '';
+        }
+
+        // 6、IP位置信息（location）
+        const loc = raw.location || {};
+        setText(document.getElementById('ipapiIsEU'), loc.is_eu_member === true ? '是' : loc.is_eu_member === false ? '否' : '');
+        setText(document.getElementById('ipapiCallingCode'), loc.calling_code || '');
+        setText(document.getElementById('ipapiCurrencyCode'), loc.currency_code || '');
+        setText(document.getElementById('ipapiContinent'), loc.continent || '');
+        setText(document.getElementById('ipapiCountry'), loc.country || '');
+        setText(document.getElementById('ipapiCountryCode'), loc.country_code || '');
+        setText(document.getElementById('ipapiState'), loc.state || '');
+        setText(document.getElementById('ipapiCity'), loc.city || '');
+        setText(document.getElementById('ipapiLatitude'), (loc.latitude != null ? String(loc.latitude) : ''));
+        setText(document.getElementById('ipapiLongitude'), (loc.longitude != null ? String(loc.longitude) : ''));
+        setText(document.getElementById('ipapiZip'), loc.zip || '');
+        setText(document.getElementById('ipapiTimezone'), loc.timezone || '');
+        setText(document.getElementById('ipapiLocalTime'), loc.local_time || '');
+        setText(document.getElementById('ipapiIsDST'), loc.is_dst === true ? '是' : loc.is_dst === false ? '否' : '');
     }
 
     // 获取IPWhois信息（补充风险因子）
     async function getIpwhois(ip) {
-      try {
-        const data = await fetchJSON(`https://ipwho.is/${ip}`);
-        if (data && data.success) {
-          return {
-            security: data.security || {}
-          };
-        }
-        return null;
-      } catch (error) {
-        console.warn('IPWhois信息获取失败:', error);
-        return null;
-      }
-    }
-
-    // 国家代码转emoji
-    function getCountryEmoji(countryCode) {
-      const emojiMap = {
-        'CN': '🇨🇳', 'US': '🇺🇸', 'JP': '🇯🇵', 'KR': '🇰🇷', 'GB': '🇬🇧',
-        'DE': '🇩🇪', 'FR': '🇫🇷', 'IT': '🇮🇹', 'ES': '🇪🇸', 'RU': '🇷🇺',
-        'CA': '🇨🇦', 'AU': '🇦🇺', 'BR': '🇧🇷', 'IN': '🇮🇳', 'MX': '🇲🇽',
-        'ZA': '🇿🇦', 'NL': '🇳🇱', 'BE': '🇧🇪', 'CH': '🇨🇭', 'AT': '🇦🇹',
-        'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮', 'PL': '🇵🇱',
-        'CZ': '🇨🇿', 'HU': '🇭🇺', 'RO': '🇷🇴', 'BG': '🇧🇬', 'HR': '🇭🇷',
-        'SI': '🇸🇮', 'SK': '🇸🇰', 'LT': '🇱🇹', 'LV': '🇱🇻', 'EE': '🇪🇪',
-        'IE': '🇮🇪', 'PT': '🇵🇹', 'GR': '🇬🇷', 'TR': '🇹🇷', 'UA': '🇺🇦'
-      };
-      
-      return emojiMap[countryCode] || '🌍';
-    }
-
-    // 媒体服务检测（通过后端API）
-    async function fillMediaReachability(ip) {
-      try {
-        const response = await fetch('/api/media-check', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ ip: ip })
-        });
-        
-        if (response.ok) {
-          const mediaResults = await response.json();
-          const serviceNames = {
-            netflix: 'Netflix',
-            youtube: 'YouTube', 
-            disney: 'Disney',
-            amazon_prime: 'Prime',
-            spotify: 'Spotify',
-            chatgpt: 'ChatGPT',
-            tiktok: 'TikTok'
-          };
-          
-          for (const [apiKey, displayName] of Object.entries(serviceNames)) {
-            if (mediaResults[apiKey]) {
-              const status = mediaResults[apiKey];
-              const isAvailable = status === 'available' || status === 'unlocked';
-              els.media[displayName].textContent = isAvailable ? '可用' : '不可用';
-              els.media[displayName].className = isAvailable ? 'ok' : 'bad';
-            } else {
-              els.media[displayName].textContent = '检测失败';
-              els.media[displayName].className = 'muted';
+        try {
+            const data = await fetchJSON(`https://ipwho.is/${ip}`);
+            if (data && data.success) {
+                return {
+                    security: data.security || {}
+                };
             }
-          }
-        } else {
-          // 后端API返回错误时，显示检测失败
-          const serviceNames = ['Netflix', 'YouTube', 'Disney', 'Prime', 'Spotify', 'ChatGPT', 'TikTok'];
-          serviceNames.forEach(name => {
-            els.media[name].textContent = '检测失败';
-            els.media[name].className = 'muted';
-          });
+            return null;
+        } catch (error) {
+            console.warn('IPWhois信息获取失败:', error);
+            return null;
         }
-      } catch (error) {
-        console.warn('媒体服务检测失败:', error);
-        // 网络错误时，显示检测失败
-        const serviceNames = ['Netflix', 'YouTube', 'Disney', 'Prime', 'Spotify', 'ChatGPT', 'TikTok'];
-        serviceNames.forEach(name => {
-          els.media[name].textContent = '检测失败';
-          els.media[name].className = 'muted';
+    }
+
+    // 国家代码转旗帜图标（优先使用 flag-icons 的 SVG；失败时回退 Emoji）
+    function getFlagIconHTML(countryCode) {
+        if (!countryCode) return '🌍 未知';
+        const orig = String(countryCode).trim().toUpperCase();
+        const map = { 'UK': 'gb', 'GB': 'gb', 'EU': 'eu', 'XK': 'xk', 'HK': 'hk', 'MO': 'mo', 'TW': 'tw' };
+        const norm = (map[orig] || orig).toLowerCase();
+        if (/^[a-z]{2}$/.test(norm)) {
+            return `<span class="fi fi-${norm}"></span>[${orig}]`;
+        }
+        return `${getCountryEmoji(orig)} [${orig}]`;
+    }
+
+    // 国家代码转emoji（通用算法 + 少量特殊映射）
+    function getCountryEmoji(countryCode) {
+        if (!countryCode) return '🌍';
+        const cc = String(countryCode).trim().toUpperCase();
+        // 特殊/非标准代码映射
+        const special = {
+            'UK': '🇬🇧', // 常见别名
+            'EU': '🇪🇺',
+            'XK': '🇽🇰',
+            'HK': '🇭🇰' // 明确保证香港显示
+        };
+        if (special[cc]) return special[cc];
+        // 标准 ISO 3166-1 alpha-2 -> 区域指示符
+        if (cc.length !== 2) return '🌍';
+        const A = 0x1F1E6; // Regional Indicator Symbol Letter A
+        const base = 0x41; // 'A'
+        const c0 = cc.codePointAt(0);
+        const c1 = cc.codePointAt(1);
+        if (c0 < base || c0 > 0x5A || c1 < base || c1 > 0x5A) return '🌍';
+        return String.fromCodePoint(A + (c0 - base), A + (c1 - base));
+    }
+
+    // 前端可达性检测（no-cors，只判定是否可达），兼容不支持 AbortSignal.timeout 的环境
+    async function checkReachable(url, timeout = 4000) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => {
+            try {
+                controller.abort();
+            } catch {
+            }
+        }, timeout);
+        try {
+            const resp = await fetch(url, {
+                method: 'GET',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                redirect: 'follow',
+                signal: controller.signal
+            });
+            return !!resp;
+        } catch (_) {
+            return false;
+        } finally {
+            clearTimeout(timer);
+        }
+    }
+
+    async function fillSiteReachability() {
+        // 并行检测所有网站
+        const results = await Promise.allSettled(
+            Object.entries(MEDIA_SITES).map(async ([name, url]) => {
+                const ok = await checkReachable(url);
+                return {name, ok};
+            })
+        );
+
+        // 更新UI
+        results.forEach(result => {
+            if (result.status === 'fulfilled') {
+                const {name, ok} = result.value;
+                if (els.media[name]) {
+                    els.media[name].textContent = ok ? '可达' : '不可达';
+                    els.media[name].className = ok ? 'ok' : 'bad';
+                }
+            }
         });
-      }
+    }
+
+    // 获取多源质量信息（后端聚合）
+    async function getIPQuality(ip) {
+        try {
+            const response = await fetch('/api/ip-quality', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({ip})
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            }
+            return null;
+        } catch (e) {
+            console.warn('IP质量聚合获取失败:', e);
+            return null;
+        }
+    }
+
+    function fillMultiSourceAttributes(q) {
+        if (!q) return;
+
+        // 地址属性映射函数（参考ip-quality.sh）
+        const mapUsageType = (type) => {
+            switch (type?.toLowerCase()) {
+                case 'hosting':
+                    return '<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">机房</span>';
+                case 'business':
+                    return '<span style="background:#ffc107;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">商业</span>';
+                case 'isp':
+                    return '<span style="background:#28a745;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">家宽</span>';
+                case 'education':
+                    return '<span style="background:#ffc107;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">教育</span>';
+                case 'government':
+                    return '<span style="background:#ffc107;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">政府</span>';
+                default:
+                    return '<span style="background:#6c757d;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">其他</span>';
+            }
+        };
+
+        const mapCompanyType = (type) => {
+            switch (type?.toLowerCase()) {
+                case 'hosting':
+                    return '<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">机房</span>';
+                case 'business':
+                    return '<span style="background:#ffc107;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">商业</span>';
+                case 'isp':
+                    return '<span style="background:#28a745;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">家宽</span>';
+                default:
+                    return '<span style="background:#6c757d;color:white;padding:2px 6px;border-radius:3px;font-weight:bold;">其他</span>';
+            }
+        };
+
+        // 地址属性：使用类型、公司类型
+        const setPair = (usageEl, companyEl, item) => {
+            if (!item) {
+                if (usageEl) setText(usageEl, '查询失败', 'bad');
+                if (companyEl) setText(companyEl, '查询失败', 'bad');
+                return;
+            }
+            const usage = item?.usageType || '未知';
+            const company = item?.companyType || '未知';
+            if (usageEl) usageEl.innerHTML = mapUsageType(usage);
+            if (companyEl) companyEl.innerHTML = mapCompanyType(company);
+        };
+
+        setPair(els.ipinfoUsageType, document.getElementById('ipinfoCompanyType'), q.ipinfo);
+        setPair(els.ipregistryUsageType, document.getElementById('ipregistryCompanyType'), q.ipregistry);
+        setPair(els.ipapiUsageType, document.getElementById('ipapiCompanyType'), q.ipapi);
+        setPair(els.ip2locationUsageType, document.getElementById('ip2locationCompanyType'), q.ip2location);
+        setPair(els.abuseipdbUsageType, document.getElementById('abuseipdbCompanyType'), q.abuseipdb);
+        setPair(els.ipqsUsageType, document.getElementById('ipqsCompanyType'), q.ipqs);
+        setPair(els.scamalyticsUsageType, document.getElementById('scamalyticsCompanyType'), q.scamalytics);
+        setPair(els.ipdataUsageType, document.getElementById('ipdataCompanyType'), q.ipdata);
+        setPair(els.ipwhoisUsageType, document.getElementById('ipwhoisCompanyType'), q.ipwhois);
+    }
+
+    function fillMultiSourceScores(q) {
+        if (!q) return;
+        const setScore = (scoreEl, riskEl, item) => {
+            if (!item) {
+                setText(scoreEl, '查询失败', 'bad');
+                setText(riskEl, '查询失败', 'bad');
+                return;
+            }
+            const score = item?.score != null ? String(item.score) : '未知';
+            const risk = item?.risk || '未知';
+            setText(scoreEl, score);
+            setText(riskEl, risk, risk.includes('高') ? 'bad' : risk.includes('中') ? 'warn' : risk.includes('低') ? 'ok' : 'muted');
+        };
+        setScore(els.ip2locationScore, document.getElementById('ip2locationRisk'), q.ip2location);
+        setScore(els.scamalyticsScore, document.getElementById('scamalyticsRisk'), q.scamalytics);
+        setScore(els.ipapiScore, document.getElementById('ipapiRisk'), q.ipapi);
+        setScore(els.abuseipdbScore, document.getElementById('abuseipdbRisk'), q.abuseipdb);
+        setScore(els.ipqsScore, document.getElementById('ipqsRisk'), q.ipqs);
+        setScore(els.cloudflareScore, document.getElementById('cloudflareRisk'), q.cloudflare);
+        setScore(els.dbipScore, document.getElementById('dbipRisk'), q.dbip);
+        setScore(els.ipregistryScore, document.getElementById('ipregistryRisk'), q.ipregistry);
+        setScore(els.ipinfoScore, document.getElementById('ipinfoRisk'), q.ipinfo);
+    }
+
+    function fillMultiSourceFactors(q) {
+        if (!q) return;
+        // 使用全局 getCountryEmoji
+
+        const yn = (v) => yesNo(v);
+        const fillRow = (prefix, item) => {
+            const set = (id, text, cls) => setText(document.getElementById(id), text, cls);
+            const regionCell = document.getElementById(`${prefix}Region`);
+            if (!item) {
+                if (regionCell) { regionCell.textContent = '查询失败'; regionCell.className = 'bad'; }
+                set(`${prefix}Proxy`, '查询失败', 'bad');
+                set(`${prefix}VPN`, '查询失败', 'bad');
+                set(`${prefix}Tor`, '查询失败', 'bad');
+                set(`${prefix}DC`, '查询失败', 'bad');
+                set(`${prefix}Abuser`, '查询失败', 'bad');
+                set(`${prefix}Robot`, '查询失败', 'bad');
+                return;
+            }
+            const regionHTML = item?.countryCode ? getFlagIconHTML(item.countryCode) : '🌍 未知';
+            if (regionCell) regionCell.innerHTML = regionHTML;
+            const p = yn(item?.proxy), v = yn(item?.vpn), t = yn(item?.tor), d = yn(item?.datacenter || item?.server),
+                a = yn(item?.abuser), r = yn(item?.robot);
+            set(`${prefix}Proxy`, p.t, p.c);
+            set(`${prefix}VPN`, v.t, v.c);
+            set(`${prefix}Tor`, t.t, t.c);
+            set(`${prefix}DC`, d.t, d.c);
+            set(`${prefix}Abuser`, a.t, a.c);
+            set(`${prefix}Robot`, r.t, r.c);
+        };
+        fillRow('ip2location', q.ip2location);
+        fillRow('ipapi', q.ipapi);
+        fillRow('ipregistry', q.ipregistry);
+        fillRow('ipqs', q.ipqs);
+        fillRow('scamalytics', q.scamalytics);
+        fillRow('ipdata', q.ipdata);
+        fillRow('ipinfo', q.ipinfo);
+        fillRow('ipwhois', q.ipwhois);
     }
 
     function setText(el, text, cls) {
-      el.textContent = text ?? '';
-      if (cls) el.className = cls;
+        if (!el) return;
+        el.textContent = text ?? '';
+        if (cls) el.className = cls;
     }
 
     function yesNo(val) {
-      if (val === true || val === 'true') return { t: '是', c: 'bad' };
-      if (val === false || val === 'false') return { t: '否', c: 'ok' };
-      return { t: '未知', c: 'muted' };
+        if (val === true || val === 'true') return {t: '是', c: 'bad'};
+        if (val === false || val === 'false') return {t: '否', c: 'ok'};
+        return {t: '未知', c: 'muted'};
     }
 
     function mapLink(lat, lon) {
-      if (lat == null || lon == null) return '';
-      const url = `https://check.place/${lat},${lon},15,en`;
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer">打开地图</a>`;
+        if (lat == null || lon == null) return '';
+        const url = `https://check.place/${lat},${lon},15,en`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">打开地图</a>`;
     }
 
     async function run() {
-      resetProgress();
-      els.status.innerHTML = '<span class="loading"></span> 检测中...';
-      els.status.className = 'status testing';
-      
-      updateProgress('正在获取IP地址...');
-      const manualIP = (els.ipInput.value || '').trim();
-      const ip = manualIP || await getPublicIP();
-      setText(els.ip, ip);
+        resetProgress();
+        els.status.innerHTML = '<span class="loading"></span> 检测中...';
+        els.status.className = 'status testing';
 
-      updateProgress('正在获取ASN信息...');
-      const { asn, org } = await getASN(ip);
-      setText(els.asn, asn);
-      setText(els.org, org);
+        updateProgress('正在获取IP地址...');
+        const manualIP = (els.ipInput.value || '').trim();
+        // 默认使用指定IP进行查询；为空则从后端获取客户端IP，再回退公网检测
+        let ip = manualIP || '';
+        if (!ip) {
+            try {
+                const resp = await fetch('/api/client-ip');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    ip = (data && (data.ip || data.clientIP || data.ipv4)) || '';
+                }
+            } catch (_) {
+                // ignore and fallback
+            }
+        }
+        if (!ip) {
+            try {
+                ip = await getPublicIP();
+            } catch (_) {
+                // ignore
+            }
+        }
+        setText(els.ip, ip);
 
-      updateProgress('正在获取IP详细信息...');
-      const ipInfo = await getIPInfo(ip);
-      
-      updateProgress('正在获取风险评分...');
-      const ipapi = await getIpapi(ip);
-      const ipwhois = await getIpwhois(ip);
+        // 并行发起后续所有检测：ASN、IP详细信息、多源质量、风险评分
+        updateProgress('正在并行获取ASN/IP信息/质量与风险...');
+        const mediaCard = document.getElementById('media');
+        const mediaNotice = document.getElementById('mediaManualNotice');
+        const useManualIP = !!manualIP;
+        let reachabilityPromise = Promise.resolve();
+        if (useManualIP) {
+            // 手动输入：隐藏可达性检测卡片，显示提示
+            if (mediaCard) mediaCard.style.display = 'none';
+            if (mediaNotice) mediaNotice.style.display = 'block';
+        } else {
+            // 自动获取：显示可达性检测卡片，隐藏提示，并行检测
+            if (mediaCard) mediaCard.style.display = 'block';
+            if (mediaNotice) mediaNotice.style.display = 'none';
+            Object.keys(els.media).forEach(name => {
+                els.media[name].innerHTML = '<span class="loading"></span> 检测中...';
+                els.media[name].className = 'status pending';
+            });
+            reachabilityPromise = fillSiteReachability();
+            addMediaLinks();
+        }
 
-      // 基础信息：坐标、城市、国家、注册地、时区
-      let lat = null, lon = null, city = '', usageCode = '', usageName = '', tz = '';
-      let regCode = '', regName = '';
-      if (ipInfo) {
-        lat = ipInfo.lat; lon = ipInfo.lon;
-        city = [ipInfo.city, ipInfo.zip].filter(Boolean).join(', ');
-        usageCode = ipInfo.countryCode; usageName = ipInfo.country || '';
-        tz = ipInfo.timezone || '';
-        // 注册地：复用 usageCode 作为注册地简写
-        regCode = usageCode;
-        regName = usageName;
-      }
-      setText(els.coords, (lat != null && lon != null) ? toDMS(lat, lon) : '');
-      els.map.innerHTML = mapLink(lat, lon);
-      setText(els.city, city);
-      setText(els.usageRegion, usageCode ? `[${usageCode}] ${usageName}` : '');
-      setText(els.regRegion, regCode ? `[${regCode}] ${regName}` : '');
-      setText(els.timezone, tz);
+        const asnPromise = getASN(ip);
+        const ipInfoPromise = getIPInfo(ip);
+        const qualityPromise = getIPQuality(ip);
+        const ipapiPromise = getIpapi(ip);
 
-      // IP类型：使用地与注册地一致=>原生；否则广播
-      if (usageCode && regCode) {
-        const consistent = usageCode === regCode;
-        setText(els.ipType, consistent ? '原生IP' : '广播IP', consistent ? 'ok' : 'warn');
-      } else {
-        setText(els.ipType, '未知', 'muted');
-      }
+        // 移除前端直接请求 ipwho.is，避免 CORS；风险因子已由后端聚合数据提供
+        const [asnRes, ipInfoRes, qualityRes, ipapiRes] = await Promise.allSettled([
+            asnPromise, ipInfoPromise, qualityPromise, ipapiPromise
+        ]);
 
-      updateProgress('正在分析地址属性...');
-      // 地址属性：使用/公司类型（来自 ipapi）
-      const sources = [];
-      let useType = '', companyType = '';
-      if (ipapi) { 
-        sources.push('ipapi'); 
-        useType = ipapi.asn?.type || useType; 
-        companyType = ipapi.company?.type || companyType; 
-      }
-      setText(els.dbSources, sources.join('、'));
-      setText(els.usageType, useType || '未知');
-      setText(els.companyType, companyType || '未知');
+        const {asn, org} = asnRes.status === 'fulfilled' ? asnRes.value : {asn: '未知', org: '未知'};
+        const ipInfo = ipInfoRes.status === 'fulfilled' ? ipInfoRes.value : null;
+        const quality = qualityRes.status === 'fulfilled' ? qualityRes.value : null;
+        const ipapi = ipapiRes.status === 'fulfilled' ? ipapiRes.value : null;
+        setText(els.asn, asn);
+        setText(els.org, org);
 
-      updateProgress('正在计算风险评分...');
-      // 风险评分：ipapi company.abuser_score
-      let riskScore = 0;
-      if (ipapi && ipapi.company?.abuser_score) {
-        const scoreText = String(ipapi.company.abuser_score).trim();
-        riskScore = parseFloat(scoreText) * 100 || 0;
-      }
-      
-      // 综合风险因子计算
-      const riskFactors = calculateRiskFactors(ipapi, ipwhois);
-      const finalRiskScore = calculateFinalRiskScore(riskScore, riskFactors);
-      const riskLevel = getRiskLevel(finalRiskScore);
-      
-      setText(els.riskScore, `${finalRiskScore.toFixed(1)}/100`);
-      setText(els.riskLevel, riskLevel, finalRiskScore < 30 ? 'ok' : finalRiskScore < 70 ? 'warn' : 'bad');
+        // 基础信息：坐标、城市、时区、邮编等
+        let lat = null, lon = null, city = '', tz = '', postal = '';
+        if (ipInfo) {
+            lat = ipInfo.lat;
+            lon = ipInfo.lon;
+            city = ipInfo.city || '';
+            tz = ipInfo.timezone || '';
+            postal = ipInfo.postal || '';
+        }
+        setText(els.coords, (lat != null && lon != null) ? toDMS(lat, lon) : '');
+        const region = ipInfo?.region || '';
+        const cityDisplay = city + (region ? ` · ${region}` : '');
+        setText(els.city, cityDisplay);
+        setText(els.timezone, tz);
+        setText(els.postal, postal);
 
-      updateProgress('正在检测风险因子...');
-      // 风险因子：综合 ipapi 与 ipwho.is
-      let f = { proxy: null, vpn: null, tor: null, dc: null, abuser: null, robot: null };
-      if (ipapi) {
-        f.proxy = ipapi.is_proxy; f.vpn = ipapi.is_vpn; f.tor = ipapi.is_tor;
-        f.dc = ipapi.is_datacenter; f.abuser = ipapi.is_abuser; f.robot = ipapi.is_crawler;
-      }
-      if (ipwhois && ipwhois.security) {
-        const s = ipwhois.security;
-        f.proxy = (f.proxy ?? s.proxy);
-        f.vpn = (f.vpn ?? s.vpn);
-        f.tor = (f.tor ?? s.tor);
-        f.dc = (f.dc ?? s.hosting);
-      }
+        // 渲染 IP 详细信息（来自 ipapi.is 原始数据）
+        if (ipapi && ipapi.raw) {
+            fillIpapiDetail(ipapi.raw);
+        }
 
-      const p = yesNo(f.proxy), v = yesNo(f.vpn), t = yesNo(f.tor), d = yesNo(f.dc), a = yesNo(f.abuser), r = yesNo(f.robot);
-      setText(els.factorProxy, p.t, p.c);
-      setText(els.factorVPN, v.t, v.c);
-      setText(els.factorTor, t.t, t.c);
-      setText(els.factorDC, d.t, d.c);
-      setText(els.factorAbuser, a.t, a.c);
-      setText(els.factorRobot, r.t, r.c);
-      setText(els.factorSources, `来源：${sources.join('、')}${ipwhois ? '，辅以 ipwho.is' : ''}`);
+        // IP类型和特殊属性
+        // 机房IP显示为“是/否”
+        const truthy = (v) => v === true || v === 'true' || v === 1 || v === '1';
+        const anyTrue = (...vals) => vals.some(truthy);
+        const dcFromQuality = quality && anyTrue(
+            quality?.ip2location?.server, quality?.ip2location?.datacenter, quality?.ip2location?.dc,
+            quality?.ipapi?.server, quality?.ipapi?.datacenter, quality?.ipapi?.dc,
+            quality?.ipregistry?.server, quality?.ipregistry?.datacenter, quality?.ipregistry?.dc,
+            quality?.ipqs?.server, quality?.ipqs?.datacenter, quality?.ipqs?.dc,
+            quality?.scamalytics?.server, quality?.scamalytics?.datacenter, quality?.scamalytics?.dc,
+            quality?.ipdata?.server, quality?.ipdata?.datacenter, quality?.ipdata?.dc,
+            quality?.ipinfo?.server, quality?.ipinfo?.datacenter, quality?.ipinfo?.dc,
+            quality?.ipwhois?.server, quality?.ipwhois?.datacenter, quality?.ipwhois?.dc
+        );
+        const typeStr1 = (ipInfo?.asn?.type || '').toLowerCase();
+        const typeStr2 = (ipInfo?.company?.type || '').toLowerCase();
+        const dcFromIPInfo = typeStr1 === 'hosting' || typeStr1 === 'datacenter' || typeStr1 === 'dc' ||
+                             typeStr2 === 'hosting' || typeStr2 === 'datacenter' || typeStr2 === 'dc';
+        const isDC = dcFromQuality || dcFromIPInfo;
+        if (quality == null && !dcFromIPInfo) {
+            setText(els.ipType, '未知', 'muted');
+        } else {
+            setText(els.ipType, isDC ? '是' : '否', isDC ? 'bad' : 'ok');
+        }
 
-      updateProgress('正在检测媒体服务可达性...');
-      // 媒体 Reachability
-      await fillMediaReachability(ip);
+        // 新增字段：任播、移动网络、匿名代理、卫星网络
+        const yesNoClass = (val) => val ? 'bad' : 'ok';
+        const yesNoText = (val) => val ? '是' : '否';
 
-      // 更新地图显示
-      updateMapDisplay(lat, lon, city, usageName);
+        setText(els.isAnycast, yesNoText(ipInfo?.is_anycast), yesNoClass(ipInfo?.is_anycast));
+        setText(els.isMobile, yesNoText(ipInfo?.is_mobile), yesNoClass(ipInfo?.is_mobile));
+        setText(els.isAnonymous, yesNoText(ipInfo?.is_anonymous), yesNoClass(ipInfo?.is_anonymous));
+        setText(els.isSatellite, yesNoText(ipInfo?.is_satellite), yesNoClass(ipInfo?.is_satellite));
 
-      updateProgress('检测完成！', totalSteps - currentProgress);
-      els.status.innerHTML = '✅ 完成';
-      els.status.className = 'status success';
+        updateProgress('正在分析地址属性...');
+        // 公司与联系信息（来自 ipinfo 优先）
+        if (ipInfo && ipInfo.company) {
+            setText(els.companyName, ipInfo.company.name || '未知');
+            setText(els.companyDomain, ipInfo.company.domain || '未知');
+            setText(els.companyTypeRow, ipInfo.company.type || '未知');
+        } else {
+            setText(els.companyName, '未知');
+            setText(els.companyDomain, '未知');
+            setText(els.companyTypeRow, '未知');
+        }
+        if (ipInfo && ipInfo.abuse) {
+            setText(els.abuseName, ipInfo.abuse.name || '未知');
+            setText(els.abuseEmail, ipInfo.abuse.email || '未知');
+            setText(els.abusePhone, ipInfo.abuse.phone || '未知');
+            setText(els.abuseAddress, ipInfo.abuse.address || '未知');
+            setText(els.abuseNetwork, ipInfo.abuse.network || '未知');
+        } else {
+            setText(els.abuseName, '未知');
+            setText(els.abuseEmail, '未知');
+            setText(els.abusePhone, '未知');
+            setText(els.abuseAddress, '未知');
+            setText(els.abuseNetwork, '未知');
+        }
+        // 多源地址属性填充
+        fillMultiSourceAttributes(quality);
+
+        updateProgress('正在计算风险评分...');
+        // 多源风险评分与等级
+        fillMultiSourceScores(quality);
+
+        updateProgress('正在检测风险因子...');
+        // 多源风险因子
+        fillMultiSourceFactors(quality);
+
+        // 等待并行进行的网站可达性检测完成
+        await reachabilityPromise;
+
+        // 更新地图显示（修复未定义的 usageName 导致的错误）
+        updateMapDisplay(lat, lon, city, ipInfo?.country || '');
+
+        updateProgress('检测完成！', totalSteps - currentProgress);
+        els.status.innerHTML = '✅ 完成';
+        els.status.className = 'status success';
     }
 
-    function calculateRiskFactors(ipapi, ipwhois) {
-      const factors = {
-        proxy: 0,
-        vpn: 0,
-        tor: 0,
-        datacenter: 0,
-        abuser: 0,
-        crawler: 0
-      };
-
-      if (ipapi) {
-        if (ipapi.is_proxy) factors.proxy = 25;
-        if (ipapi.is_vpn) factors.vpn = 20;
-        if (ipapi.is_tor) factors.tor = 30;
-        if (ipapi.is_datacenter) factors.datacenter = 15;
-        if (ipapi.is_abuser) factors.abuser = 25;
-        if (ipapi.is_crawler) factors.crawler = 10;
-      }
-
-      if (ipwhois && ipwhois.security) {
-        const s = ipwhois.security;
-        if (s.proxy && factors.proxy === 0) factors.proxy = 20;
-        if (s.vpn && factors.vpn === 0) factors.vpn = 15;
-        if (s.tor && factors.tor === 0) factors.tor = 25;
-        if (s.hosting && factors.datacenter === 0) factors.datacenter = 10;
-      }
-
-      return factors;
+    function setText(el, text, cls) {
+        if (el) {
+            el.textContent = text ?? '';
+            if (cls) el.className = cls;
+        }
     }
 
-    function calculateFinalRiskScore(baseScore, factors) {
-      let totalScore = baseScore;
-      
-      // 添加风险因子分数
-      totalScore += factors.proxy;
-      totalScore += factors.vpn;
-      totalScore += factors.tor;
-      totalScore += factors.datacenter;
-      totalScore += factors.abuser;
-      totalScore += factors.crawler;
-      
-      return Math.min(totalScore, 100);
-    }
-
-    function getRiskLevel(score) {
-      if (score < 25) return '极低风险';
-      if (score < 50) return '低风险';
-      if (score < 75) return '中风险';
-      return '高风险';
+    function yesNo(val) {
+        if (val === true || val === 'true') return {t: '是', c: 'bad'};
+        if (val === false || val === 'false') return {t: '否', c: 'ok'};
+        return {t: '未知', c: 'muted'};
     }
 
     function updateMapDisplay(lat, lon, city, country) {
-      const mapContainer = document.getElementById('mapContainer');
-      if (lat != null && lon != null) {
-        const countryEmoji = getCountryEmoji(country);
-        mapContainer.innerHTML = `
-          <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px; border: 1px solid #dee2e6;">
-            <div style="font-size: 32px; margin-bottom: 10px;">${countryEmoji}</div>
-            <strong>🗺️ 位置信息</strong><br>
-            <span style="font-size: 1.1em; color: #333;">${city || '未知'}, ${country || '未知'}</span><br>
-            <span style="font-family: monospace; color: #666;">坐标: ${lat.toFixed(4)}, ${lon.toFixed(4)}</span><br>
-            <a href="https://check.place/${lat},${lon},15,en" target="_blank" style="color: #667eea;">在地图上查看</a>
-          </div>
-        `;
-      } else {
-        mapContainer.innerHTML = `
+        const mapFrame = document.getElementById('mapFrame');
+        if (lat != null && lon != null) {
+            const dLat = 0.05, dLon = 0.05;
+            const left = (lon - dLon).toFixed(6);
+            const bottom = (lat - dLat).toFixed(6);
+            const right = (lon + dLon).toFixed(6);
+            const top = (lat + dLat).toFixed(6);
+            const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${left}%2C${bottom}%2C${right}%2C${top}&layer=mapnik&marker=${lat},${lon}`;
+            mapFrame.src = osm;
+            mapFrame.style.display = 'block';
+        } else {
+            mapFrame.style.display = 'none';
+            const mapContainer = document.getElementById('mapContainer');
+            mapContainer.innerHTML = `
           <div style="text-align: center; padding: 20px; color: #666;">
             🗺️ 无法获取位置信息
           </div>
         `;
-      }
+        }
     }
 
-    els.runBtn.addEventListener('click', () => { 
-      run().catch(err => { 
-        els.status.innerHTML = '❌ 失败：' + (err && err.message || '未知错误'); 
-        els.status.className = 'status error';
-      }); 
+    els.runBtn.addEventListener('click', () => {
+        run().catch(err => {
+            els.status.innerHTML = '❌ 失败：' + (err && err.message || '未知错误');
+            els.status.className = 'status error';
+        });
     });
-    
+
     // 自动运行一次
-    run().catch(() => {});
-  </script>
+    run().catch(() => {
+    });
+</script>
 </body>
 </html>
