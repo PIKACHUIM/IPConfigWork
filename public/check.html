@@ -120,6 +120,7 @@
             /* 单项内容至少 600px */
             grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
         }
+
         #media .grid {
             /* 单项内容至少 240px */
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -147,6 +148,7 @@
             color: #667eea;
             font-size: 0.95em;
         }
+
         .link-icon:hover {
             text-decoration: underline;
         }
@@ -157,11 +159,13 @@
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 12px;
         }
+
         .row.inline-five .item {
             display: flex;
             gap: 8px;
             align-items: baseline;
         }
+
         .row.inline-five .label {
             width: auto;
         }
@@ -466,11 +470,13 @@
             margin-top: 12px;
             margin-bottom: 4px;
         }
+
         /* IP详细信息区域表头样式：浅蓝背景 + 黑色字体 */
         .ipapi-detail .simple-table th {
             background: #e6f0ff;
             color: #000;
         }
+
         /* 地区旗帜显示优化：强制使用彩色emoji兼容字体 */
         #ip2locationRegion,
         #ipapiRegion,
@@ -482,8 +488,12 @@
         #ipwhoisRegion {
             font-family: "Noto Emoji", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", system-ui, sans-serif;
         }
+
         /* 旗帜图标与文本的间距与对齐 */
-        .fi { vertical-align: -0.1em; margin-right: 6px; }
+        .fi {
+            vertical-align: -0.1em;
+            margin-right: 6px;
+        }
 
         .simple-table tr:nth-child(even) {
             background-color: #f8f9fa;
@@ -947,201 +957,200 @@
         <div class="card" id="risk-summary">
             <h2>📍 IP地址风险</h2>
             <div id="attrs">
-            <h3>IP原生检测</h3>
-            <div class="simple-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>数据源</th>
-                        <th>使用类型</th>
-                        <th>公司类型</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>IPinfo</td>
-                        <td id="ipinfoUsageType"></td>
-                        <td id="ipinfoCompanyType"></td>
-                    </tr>
-                    <tr>
-                        <td>ipregistry</td>
-                        <td id="ipregistryUsageType"></td>
-                        <td id="ipregistryCompanyType"></td>
-                    </tr>
-                    <tr>
-                        <td>ipapi</td>
-                        <td id="ipapiUsageType"></td>
-                        <td id="ipapiCompanyType"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                <h3>IP原生检测</h3>
+                <div class="simple-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>数据源</th>
+                            <th>使用类型</th>
+                            <th>公司类型</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>IPinfo</td>
+                            <td id="ipinfoUsageType"></td>
+                            <td id="ipinfoCompanyType"></td>
+                        </tr>
+                        <tr>
+                            <td>ipregistry</td>
+                            <td id="ipregistryUsageType"></td>
+                            <td id="ipregistryCompanyType"></td>
+                        </tr>
+                        <tr>
+                            <td>ipapi</td>
+                            <td id="ipapiUsageType"></td>
+                            <td id="ipapiCompanyType"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div id="scores">
-            <h3>IP风险评分</h3>
-            <div class="simple-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>数据源</th>
-                        <th>风险评分</th>
-                        <th>风险等级</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>IP2Location</td>
-                        <td id="ip2locationScore"></td>
-                        <td id="ip2locationRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>SCAMALYTICS</td>
-                        <td id="scamalyticsScore"></td>
-                        <td id="scamalyticsRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>ipapi</td>
-                        <td id="ipapiScore"></td>
-                        <td id="ipapiRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>AbuseIPDB</td>
-                        <td id="abuseipdbScore"></td>
-                        <td id="abuseipdbRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>IPQS</td>
-                        <td id="ipqsScore"></td>
-                        <td id="ipqsRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>Cloudflare</td>
-                        <td id="cloudflareScore"></td>
-                        <td id="cloudflareRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>DB-IP</td>
-                        <td id="dbipScore"></td>
-                        <td id="dbipRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>ipregistry</td>
-                        <td id="ipregistryScore"></td>
-                        <td id="ipregistryRisk"></td>
-                    </tr>
-                    <tr>
-                        <td>IPinfo</td>
-                        <td id="ipinfoScore"></td>
-                        <td id="ipinfoRisk"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                <h3>IP风险评分</h3>
+                <div class="simple-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>数据源</th>
+                            <th>风险评分</th>
+                            <th>风险等级</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>IP2Location</td>
+                            <td id="ip2locationScore"></td>
+                            <td id="ip2locationRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>SCAMALYTICS</td>
+                            <td id="scamalyticsScore"></td>
+                            <td id="scamalyticsRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>ipapi</td>
+                            <td id="ipapiScore"></td>
+                            <td id="ipapiRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>AbuseIPDB</td>
+                            <td id="abuseipdbScore"></td>
+                            <td id="abuseipdbRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>IPQS</td>
+                            <td id="ipqsScore"></td>
+                            <td id="ipqsRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>Cloudflare</td>
+                            <td id="cloudflareScore"></td>
+                            <td id="cloudflareRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>DB-IP</td>
+                            <td id="dbipScore"></td>
+                            <td id="dbipRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>ipregistry</td>
+                            <td id="ipregistryScore"></td>
+                            <td id="ipregistryRisk"></td>
+                        </tr>
+                        <tr>
+                            <td>IPinfo</td>
+                            <td id="ipinfoScore"></td>
+                            <td id="ipinfoRisk"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div id="factors">
-            <h3>IP风险详情</h3>
-            <div class="factor-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>数据源</th>
-                        <th>地区</th>
-                        <th>代理</th>
-                        <th>VPN</th>
-                        <th>Tor</th>
-                        <th>服务器</th>
-                        <th>滥用</th>
-                        <th>机器人</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>IP2Location</td>
-                        <td id="ip2locationRegion"></td>
-                        <td id="ip2locationProxy"></td>
-                        <td id="ip2locationVPN"></td>
-                        <td id="ip2locationTor"></td>
-                        <td id="ip2locationDC"></td>
-                        <td id="ip2locationAbuser"></td>
-                        <td id="ip2locationRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>ipapi</td>
-                        <td id="ipapiRegion"></td>
-                        <td id="ipapiProxy"></td>
-                        <td id="ipapiVPN"></td>
-                        <td id="ipapiTor"></td>
-                        <td id="ipapiDC"></td>
-                        <td id="ipapiAbuser"></td>
-                        <td id="ipapiRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>ipregistry</td>
-                        <td id="ipregistryRegion"></td>
-                        <td id="ipregistryProxy"></td>
-                        <td id="ipregistryVPN"></td>
-                        <td id="ipregistryTor"></td>
-                        <td id="ipregistryDC"></td>
-                        <td id="ipregistryAbuser"></td>
-                        <td id="ipregistryRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>IPQS</td>
-                        <td id="ipqsRegion"></td>
-                        <td id="ipqsProxy"></td>
-                        <td id="ipqsVPN"></td>
-                        <td id="ipqsTor"></td>
-                        <td id="ipqsDC"></td>
-                        <td id="ipqsAbuser"></td>
-                        <td id="ipqsRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>SCAMALYTICS</td>
-                        <td id="scamalyticsRegion"></td>
-                        <td id="scamalyticsProxy"></td>
-                        <td id="scamalyticsVPN"></td>
-                        <td id="scamalyticsTor"></td>
-                        <td id="scamalyticsDC"></td>
-                        <td id="scamalyticsAbuser"></td>
-                        <td id="scamalyticsRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>ipdata</td>
-                        <td id="ipdataRegion"></td>
-                        <td id="ipdataProxy"></td>
-                        <td id="ipdataVPN"></td>
-                        <td id="ipdataTor"></td>
-                        <td id="ipdataDC"></td>
-                        <td id="ipdataAbuser"></td>
-                        <td id="ipdataRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>IPinfo</td>
-                        <td id="ipinfoRegion"></td>
-                        <td id="ipinfoProxy"></td>
-                        <td id="ipinfoVPN"></td>
-                        <td id="ipinfoTor"></td>
-                        <td id="ipinfoDC"></td>
-                        <td id="ipinfoAbuser"></td>
-                        <td id="ipinfoRobot"></td>
-                    </tr>
-                    <tr>
-                        <td>IPWHOIS</td>
-                        <td id="ipwhoisRegion"></td>
-                        <td id="ipwhoisProxy"></td>
-                        <td id="ipwhoisVPN"></td>
-                        <td id="ipwhoisTor"></td>
-                        <td id="ipwhoisDC"></td>
-                        <td id="ipwhoisAbuser"></td>
-                        <td id="ipwhoisRobot"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                <h3>IP风险详情</h3>
+                <div class="factor-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>数据源</th>
+                            <th>地区</th>
+                            <th>代理</th>
+                            <th>VPN</th>
+                            <th>Tor</th>
+                            <th>服务器</th>
+                            <th>滥用</th>
+                            <th>机器人</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>IP2Location</td>
+                            <td id="ip2locationRegion"></td>
+                            <td id="ip2locationProxy"></td>
+                            <td id="ip2locationVPN"></td>
+                            <td id="ip2locationTor"></td>
+                            <td id="ip2locationDC"></td>
+                            <td id="ip2locationAbuser"></td>
+                            <td id="ip2locationRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>ipapi</td>
+                            <td id="ipapiRegion"></td>
+                            <td id="ipapiProxy"></td>
+                            <td id="ipapiVPN"></td>
+                            <td id="ipapiTor"></td>
+                            <td id="ipapiDC"></td>
+                            <td id="ipapiAbuser"></td>
+                            <td id="ipapiRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>ipregistry</td>
+                            <td id="ipregistryRegion"></td>
+                            <td id="ipregistryProxy"></td>
+                            <td id="ipregistryVPN"></td>
+                            <td id="ipregistryTor"></td>
+                            <td id="ipregistryDC"></td>
+                            <td id="ipregistryAbuser"></td>
+                            <td id="ipregistryRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>IPQS</td>
+                            <td id="ipqsRegion"></td>
+                            <td id="ipqsProxy"></td>
+                            <td id="ipqsVPN"></td>
+                            <td id="ipqsTor"></td>
+                            <td id="ipqsDC"></td>
+                            <td id="ipqsAbuser"></td>
+                            <td id="ipqsRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>SCAMALYTICS</td>
+                            <td id="scamalyticsRegion"></td>
+                            <td id="scamalyticsProxy"></td>
+                            <td id="scamalyticsVPN"></td>
+                            <td id="scamalyticsTor"></td>
+                            <td id="scamalyticsDC"></td>
+                            <td id="scamalyticsAbuser"></td>
+                            <td id="scamalyticsRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>ipdata</td>
+                            <td id="ipdataRegion"></td>
+                            <td id="ipdataProxy"></td>
+                            <td id="ipdataVPN"></td>
+                            <td id="ipdataTor"></td>
+                            <td id="ipdataDC"></td>
+                            <td id="ipdataAbuser"></td>
+                            <td id="ipdataRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>IPinfo</td>
+                            <td id="ipinfoRegion"></td>
+                            <td id="ipinfoProxy"></td>
+                            <td id="ipinfoVPN"></td>
+                            <td id="ipinfoTor"></td>
+                            <td id="ipinfoDC"></td>
+                            <td id="ipinfoAbuser"></td>
+                            <td id="ipinfoRobot"></td>
+                        </tr>
+                        <tr>
+                            <td>IPWHOIS</td>
+                            <td id="ipwhoisRegion"></td>
+                            <td id="ipwhoisProxy"></td>
+                            <td id="ipwhoisVPN"></td>
+                            <td id="ipwhoisTor"></td>
+                            <td id="ipwhoisDC"></td>
+                            <td id="ipwhoisAbuser"></td>
+                            <td id="ipwhoisRobot"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        
 
         <div class="card" id="media">
             <h2>🌐 IP网站可达</h2>
@@ -1194,7 +1203,8 @@
     </div>
     <div class="footer">
         <p class="notice">本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。</p>
-        <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库">
+        <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener noreferrer"
+           aria-label="GitHub 仓库">
             <!-- GitHub 图标（Octocat 简化标志） -->
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z"></path>
@@ -1469,7 +1479,10 @@
         // 1) 先尝试 widget demo（支持跨域并返回 data 包装）
         try {
             if (ip) {
-                const r1 = await fetch(`https://ipinfo.io/widget/demo/${encodeURIComponent(ip)}`, { mode: 'cors', headers: { 'Accept': 'application/json' } });
+                const r1 = await fetch(`https://ipinfo.io/widget/demo/${encodeURIComponent(ip)}`, {
+                    mode: 'cors',
+                    headers: {'Accept': 'application/json'}
+                });
                 if (r1.ok) {
                     const p = await r1.json();
                     const d = p?.data;
@@ -1482,7 +1495,10 @@
         // 2) 回退到标准 /json（指定 IP）
         try {
             if (ip) {
-                const r2 = await fetch(`https://ipinfo.io/${encodeURIComponent(ip)}/json`, { mode: 'cors', headers: { 'Accept': 'application/json' } });
+                const r2 = await fetch(`https://ipinfo.io/${encodeURIComponent(ip)}/json`, {
+                    mode: 'cors',
+                    headers: {'Accept': 'application/json'}
+                });
                 if (r2.ok) {
                     const d2 = await r2.json();
                     const n2 = normalize(d2, ip);
@@ -1494,7 +1510,7 @@
         }
         // 3) 最后回退到 /json（客户端IP）
         try {
-            const r3 = await fetch('https://ipinfo.io/json', { mode: 'cors', headers: { 'Accept': 'application/json' } });
+            const r3 = await fetch('https://ipinfo.io/json', {mode: 'cors', headers: {'Accept': 'application/json'}});
             if (r3.ok) {
                 const d3 = await r3.json();
                 const n3 = normalize(d3, d3?.ip);
@@ -1592,7 +1608,7 @@
         const companyWhois = document.getElementById('ipapiCompanyWhois');
         if (companyWhois) {
             const whoisUrl = raw.company?.whois || '';
-            companyWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g,'').trim()}" target="_blank">查看</a>` : '';
+            companyWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g, '').trim()}" target="_blank">查看</a>` : '';
         }
 
         // 4、IP滥用投诉（abuse）
@@ -1617,7 +1633,7 @@
         const asnWhois = document.getElementById('ipapiASNWhois');
         if (asnWhois) {
             const whoisUrl = raw.asn?.whois || '';
-            asnWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g,'').trim()}" target="_blank">查看</a>` : '';
+            asnWhois.innerHTML = whoisUrl ? `<a href="${whoisUrl.replace(/`/g, '').trim()}" target="_blank">查看</a>` : '';
         }
 
         // 6、IP位置信息（location）
@@ -1659,7 +1675,7 @@
     async function getIpregistryClient(ip) {
         try {
             const url = `https://api.ipregistry.co/${encodeURIComponent(ip)}?hostname=true&key=tryout`;
-            const resp = await fetch(url, { method: 'GET', mode: 'cors', headers: { 'Accept': 'application/json' } });
+            const resp = await fetch(url, {method: 'GET', mode: 'cors', headers: {'Accept': 'application/json'}});
             if (resp.ok) {
                 const data = await resp.json();
                 const security = data.security || {};
@@ -1689,7 +1705,7 @@
     function getFlagIconHTML(countryCode) {
         if (!countryCode) return '🌍 未知';
         const orig = String(countryCode).trim().toUpperCase();
-        const map = { 'UK': 'gb', 'GB': 'gb', 'EU': 'eu', 'XK': 'xk', 'HK': 'hk', 'MO': 'mo', 'TW': 'tw' };
+        const map = {'UK': 'gb', 'GB': 'gb', 'EU': 'eu', 'XK': 'xk', 'HK': 'hk', 'MO': 'mo', 'TW': 'tw'};
         const norm = (map[orig] || orig).toLowerCase();
         if (/^[a-z]{2}$/.test(norm)) {
             return `<span class="fi fi-${norm}"></span>[${orig}]`;
@@ -1720,7 +1736,7 @@
     }
 
     // 前端可达性检测（no-cors，只判定是否可达），兼容不支持 AbortSignal.timeout 的环境
-    async function checkReachable(url, timeout = 4000) {
+    async function checkReachable(url, timeout = 5000) {
         const controller = new AbortController();
         const timer = setTimeout(() => {
             try {
@@ -1748,7 +1764,7 @@
         // 并行检测所有网站
         const results = await Promise.allSettled(
             Object.entries(MEDIA_SITES).map(async ([name, url]) => {
-                const ok = await checkReachable(url);
+                const ok = await checkReachable(url, 5000);
                 return {name, ok};
             })
         );
@@ -1893,7 +1909,10 @@
             const set = (id, text, cls) => setText(document.getElementById(id), text, cls);
             const regionCell = document.getElementById(`${prefix}Region`);
             if (!item) {
-                if (regionCell) { regionCell.textContent = '查询失败'; regionCell.className = 'failed'; }
+                if (regionCell) {
+                    regionCell.textContent = '查询失败';
+                    regionCell.className = 'failed';
+                }
                 set(`${prefix}Proxy`, '查询失败', 'failed');
                 set(`${prefix}VPN`, '查询失败', 'failed');
                 set(`${prefix}Tor`, '查询失败', 'failed');
@@ -2075,7 +2094,7 @@
         const typeStr1 = (ipInfo?.asn?.type || '').toLowerCase();
         const typeStr2 = (ipInfo?.company?.type || '').toLowerCase();
         const dcFromIPInfo = typeStr1 === 'hosting' || typeStr1 === 'datacenter' || typeStr1 === 'dc' ||
-                             typeStr2 === 'hosting' || typeStr2 === 'datacenter' || typeStr2 === 'dc';
+            typeStr2 === 'hosting' || typeStr2 === 'datacenter' || typeStr2 === 'dc';
         const isDC = dcFromQuality || dcFromIPInfo;
         if (quality == null && !dcFromIPInfo) {
             setText(els.ipType, '未知', 'muted');

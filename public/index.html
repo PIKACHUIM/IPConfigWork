@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>获取我的IP地址</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>" type="image/svg+xml">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>"
+          type="image/svg+xml">
     <style>
         * {
             margin: 0;
@@ -252,6 +254,7 @@
         #ipv4-asn-isp-m, #ipv6-asn-isp-m {
             text-align: center;
         }
+
         #ipv4-asn-isp .status, #ipv6-asn-isp .status,
         #ipv4-asn-isp-m .status, #ipv6-asn-isp-m .status {
             background-color: #f5f5f5 !important;
@@ -267,8 +270,13 @@
         }
 
         @media (max-width: 768px) {
-            .results-table { display: none !important; }
-            .results-table.results-table-stacked { display: table !important; }
+            .results-table {
+                display: none !important;
+            }
+
+            .results-table.results-table-stacked {
+                display: table !important;
+            }
         }
 
         /* 页脚样式 */
@@ -350,467 +358,482 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🌐 获取我的IP地址</h1>
-            <p>检测您的IPv4和IPv6连接状态及网络质量</p>
-            <div class="nav-buttons">
-                <a href="/" class="nav-btn">🏠 首页</a>
-                <a href="/check.html" class="nav-btn quality">🔍 IP质量检测</a>
-            </div>
-        </div>
-        
-        <div class="content">
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text" id="progressText">准备开始检测...</div>
-            </div>
-
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th style="width: 25%;">检测项目</th>
-                        <th style="width: 37.5%;">IPv4</th>
-                        <th style="width: 37.5%;">IPv6</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="test-item">IP地址</td>
-                        <td id="ipv4-address"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-address"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">ASN编号</td>
-                        <td id="ipv4-asn-code"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-asn-code"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">运营商</td>
-                        <td id="ipv4-asn-isp"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-asn-isp"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">DNS解析</td>
-                        <td id="ipv4-dns"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-dns"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">国内连通性</td>
-                        <td id="ipv4-domestic"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-domestic"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">海外连通性</td>
-                        <td id="ipv4-international"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-international"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">谷歌连通性</td>
-                        <td id="ipv4-google"><span class="status pending">检测中...</span></td>
-                        <td id="ipv6-google"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item"><strong>总分</strong></td>
-                        <td id="ipv4-score"><span class="score pending">计算中...</span></td>
-                        <td id="ipv6-score"><span class="score pending">计算中...</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table class="results-table results-table-stacked" id="results-table-ipv4">
-                <thead>
-                    <tr>
-                        <th style="width: 40%;">检测项目</th>
-                        <th>IPv4</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="test-item">IP地址</td>
-                        <td id="ipv4-address-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">ASN编号</td>
-                        <td id="ipv4-asn-code-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">运营商</td>
-                        <td id="ipv4-asn-isp-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">DNS解析</td>
-                        <td id="ipv4-dns-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">国内连通性</td>
-                        <td id="ipv4-domestic-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">海外连通性</td>
-                        <td id="ipv4-international-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">谷歌连通性</td>
-                        <td id="ipv4-google-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item"><strong>总分</strong></td>
-                        <td id="ipv4-score-m"><span class="score pending">计算中...</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table class="results-table results-table-stacked" id="results-table-ipv6" style="margin-top: 16px;">
-                <thead>
-                    <tr>
-                        <th style="width: 40%;">检测项目</th>
-                        <th>IPv6</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="test-item">IP地址</td>
-                        <td id="ipv6-address-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">ASN编号</td>
-                        <td id="ipv6-asn-code-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">运营商</td>
-                        <td id="ipv6-asn-isp-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">DNS解析</td>
-                        <td id="ipv6-dns-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">国内连通性</td>
-                        <td id="ipv6-domestic-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">海外连通性</td>
-                        <td id="ipv6-international-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item">谷歌连通性</td>
-                        <td id="ipv6-google-m"><span class="status pending">检测中...</span></td>
-                    </tr>
-                    <tr>
-                        <td class="test-item"><strong>总分</strong></td>
-                        <td id="ipv6-score-m"><span class="score pending">计算中...</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <button class="refresh-btn" onclick="runTests()">🔄 重新检测</button>
-        </div>
-        <div class="footer">
-            <p class="notice">本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。</p>
-            <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库">
-                <!-- GitHub 图标（Octocat 简化标志） -->
-                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                </svg>
-                <span>GitHub</span>
-            </a>
+<div class="container">
+    <div class="header">
+        <h1>🌐 获取我的IP地址</h1>
+        <p>检测您的IPv4和IPv6连接状态及网络质量</p>
+        <div class="nav-buttons">
+            <a href="/" class="nav-btn">🏠 首页</a>
+            <a href="/check.html" class="nav-btn quality">🔍 IP质量检测</a>
         </div>
     </div>
 
-    <script>
-        let totalTests = 14; // IPv4和IPv6各7项测试（ASN拆分为两项）
-        let completedTests = 0;
-        let ipv4Score = 0;
-        let ipv6Score = 0;
+    <div class="content">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">准备开始检测...</div>
+        </div>
 
-        // 更新进度条
-        function updateProgress() {
-            const progress = (completedTests / totalTests) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `检测进度: ${completedTests}/${totalTests} (${Math.round(progress)}%)`;
-        }
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th style="width: 25%;">检测项目</th>
+                <th style="width: 37.5%;">IPv4</th>
+                <th style="width: 37.5%;">IPv6</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="test-item">IP地址</td>
+                <td id="ipv4-address"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-address"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">ASN编号</td>
+                <td id="ipv4-asn-code"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-asn-code"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">运营商</td>
+                <td id="ipv4-asn-isp"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-asn-isp"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">DNS解析</td>
+                <td id="ipv4-dns"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-dns"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">国内连通性</td>
+                <td id="ipv4-domestic"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-domestic"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">海外连通性</td>
+                <td id="ipv4-international"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-international"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">谷歌连通性</td>
+                <td id="ipv4-google"><span class="status pending">检测中...</span></td>
+                <td id="ipv6-google"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item"><strong>总分</strong></td>
+                <td id="ipv4-score"><span class="score pending">计算中...</span></td>
+                <td id="ipv6-score"><span class="score pending">计算中...</span></td>
+            </tr>
+            </tbody>
+        </table>
 
-        // 更新结果显示
-        function updateResult(elementId, success, message, score = 0) {
-            const element = document.getElementById(elementId);
-            const elementMobile = document.getElementById(elementId + '-m');
-            const html = success ? `<span class="status success">${message}</span>` : `<span class="status error">${message}</span>`;
-            if (element) element.innerHTML = html;
-            if (elementMobile) elementMobile.innerHTML = html;
-            if (success) {
-                if (elementId.includes('ipv4')) {
-                    ipv4Score += score;
-                } else if (elementId.includes('ipv6')) {
-                    ipv6Score += score;
-                }
-            }
-            completedTests++;
-            updateProgress();
-            updateScores();
-        }
+        <table class="results-table results-table-stacked" id="results-table-ipv4">
+            <thead>
+            <tr>
+                <th style="width: 40%;">检测项目</th>
+                <th>IPv4</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="test-item">IP地址</td>
+                <td id="ipv4-address-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">ASN编号</td>
+                <td id="ipv4-asn-code-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">运营商</td>
+                <td id="ipv4-asn-isp-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">DNS解析</td>
+                <td id="ipv4-dns-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">国内连通性</td>
+                <td id="ipv4-domestic-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">海外连通性</td>
+                <td id="ipv4-international-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">谷歌连通性</td>
+                <td id="ipv4-google-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item"><strong>总分</strong></td>
+                <td id="ipv4-score-m"><span class="score pending">计算中...</span></td>
+            </tr>
+            </tbody>
+        </table>
 
-        // ASN 信息分拆后，直接使用通用 updateResult 分别填充编号与运营商
+        <table class="results-table results-table-stacked" id="results-table-ipv6" style="margin-top: 16px;">
+            <thead>
+            <tr>
+                <th style="width: 40%;">检测项目</th>
+                <th>IPv6</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="test-item">IP地址</td>
+                <td id="ipv6-address-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">ASN编号</td>
+                <td id="ipv6-asn-code-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">运营商</td>
+                <td id="ipv6-asn-isp-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">DNS解析</td>
+                <td id="ipv6-dns-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">国内连通性</td>
+                <td id="ipv6-domestic-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">海外连通性</td>
+                <td id="ipv6-international-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item">谷歌连通性</td>
+                <td id="ipv6-google-m"><span class="status pending">检测中...</span></td>
+            </tr>
+            <tr>
+                <td class="test-item"><strong>总分</strong></td>
+                <td id="ipv6-score-m"><span class="score pending">计算中...</span></td>
+            </tr>
+            </tbody>
+        </table>
 
-        // 更新分数显示
-        function updateScores() {
-            updateScoreDisplay('ipv4-score', ipv4Score);
-            updateScoreDisplay('ipv6-score', ipv6Score);
-        }
+        <button class="refresh-btn" onclick="runTests()">🔄 重新检测</button>
+    </div>
+    <div class="footer">
+        <p class="notice">本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。</p>
+        <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener noreferrer"
+           aria-label="GitHub 仓库">
+            <!-- GitHub 图标（Octocat 简化标志） -->
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+            <span>GitHub</span>
+        </a>
+    </div>
+</div>
 
-        function updateScoreDisplay(elementId, score) {
-            const element = document.getElementById(elementId);
-            const elementMobile = document.getElementById(elementId + '-m');
-            let className = 'failed';
-            if (score >= 80) className = 'excellent';
-            else if (score >= 40) className = 'good';
-            else if (score >= 20) className = 'poor';
-            
-            const html = `<span class="score ${className}">${score}分</span>`;
-            if (element) element.innerHTML = html;
-            if (elementMobile) elementMobile.innerHTML = html;
-        }
+<script>
+    let totalTests = 14; // IPv4和IPv6各7项测试（ASN拆分为两项）
+    let completedTests = 0;
+    let ipv4Score = 0;
+    let ipv6Score = 0;
 
-        // 已移除独立 IP 获取：IP 地址由“国内连通性”直接提供
-        
-        // 尝试单个服务获取IP：优先文本解析，失败再尝试 JSON/JSONP
-        async function tryService(serviceUrl, version) {
-            try {
-                const response = await fetch(serviceUrl, {
-                    method: 'GET',
-                    redirect: 'follow',
-                    cache: 'no-cache',
-                    signal: AbortSignal.timeout(3000)
-                });
-                // 宽松接受 2xx/3xx
-                if (response.status < 200 || response.status >= 400) throw new Error('HTTP错误');
+    // 更新进度条
+    function updateProgress() {
+        const progress = (completedTests / totalTests) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('progressText').textContent = `检测进度: ${completedTests}/${totalTests} (${Math.round(progress)}%)`;
+    }
 
-                // 先按文本尝试提取（兼容 text/plain、text/html、JSONP 包裹等）
-                const rawText = await response.text();
-                let ip = extractIPFromText(rawText, version);
-                if (ip) return ip;
-
-                // 若文本未提取到，再尝试解析 JSON 或 JSONP
-                const tryParseJson = (s) => {
-                    try { return JSON.parse(s); } catch { return null; }
-                };
-                let data = tryParseJson(rawText);
-                if (!data) {
-                    // 处理 JSONP：提取 {...} 内部对象
-                    const objMatch = rawText.match(/\{[\s\S]*\}/);
-                    if (objMatch) data = tryParseJson(objMatch[0]);
-                }
-                if (data) {
-                    ip = extractIPFromJson(data, version);
-                    if (ip) return ip;
-                }
-
-                // 兜底：尝试从文本中匹配常见键值形式 "ip":"..."
-                const kvMatch = rawText.match(/"ip"\s*:\s*"([^"]+)"/i);
-                if (kvMatch) {
-                    ip = extractIPFromText(kvMatch[1], version);
-                    if (ip) return ip;
-                }
-
-                throw new Error('无法解析IP');
-            } catch (error) {
-                throw new Error('服务请求失败');
-            }
-        }
-
-        // 仅做可达性判定（忽略跨域限制，无法读取状态/内容）
-        async function checkReachable(url, timeout = 3000) {
-            try {
-                const resp = await fetch(url, {
-                    method: 'GET',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    redirect: 'follow',
-                    signal: AbortSignal.timeout(timeout)
-                });
-                // 在 no-cors 情况下无法读取状态码，但只要能完成请求即视为可达
-                return !!resp;
-            } catch (_) {
-                return false;
-            }
-        }
-        
-        // 从JSON数据中提取IP
-        function extractIPFromJson(data, version) {
-            const candidates = [];
-            if (!data) return '';
-            if (typeof data === 'string') candidates.push(data);
-            if (data.ip) candidates.push(data.ip);
-            if (data.data && data.data.ip) candidates.push(data.data.ip);
-            if (data.origin) candidates.push(data.origin);
-            if (data.query) candidates.push(data.query);
-
-            const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
-            const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
-            for (const cand of candidates) {
-                if (typeof cand !== 'string') continue;
-                const s = cand.trim().replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
-                if (version === 4) {
-                    const m = s.match(ipv4Regex);
-                    if (m) return m[0];
-                } else {
-                    const m = s.match(ipv6Regex);
-                    if (m) return m[0];
-                }
-            }
-            return '';
-        }
-        
-        
-        
-        // 从文本中提取IP
-        function extractIPFromText(text, version) {
-            const clean = (text || '').replace(/\uFEFF/g, '').trim();
-            if (!clean) return '';
-            if (version === 4) {
-                const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
-                const m = clean.match(ipv4Regex);
-                return m ? m[0] : '';
-            } else {
-                // 先去掉 IPv6 方括号包裹形式
-                const debracket = clean.replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
-                const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
-                const m = debracket.match(ipv6Regex);
-                return m ? m[0] : '';
-            }
-        }
-
-        // 查询ASN信息
-        async function getASNInfo(ip) {
-            try {
-                const response = await fetch('/api/asn', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `ip=${encodeURIComponent(ip)}`
-                });
-                const data = await response.text();
-                return JSON.parse(data);
-            } catch (error) {
-                throw new Error('查询失败');
-            }
-        }
-
-        
-
-        
-
-        // 获取连通性IP地址或检查连通性（按你的指定地址）
-        async function getConnectivityResult(type) {
-            try {
-                switch (type) {
-                    case 'domestic-ipv4': {
-                        // 国内 IPv4：仅使用 DNSPod 获取 IP，失败则判定为失败
-                        const ip = await tryService('https://ipv4.ddnspod.com/', 4);
-                        if (ip) return ip;
-                        throw new Error('连接失败');
-                    }
-                    case 'domestic-ipv6': {
-                        // 国内 IPv6：仅使用 DNSPod 获取 IP，失败则判定为失败
-                        const ip6 = await tryService('https://ipv6.ddnspod.com/', 6);
-                        if (ip6) return ip6;
-                        throw new Error('连接失败');
-                    }
-                    case 'overseas-ipv4': {
-                        // 海外 IPv4：ipify
-                        const ip = await tryService('https://api.ipify.org/', 4);
-                        if (!ip) throw new Error('连接失败');
-                        return ip;
-                    }
-                    case 'overseas-ipv6': {
-                        // 海外 IPv6：ipify
-                        const ip = await tryService('https://api6.ipify.org/', 6);
-                        if (!ip) throw new Error('连接失败');
-                        return ip;
-                    }
-                    case 'google-ipv4': {
-                        // 谷歌 IPv4：只检查 https://www.google.com/ 是否可达（200/302 即视为成功）
-                        const ok = await checkReachable('https://www.google.com/');
-                        if (ok) return '可达';
-                        throw new Error('连接失败');
-                    }
-                    case 'google-ipv6': {
-                        // 谷歌 IPv6：检查 IPv6 直连地址是否可达
-                        const ok = await checkReachable('https://[2001:4860:4860::8888]/');
-                        if (ok) return '可达';
-                        throw new Error('连接失败');
-                    }
-                    default:
-                        throw new Error('不支持的类型');
-                }
-            } catch (error) {
-                throw new Error('连接失败');
+    // 更新结果显示
+    function updateResult(elementId, success, message, score = 0) {
+        const element = document.getElementById(elementId);
+        const elementMobile = document.getElementById(elementId + '-m');
+        const html = success ? `<span class="status success">${message}</span>` : `<span class="status error">${message}</span>`;
+        if (element) element.innerHTML = html;
+        if (elementMobile) elementMobile.innerHTML = html;
+        if (success) {
+            if (elementId.includes('ipv4')) {
+                ipv4Score += score;
+            } else if (elementId.includes('ipv6')) {
+                ipv6Score += score;
             }
         }
+        completedTests++;
+        updateProgress();
+        updateScores();
+    }
 
-        // DNS解析支持判定：若 IP 获取成功，则视为支持；否则判定为未正确解析DNS
-        function updateDNSByIP(version, ip) {
-            const id = version === 4 ? 'ipv4-dns' : 'ipv6-dns';
-            if (ip) {
-                updateResult(id, true, '支持', 20);
-            } else {
-                updateResult(id, false, '没有正确解析DNS', 0);
-            }
-        }
+    // ASN 信息分拆后，直接使用通用 updateResult 分别填充编号与运营商
 
-        // 运行所有测试
-        async function runTests() {
-            // 重置状态
-            completedTests = 0;
-            ipv4Score = 0;
-            ipv6Score = 0;
-            
-            // 重置所有状态为检测中
-            const testIds = [
-                'ipv4-address', 'ipv6-address',
-                'ipv4-asn-code', 'ipv6-asn-code',
-                'ipv4-asn-isp', 'ipv6-asn-isp',
-                'ipv4-dns', 'ipv6-dns',
-                'ipv4-domestic', 'ipv6-domestic',
-                'ipv4-international', 'ipv6-international',
-                'ipv4-google', 'ipv6-google'
-            ];
-            
-            testIds.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = '<span class="status testing">检测中...</span>';
-                const elM = document.getElementById(id + '-m');
-                if (elM) elM.innerHTML = '<span class="status testing">检测中...</span>';
+    // 更新分数显示
+    function updateScores() {
+        updateScoreDisplay('ipv4-score', ipv4Score);
+        updateScoreDisplay('ipv6-score', ipv6Score);
+    }
+
+    function updateScoreDisplay(elementId, score) {
+        const element = document.getElementById(elementId);
+        const elementMobile = document.getElementById(elementId + '-m');
+        let className = 'failed';
+        if (score >= 80) className = 'excellent';
+        else if (score >= 40) className = 'good';
+        else if (score >= 20) className = 'poor';
+
+        const html = `<span class="score ${className}">${score}分</span>`;
+        if (element) element.innerHTML = html;
+        if (elementMobile) elementMobile.innerHTML = html;
+    }
+
+    // 已移除独立 IP 获取：IP 地址由“国内连通性”直接提供
+
+    // 尝试单个服务获取IP：优先文本解析，失败再尝试 JSON/JSONP
+    async function tryService(serviceUrl, version) {
+        try {
+            const response = await fetch(serviceUrl, {
+                method: 'GET',
+                redirect: 'follow',
+                cache: 'no-cache',
+                signal: AbortSignal.timeout(3000)
             });
-            
-            const s4 = document.getElementById('ipv4-score');
-            if (s4) s4.innerHTML = '<span class="score pending">计算中...</span>';
-            const s6 = document.getElementById('ipv6-score');
-            if (s6) s6.innerHTML = '<span class="score pending">计算中...</span>';
-            const s4m = document.getElementById('ipv4-score-m');
-            if (s4m) s4m.innerHTML = '<span class="score pending">计算中...</span>';
-            const s6m = document.getElementById('ipv6-score-m');
-            if (s6m) s6m.innerHTML = '<span class="score pending">计算中...</span>';
-            
-            updateProgress();
+            // 宽松接受 2xx/3xx
+            if (response.status < 200 || response.status >= 400) throw new Error('HTTP错误');
 
-            // ASN 查询依赖国内连通性的 IP
-            let ipv4Address = null;
-            let ipv6Address = null;
+            // 先按文本尝试提取（兼容 text/plain、text/html、JSONP 包裹等）
+            const rawText = await response.text();
+            let ip = extractIPFromText(rawText, version);
+            if (ip) return ip;
 
-            // 预先创建海外连通性 Promise，便于失败时回退使用 IP
-            const overseasIPv4Promise = getConnectivityResult('overseas-ipv4');
-            const overseasIPv6Promise = getConnectivityResult('overseas-ipv6');
+            // 若文本未提取到，再尝试解析 JSON 或 JSONP
+            const tryParseJson = (s) => {
+                try {
+                    return JSON.parse(s);
+                } catch {
+                    return null;
+                }
+            };
+            let data = tryParseJson(rawText);
+            if (!data) {
+                // 处理 JSONP：提取 {...} 内部对象
+                const objMatch = rawText.match(/\{[\s\S]*\}/);
+                if (objMatch) data = tryParseJson(objMatch[0]);
+            }
+            if (data) {
+                ip = extractIPFromJson(data, version);
+                if (ip) return ip;
+            }
 
-            // IPv4 测试 - 并行执行
-            const ipv4Tests = [
-                // IPv4 国内连通性
-                getConnectivityResult('domestic-ipv4').then(ip => {
+            // 兜底：尝试从文本中匹配常见键值形式 "ip":"..."
+            const kvMatch = rawText.match(/"ip"\s*:\s*"([^"]+)"/i);
+            if (kvMatch) {
+                ip = extractIPFromText(kvMatch[1], version);
+                if (ip) return ip;
+            }
+
+            throw new Error('无法解析IP');
+        } catch (error) {
+            throw new Error('服务请求失败');
+        }
+    }
+
+    // 仅做可达性判定（忽略跨域限制，无法读取状态/内容）
+    async function checkReachable(url, timeout = 5000) {
+        try {
+            const resp = await fetch(url, {
+                method: 'GET',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                redirect: 'follow',
+                signal: AbortSignal.timeout(timeout)
+            });
+            // 在 no-cors 情况下无法读取状态码，但只要能完成请求即视为可达
+            return !!resp;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // 从JSON数据中提取IP
+    function extractIPFromJson(data, version) {
+        const candidates = [];
+        if (!data) return '';
+        if (typeof data === 'string') candidates.push(data);
+        if (data.ip) candidates.push(data.ip);
+        if (data.data && data.data.ip) candidates.push(data.data.ip);
+        if (data.origin) candidates.push(data.origin);
+        if (data.query) candidates.push(data.query);
+
+        const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
+        const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
+        for (const cand of candidates) {
+            if (typeof cand !== 'string') continue;
+            const s = cand.trim().replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
+            if (version === 4) {
+                const m = s.match(ipv4Regex);
+                if (m) return m[0];
+            } else {
+                const m = s.match(ipv6Regex);
+                if (m) return m[0];
+            }
+        }
+        return '';
+    }
+
+
+    // 从文本中提取IP
+    function extractIPFromText(text, version) {
+        const clean = (text || '').replace(/\uFEFF/g, '').trim();
+        if (!clean) return '';
+        if (version === 4) {
+            const ipv4Regex = /\b((25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(25[0-5]|2[0-4]\d|[01]?\d?\d)\b/;
+            const m = clean.match(ipv4Regex);
+            return m ? m[0] : '';
+        } else {
+            // 先去掉 IPv6 方括号包裹形式
+            const debracket = clean.replace(/\[([0-9a-fA-F:]+)\]/g, '$1');
+            const ipv6Regex = /\b(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b|::(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{0,4}\b/;
+            const m = debracket.match(ipv6Regex);
+            return m ? m[0] : '';
+        }
+    }
+
+    // 查询ASN信息
+    async function getASNInfo(ip) {
+        try {
+            const response = await fetch('/api/asn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `ip=${encodeURIComponent(ip)}`
+            });
+            const data = await response.text();
+            return JSON.parse(data);
+        } catch (error) {
+            throw new Error('查询失败');
+        }
+    }
+
+
+    // 获取连通性IP地址或检查连通性（按你的指定地址）
+    async function getConnectivityResult(type) {
+        try {
+            switch (type) {
+                case 'domestic-ipv4': {
+                    // 国内 IPv4：仅使用 DNSPod 获取 IP，失败则判定为失败
+                    const ip = await tryService('https://ipv4.ddnspod.com/', 4);
+                    if (ip) return ip;
+                    throw new Error('连接失败');
+                }
+                case 'domestic-ipv6': {
+                    // 国内 IPv6：仅使用 DNSPod 获取 IP，失败则判定为失败
+                    const ip6 = await tryService('https://ipv6.ddnspod.com/', 6);
+                    if (ip6) return ip6;
+                    throw new Error('连接失败');
+                }
+                case 'overseas-ipv4': {
+                    // 海外 IPv4：ipify
+                    const ip = await tryService('https://api.ipify.org/', 4);
+                    if (!ip) throw new Error('连接失败');
+                    return ip;
+                }
+                case 'overseas-ipv6': {
+                    // 海外 IPv6：ipify
+                    const ip = await tryService('https://api6.ipify.org/', 6);
+                    if (!ip) throw new Error('连接失败');
+                    return ip;
+                }
+                case 'google-ipv4': {
+                    // 谷歌 IPv4：只检查 https://www.google.com/ 是否可达（200/302 即视为成功）
+                    const ok = await checkReachable('https://www.google.com/', 5000);
+                    if (ok) return '可达';
+                    throw new Error('连接失败');
+                }
+                case 'google-ipv6': {
+                    // 谷歌 IPv6：检查 IPv6 直连地址是否可达
+                    const ok = await checkReachable('https://[2001:4860:4860::8888]/', 5000);
+                    if (ok) return '可达';
+                    throw new Error('连接失败');
+                }
+                default:
+                    throw new Error('不支持的类型');
+            }
+        } catch (error) {
+            throw new Error('连接失败');
+        }
+    }
+
+    // DNS解析支持判定：若 IP 获取成功，则视为支持；否则判定为未正确解析DNS
+    function updateDNSByIP(version, ip) {
+        const id = version === 4 ? 'ipv4-dns' : 'ipv6-dns';
+        if (ip) {
+            updateResult(id, true, '支持', 20);
+        } else {
+            updateResult(id, false, '没有正确解析DNS', 0);
+        }
+    }
+
+    // 运行所有测试
+    async function runTests() {
+        // 重置状态
+        completedTests = 0;
+        ipv4Score = 0;
+        ipv6Score = 0;
+
+        // 重置所有状态为检测中
+        const testIds = [
+            'ipv4-address', 'ipv6-address',
+            'ipv4-asn-code', 'ipv6-asn-code',
+            'ipv4-asn-isp', 'ipv6-asn-isp',
+            'ipv4-dns', 'ipv6-dns',
+            'ipv4-domestic', 'ipv6-domestic',
+            'ipv4-international', 'ipv6-international',
+            'ipv4-google', 'ipv6-google'
+        ];
+
+        testIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '<span class="status testing">检测中...</span>';
+            const elM = document.getElementById(id + '-m');
+            if (elM) elM.innerHTML = '<span class="status testing">检测中...</span>';
+        });
+
+        const s4 = document.getElementById('ipv4-score');
+        if (s4) s4.innerHTML = '<span class="score pending">计算中...</span>';
+        const s6 = document.getElementById('ipv6-score');
+        if (s6) s6.innerHTML = '<span class="score pending">计算中...</span>';
+        const s4m = document.getElementById('ipv4-score-m');
+        if (s4m) s4m.innerHTML = '<span class="score pending">计算中...</span>';
+        const s6m = document.getElementById('ipv6-score-m');
+        if (s6m) s6m.innerHTML = '<span class="score pending">计算中...</span>';
+
+        updateProgress();
+
+        // ASN 查询依赖国内连通性的 IP
+        let ipv4Address = null;
+        let ipv6Address = null;
+
+        // 预先创建海外连通性 Promise，便于失败时回退使用 IP
+        const overseasIPv4Promise = getConnectivityResult('overseas-ipv4');
+        const overseasIPv6Promise = getConnectivityResult('overseas-ipv6');
+
+        // IPv4 测试 - 并行执行
+        const ipv4Tests = [
+            // IPv4 国内连通性
+            getConnectivityResult('domestic-ipv4').then(ip => {
+                ipv4Address = ip;
+                updateResult('ipv4-domestic', true, ip, 20);
+                updateResult('ipv4-address', true, ip, 20);
+                updateDNSByIP(4, ip);
+                return getASNInfo(ip).then(asnData => {
+                    updateResult('ipv4-asn-code', true, asnData.ASN, 0);
+                    updateResult('ipv4-asn-isp', true, asnData.as_info, 0);
+                }).catch(() => {
+                    updateResult('ipv4-asn-code', false, '查询失败', 0);
+                    updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                });
+            }).catch(() => {
+                updateResult('ipv4-domestic', false, '连接失败', 0);
+                // 国内失败则 IP 地址回退使用海外连通性结果
+                overseasIPv4Promise.then(ip => {
                     ipv4Address = ip;
-                    updateResult('ipv4-domestic', true, ip, 20);
                     updateResult('ipv4-address', true, ip, 20);
                     updateDNSByIP(4, ip);
                     return getASNInfo(ip).then(asnData => {
@@ -821,48 +844,48 @@
                         updateResult('ipv4-asn-isp', false, '查询失败', 0);
                     });
                 }).catch(() => {
-                    updateResult('ipv4-domestic', false, '连接失败', 0);
-                    // 国内失败则 IP 地址回退使用海外连通性结果
-                    overseasIPv4Promise.then(ip => {
-                        ipv4Address = ip;
-                        updateResult('ipv4-address', true, ip, 20);
-                        updateDNSByIP(4, ip);
-                        return getASNInfo(ip).then(asnData => {
-                            updateResult('ipv4-asn-code', true, asnData.ASN, 0);
-                            updateResult('ipv4-asn-isp', true, asnData.as_info, 0);
-                        }).catch(() => {
-                            updateResult('ipv4-asn-code', false, '查询失败', 0);
-                            updateResult('ipv4-asn-isp', false, '查询失败', 0);
-                        });
-                    }).catch(() => {
-                        updateResult('ipv4-address', false, '获取失败', 0);
-                        updateDNSByIP(4, null);
-                        updateResult('ipv4-asn-code', false, '查询失败', 0);
-                        updateResult('ipv4-asn-isp', false, '查询失败', 0);
-                    });
-                }),
+                    updateResult('ipv4-address', false, '获取失败', 0);
+                    updateDNSByIP(4, null);
+                    updateResult('ipv4-asn-code', false, '查询失败', 0);
+                    updateResult('ipv4-asn-isp', false, '查询失败', 0);
+                });
+            }),
 
-                // IPv4 海外连通性
-                overseasIPv4Promise.then(ip => {
-                    updateResult('ipv4-international', true, ip, 20);
+            // IPv4 海外连通性
+            overseasIPv4Promise.then(ip => {
+                updateResult('ipv4-international', true, ip, 20);
+            }).catch(() => {
+                updateResult('ipv4-international', false, '连接失败', 0);
+            }),
+
+            // IPv4 谷歌连通性
+            getConnectivityResult('google-ipv4').then(ip => {
+                updateResult('ipv4-google', true, ip, 20);
+            }).catch(() => {
+                updateResult('ipv4-google', false, '不可达', 0);
+            })
+        ];
+
+        // IPv6 测试 - 并行执行
+        const ipv6Tests = [
+            // IPv6 国内连通性
+            getConnectivityResult('domestic-ipv6').then(ip => {
+                ipv6Address = ip;
+                updateResult('ipv6-domestic', true, ip, 20);
+                updateResult('ipv6-address', true, ip, 20);
+                updateDNSByIP(6, ip);
+                return getASNInfo(ip).then(asnData => {
+                    updateResult('ipv6-asn-code', true, asnData.ASN, 0);
+                    updateResult('ipv6-asn-isp', true, asnData.as_info, 0);
                 }).catch(() => {
-                    updateResult('ipv4-international', false, '连接失败', 0);
-                }),
-
-                // IPv4 谷歌连通性
-                getConnectivityResult('google-ipv4').then(ip => {
-                    updateResult('ipv4-google', true, ip, 20);
-                }).catch(() => {
-                    updateResult('ipv4-google', false, '不可达', 0);
-                })
-            ];
-
-            // IPv6 测试 - 并行执行
-            const ipv6Tests = [
-                // IPv6 国内连通性
-                getConnectivityResult('domestic-ipv6').then(ip => {
+                    updateResult('ipv6-asn-code', false, '查询失败', 0);
+                    updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                });
+            }).catch(() => {
+                updateResult('ipv6-domestic', false, '连接失败', 0);
+                // 国内失败则 IP 地址回退使用海外连通性结果
+                overseasIPv6Promise.then(ip => {
                     ipv6Address = ip;
-                    updateResult('ipv6-domestic', true, ip, 20);
                     updateResult('ipv6-address', true, ip, 20);
                     updateDNSByIP(6, ip);
                     return getASNInfo(ip).then(asnData => {
@@ -873,48 +896,34 @@
                         updateResult('ipv6-asn-isp', false, '查询失败', 0);
                     });
                 }).catch(() => {
-                    updateResult('ipv6-domestic', false, '连接失败', 0);
-                    // 国内失败则 IP 地址回退使用海外连通性结果
-                    overseasIPv6Promise.then(ip => {
-                        ipv6Address = ip;
-                        updateResult('ipv6-address', true, ip, 20);
-                        updateDNSByIP(6, ip);
-                        return getASNInfo(ip).then(asnData => {
-                            updateResult('ipv6-asn-code', true, asnData.ASN, 0);
-                            updateResult('ipv6-asn-isp', true, asnData.as_info, 0);
-                        }).catch(() => {
-                            updateResult('ipv6-asn-code', false, '查询失败', 0);
-                            updateResult('ipv6-asn-isp', false, '查询失败', 0);
-                        });
-                    }).catch(() => {
-                        updateResult('ipv6-address', false, '获取失败', 0);
-                        updateDNSByIP(6, null);
-                        updateResult('ipv6-asn-code', false, '查询失败', 0);
-                        updateResult('ipv6-asn-isp', false, '查询失败', 0);
-                    });
-                }),
+                    updateResult('ipv6-address', false, '获取失败', 0);
+                    updateDNSByIP(6, null);
+                    updateResult('ipv6-asn-code', false, '查询失败', 0);
+                    updateResult('ipv6-asn-isp', false, '查询失败', 0);
+                });
+            }),
 
-                // IPv6 海外连通性
-                overseasIPv6Promise.then(ip => {
-                    updateResult('ipv6-international', true, ip, 20);
-                }).catch(() => {
-                    updateResult('ipv6-international', false, '连接失败', 0);
-                }),
+            // IPv6 海外连通性
+            overseasIPv6Promise.then(ip => {
+                updateResult('ipv6-international', true, ip, 20);
+            }).catch(() => {
+                updateResult('ipv6-international', false, '连接失败', 0);
+            }),
 
-                // IPv6 谷歌连通性
-                getConnectivityResult('google-ipv6').then(ip => {
-                    updateResult('ipv6-google', true, ip, 20);
-                }).catch(() => {
-                    updateResult('ipv6-google', false, '不可达', 0);
-                })
-            ];
+            // IPv6 谷歌连通性
+            getConnectivityResult('google-ipv6').then(ip => {
+                updateResult('ipv6-google', true, ip, 20);
+            }).catch(() => {
+                updateResult('ipv6-google', false, '不可达', 0);
+            })
+        ];
 
-            // 并行执行所有测试
-            Promise.allSettled([...ipv4Tests, ...ipv6Tests]);
-        }
+        // 并行执行所有测试
+        Promise.allSettled([...ipv4Tests, ...ipv6Tests]);
+    }
 
-        // 页面加载完成后自动运行测试
-        window.addEventListener('load', runTests);
-    </script>
+    // 页面加载完成后自动运行测试
+    window.addEventListener('load', runTests);
+</script>
 </body>
 </html>
