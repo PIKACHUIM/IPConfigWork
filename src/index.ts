@@ -1,6 +1,7 @@
 import {Hono, Next} from 'hono'
 import {serveStatic} from 'hono/cloudflare-workers' // @ts-ignore
 import manifest from '__STATIC_CONTENT_MANIFEST'
+import {getConnInfo} from 'hono/cloudflare-workers'
 
 // 为 Cloudflare Workers 绑定环境变量（如 ABUSEIPDB_KEY）
 const app = new Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY?: string } }>()
@@ -21,23 +22,23 @@ function normalizeType(type: string | null | undefined): string {
     const t = (type || '').toString().trim().toLowerCase()
     if (!t) return '未知'
     // hosting / datacenter / cloud / cdn
-    const hostingSynonyms = ['hosting','host','datacenter','data center','dc','cloud','cloud_provider','cloud provider','cdn','colo','server']
+    const hostingSynonyms = ['hosting', 'host', 'datacenter', 'data center', 'dc', 'cloud', 'cloud_provider', 'cloud provider', 'cdn', 'colo', 'server']
     if (hostingSynonyms.some(k => t.includes(k))) return 'hosting'
 
     // isp / residential / mobile / carrier / cellular / broadband / telecom
-    const ispSynonyms = ['isp','residential','consumer','home','carrier','cellular','mobile','broadband','telecom','internet service']
+    const ispSynonyms = ['isp', 'residential', 'consumer', 'home', 'carrier', 'cellular', 'mobile', 'broadband', 'telecom', 'internet service']
     if (ispSynonyms.some(k => t.includes(k))) return 'isp'
 
     // education / university / college / school / library
-    const eduSynonyms = ['education','university','college','school','library']
+    const eduSynonyms = ['education', 'university', 'college', 'school', 'library']
     if (eduSynonyms.some(k => t.includes(k))) return 'education'
 
     // government / gov / military / public sector
-    const govSynonyms = ['government','gov','military','public sector']
+    const govSynonyms = ['government', 'gov', 'military', 'public sector']
     if (govSynonyms.some(k => t.includes(k))) return 'government'
 
     // banking / finance 归为 business，前端不单列 banking
-    const bizSynonyms = ['business','enterprise','company','commercial','organization','org','corporate','vendor','provider','nonprofit','finance','financial','banking']
+    const bizSynonyms = ['business', 'enterprise', 'company', 'commercial', 'organization', 'org', 'corporate', 'vendor', 'provider', 'nonprofit', 'finance', 'financial', 'banking']
     if (bizSynonyms.some(k => t.includes(k))) return 'business'
 
     return '未知'
@@ -117,14 +118,15 @@ app.post('/api/asn', async (c) => {
         }
 
         if (!result) {
-            result = { ASN: '未知', as_info: '未知', as_domain: '未知' }
+            result = {ASN: '未知', as_info: '未知', as_domain: '未知'}
         }
         return c.json(result)
     } catch (error) {
         // 始终返回 200，避免前端 500
-        return c.json({ ASN: '未知', as_info: '未知', as_domain: '未知' })
+        return c.json({ASN: '未知', as_info: '未知', as_domain: '未知'})
     }
 })
+
 // IP信息查询API（使用ipinfo.io获取完整信息）
 app.post('/api/ip-info', async (c) => {
     try {
@@ -137,7 +139,7 @@ app.post('/api/ip-info', async (c) => {
         }
 
         let result = null
-        
+
         // 首先尝试ipinfo.io（提供完整的company和abuse信息）
         try {
             const response = await fetch(`https://ipinfo.io/widget/demo/${ip}`, {
@@ -147,7 +149,7 @@ app.post('/api/ip-info', async (c) => {
                 },
                 signal: timeoutSignal(5000)
             })
-            
+
             if (response.ok) {
                 const data: any = await response.json()
                 if (data && data.data) {
@@ -225,7 +227,7 @@ app.post('/api/ip-info', async (c) => {
                     },
                     signal: timeoutSignal(5000)
                 })
-                
+
                 if (response.ok) {
                     const data: any = await response.json()
                     if (data && data.status === 'success') {
@@ -264,7 +266,7 @@ app.post('/api/ip-info', async (c) => {
                     },
                     signal: timeoutSignal(5000)
                 })
-                
+
                 if (response.ok) {
                     const data: any = await response.json()
                     if (data && data.success) {
@@ -321,8 +323,8 @@ app.post('/api/ip-info', async (c) => {
         return c.json(result)
     } catch (error: any) {
         console.error('IP info API error:', error)
-        return c.json({ 
-            error: '查询失败', 
+        return c.json({
+            error: '查询失败',
             details: error?.message || '未知错误',
             source: 'error',
             ip: ip || ''
@@ -421,7 +423,28 @@ app.get('/api/ip-info', async (c) => {
         }
 
         if (!result) {
-            result = { source: 'ipinfo.io', ip, asn: null, isp: '', org: '', country: '', countryCode: '', region: '', city: '', postal: '', lat: 0, lon: 0, timezone: '', company: null, abuse: null, privacy: { vpn: false, proxy: false, tor: false, relay: false, hosting: false, service: '' }, is_anycast: false, is_mobile: false, is_anonymous: false, is_satellite: false }
+            result = {
+                source: 'ipinfo.io',
+                ip,
+                asn: null,
+                isp: '',
+                org: '',
+                country: '',
+                countryCode: '',
+                region: '',
+                city: '',
+                postal: '',
+                lat: 0,
+                lon: 0,
+                timezone: '',
+                company: null,
+                abuse: null,
+                privacy: {vpn: false, proxy: false, tor: false, relay: false, hosting: false, service: ''},
+                is_anycast: false,
+                is_mobile: false,
+                is_anonymous: false,
+                is_satellite: false
+            }
         }
         return c.json(result)
     } catch (_) {
@@ -490,9 +513,49 @@ app.post('/api/ip-quality', async (c) => {
 
         return c.json(qualityData)
     } catch (error: any) {
-        return c.json({ error: '检测失败', details: error?.message || '未知错误' }, 500)
+        return c.json({error: '检测失败', details: error?.message || '未知错误'}, 500)
     }
 })
+
+// 客户端访问IP查询（通过请求头获取，优先 Cloudflare 提供的头部）
+app.get('/api/client-ip', (c) => {
+    const header = (name: string) => c.req.header(name) || c.req.raw.headers.get(name) || ''
+    // 优先顺序：CF-Connecting-IP → X-Forwarded-For(首个) → True-Client-IP → X-Real-IP
+    const cfIp = header('cf-connecting-ip') || header('CF-Connecting-IP')
+    const xff = header('x-forwarded-for') || header('X-Forwarded-For')
+    const trueClient = header('true-client-ip') || header('True-Client-IP')
+    const xReal = header('x-real-ip') || header('X-Real-IP')
+    const fromXff = (xff || '').split(',')[0]?.trim() || ''
+    const ip = cfIp || fromXff || trueClient || xReal || ''
+    return c.json({ip})
+})
+
+
+// 静态资源路由（显式绑定首页）
+app.get('/', async (c) => {
+    const userAgent = c.req.header('User-Agent') || '';
+    const browserRegex = /(Chrome|Firefox|Safari|Edge|Opera)/i;
+    const excludeRegex = /(bot|crawler|api-client)/i;
+    if (browserRegex.test(userAgent) && !excludeRegex.test(userAgent))
+        return c.redirect('index.html', 302);
+    const header = (name: string) => c.req.header(name) || c.req.raw.headers.get(name) || ''
+    // 优先顺序：CF-Connecting-IP → X-Forwarded-For(首个) → True-Client-IP → X-Real-IP
+    const cfIp = header('cf-connecting-ip') || header('CF-Connecting-IP')
+    const xff = header('x-forwarded-for') || header('X-Forwarded-For')
+    const trueClient = header('true-client-ip') || header('True-Client-IP')
+    const xReal = header('x-real-ip') || header('X-Real-IP')
+    const fromXff = (xff || '').split(',')[0]?.trim() || ''
+    const ip = cfIp || fromXff || trueClient || xReal || ''
+    const info: string = getConnInfo(c).remote.address || '';
+    return c.text(ip.length > 0 ? ip : info)
+
+})
+app.get('/index.html', serveStatic({manifest: manifest, path: '/index.html'}))
+app.get('/check.html', serveStatic({manifest: manifest, path: '/check.html'}))
+
+// 通配静态资源（保持原有配置）
+app.use("*", serveStatic({manifest: manifest, root: "./"}));
+
 
 // 数据源获取辅助函数（参考 ip-quality.sh 的检测逻辑）
 async function fetchIPInfo(ipAddress: string) {
@@ -546,14 +609,25 @@ async function fetchIPAPI(ip: string) {
             const riskText = (scoreText.match(/\(([^)]+)\)/)?.[1] || '').trim()
             let risk: string | null = null
             switch (riskText) {
-                case 'Very Low': risk = '低风险'; break
-                case 'Low': risk = '低风险'; break
-                case 'Elevated': risk = '低风险'; break
-                case 'High': risk = '高风险'; break
-                case 'Very High': risk = '高风险'; break
-                default: risk = null
+                case 'Very Low':
+                    risk = '低风险';
+                    break
+                case 'Low':
+                    risk = '低风险';
+                    break
+                case 'Elevated':
+                    risk = '低风险';
+                    break
+                case 'High':
+                    risk = '高风险';
+                    break
+                case 'Very High':
+                    risk = '高风险';
+                    break
+                default:
+                    risk = null
             }
-            
+
             return {
                 countryCode: data.location?.country_code || null,
                 proxy: data.is_proxy || false,
@@ -584,37 +658,50 @@ async function fetchIP2Location(ip: string) {
         // 使用官方 IP2Location.io API（需要可选密钥）
         const key = (typeof process !== 'undefined' ? process.env?.IP2LOCATION_KEY : undefined) || (globalThis as any)?.IP2LOCATION_KEY
         const url = key ? `https://api.ip2location.io/?key=${encodeURIComponent(key)}&ip=${encodeURIComponent(ip)}` : `https://api.ip2location.io/?ip=${encodeURIComponent(ip)}`
-        const response = await fetch(url, { signal: timeoutSignal(10000) })
+        const response = await fetch(url, {signal: timeoutSignal(10000)})
         if (response.ok) {
             const data: any = await response.json()
             const scoreNum = parseFloat((data.fraud_score ?? data.score) || '0')
-            
+
             // 风险等级判断（参考 ip-quality.sh 的 IP2Location 评分标准）
             let risk = '未知'
             if (scoreNum < 33) risk = '低风险'
             else if (scoreNum < 66) risk = '中风险'
             else risk = '高风险'
-            
+
             // 使用类型映射（参考 ip-quality.sh），归一化到主类目
             const mapUsageType = (type: string) => {
                 const prefix = (type || '').toUpperCase().split('/')[0]
-                switch(prefix) {
-                    case 'COM': return 'business'
-                    case 'DCH': return 'hosting'
-                    case 'EDU': return 'education'
-                    case 'GOV': return 'government'
-                    case 'ORG': return 'business'
-                    case 'MIL': return 'government'
-                    case 'LIB': return 'education'
-                    case 'CDN': return 'hosting'
-                    case 'ISP': return 'isp'
-                    case 'MOB': return 'isp'
-                    case 'SES': return 'business'
-                    case 'RSV': return 'business'
-                    default: return normalizeType(type)
+                switch (prefix) {
+                    case 'COM':
+                        return 'business'
+                    case 'DCH':
+                        return 'hosting'
+                    case 'EDU':
+                        return 'education'
+                    case 'GOV':
+                        return 'government'
+                    case 'ORG':
+                        return 'business'
+                    case 'MIL':
+                        return 'government'
+                    case 'LIB':
+                        return 'education'
+                    case 'CDN':
+                        return 'hosting'
+                    case 'ISP':
+                        return 'isp'
+                    case 'MOB':
+                        return 'isp'
+                    case 'SES':
+                        return 'business'
+                    case 'RSV':
+                        return 'business'
+                    default:
+                        return normalizeType(type)
                 }
             }
-            
+
             // 组合代理/机器人/滥用与数据中心标记（参考 ip-quality.sh）
             const proxy0 = (data.is_proxy ?? data.proxy)
             const proxy1 = data.proxy?.is_public_proxy
@@ -627,9 +714,9 @@ async function fetchIP2Location(ip: string) {
             const isRobot = [robot1, robot2, robot3].some(v => v === true || v === 'true')
 
             const isDC = (data.proxy?.is_data_center === true || data.proxy?.is_data_center === 'true') ||
-                         (data.datacenter === true || data.datacenter === 'true')
+                (data.datacenter === true || data.datacenter === 'true')
 
-            console.log('[ip2location] ok', { score: scoreNum, country: data.country_code, proxy: isProxy, dc: isDC })
+            console.log('[ip2location] ok', {score: scoreNum, country: data.country_code, proxy: isProxy, dc: isDC})
             return {
                 countryCode: data.country_code || null,
                 proxy: isProxy,
@@ -656,20 +743,6 @@ async function fetchIP2Location(ip: string) {
     }
 }
 
-// 独立的 IP2Location 检测端点，便于前端或调试直接调用
-// 客户端访问IP查询（通过请求头获取，优先 Cloudflare 提供的头部）
-app.get('/api/client-ip', (c) => {
-    const header = (name: string) => c.req.header(name) || c.req.raw.headers.get(name) || ''
-    // 优先顺序：CF-Connecting-IP → X-Forwarded-For(首个) → True-Client-IP → X-Real-IP
-    const cfIp = header('cf-connecting-ip') || header('CF-Connecting-IP')
-    const xff = header('x-forwarded-for') || header('X-Forwarded-For')
-    const trueClient = header('true-client-ip') || header('True-Client-IP')
-    const xReal = header('x-real-ip') || header('X-Real-IP')
-    const fromXff = (xff || '').split(',')[0]?.trim() || ''
-    const ip = cfIp || fromXff || trueClient || xReal || ''
-    return c.json({ ip })
-})
-
 async function fetchScamalytics(ip: string) {
     try {
         // 使用真实的SCAMALYTICS网站抓取（参考ip-quality.sh）
@@ -682,18 +755,18 @@ async function fetchScamalytics(ip: string) {
         })
         if (response.ok) {
             const html = await response.text()
-            
+
             // 解析评分（参考ip-quality.sh的正则表达式）
             const scoreMatch = html.match(/Fraud Score: (\d+)/i)
             const scoreNum = scoreMatch ? parseInt(scoreMatch[1]) : 0
-            
+
             // 风险等级判断（完全按照ip-quality.sh的标准）
             let risk = '未知'
             if (scoreNum < 25) risk = '低风险'
             else if (scoreNum < 50) risk = '中风险'
             else if (scoreNum < 75) risk = '高风险'
             else risk = '极高风险'
-            
+
             // 解析各项检测结果
             const countryMatch = html.match(/<th>Country Code<\/th>[\s\S]*?<td[^>]*>([^<]+)<\/td>/i)
             const vpnMatch = html.match(/<th>Anonymizing VPN<\/th>[\s\S]*?<td[^>]*>([^<]+)<\/td>/i)
@@ -702,9 +775,9 @@ async function fetchScamalytics(ip: string) {
             const publicProxyMatch = html.match(/<th>Public Proxy<\/th>[\s\S]*?<td[^>]*>([^<]+)<\/td>/i)
             const webProxyMatch = html.match(/<th>Web Proxy<\/th>[\s\S]*?<td[^>]*>([^<]+)<\/td>/i)
             const robotMatch = html.match(/<th>Search Engine Robot<\/th>[\s\S]*?<td[^>]*>([^<]+)<\/td>/i)
-            
+
             const isProxy = (publicProxyMatch?.[1]?.includes('Yes') || webProxyMatch?.[1]?.includes('Yes')) || false
-            
+
             return {
                 countryCode: countryMatch?.[1]?.trim() || null,
                 proxy: isProxy,
@@ -769,7 +842,7 @@ async function fetchIPQS(ip: string, envKey?: string) {
             return null
         }
         const url = `https://ipqualityscore.com/api/json/ip/${encodeURIComponent(key)}/${encodeURIComponent(ip)}?strictness=1&fast=true&allow_public_access_points=true`
-        const response = await fetch(url, { signal: timeoutSignal(10000) })
+        const response = await fetch(url, {signal: timeoutSignal(10000)})
         if (response.ok) {
             const d: any = await response.json()
             const scoreNum = parseFloat((d.fraud_score ?? 0).toString())
@@ -835,7 +908,7 @@ async function fetchIPWhois(ip: string) {
     // 按 ip-quality.sh 对齐：使用 ipwhois.io/widget 提供的字段
     try {
         const response = await fetch(`https://ipwhois.io/widget?ip=${ip}`, {
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+            headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'},
             signal: timeoutSignal(8000)
         })
         if (response.ok) {
@@ -867,7 +940,7 @@ async function fetchDBIP(ip: string) {
     // 抓取 db-ip.com HTML，解析国家代码与风险/标识（参考 ip-quality.sh）
     try {
         const response = await fetch(`https://db-ip.com/${ip}`, {
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+            headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'},
             signal: timeoutSignal(10000)
         })
         if (response.ok) {
@@ -882,9 +955,16 @@ async function fetchDBIP(ip: string) {
             const riskText = (riskTextMatch?.[1] || '').trim().toLowerCase()
             let score: string | null = null
             let risk: string | null = null
-            if (riskText.includes('low')) { score = '0'; risk = '低风险' }
-            else if (riskText.includes('medium')) { score = '50'; risk = '中风险' }
-            else if (riskText.includes('high')) { score = '100'; risk = '高风险' }
+            if (riskText.includes('low')) {
+                score = '0';
+                risk = '低风险'
+            } else if (riskText.includes('medium')) {
+                score = '50';
+                risk = '中风险'
+            } else if (riskText.includes('high')) {
+                score = '100';
+                risk = '高风险'
+            }
 
             return {
                 countryCode: countryMatch?.[1] || null,
@@ -909,9 +989,6 @@ async function fetchDBIP(ip: string) {
     }
 }
 
-// 媒体服务检测API
-// 已移除媒体检测端点及辅助函数
-
 async function fetchAbuseIPDB(ip: string, envKey?: string) {
     try {
         // 使用 AbuseIPDB 官方 JSON 接口，需要密钥（环境变量 ABUSEIPDB_KEY）
@@ -923,7 +1000,7 @@ async function fetchAbuseIPDB(ip: string, envKey?: string) {
         }
         const url = `https://api.abuseipdb.com/api/v2/check?ipAddress=${encodeURIComponent(ip)}&maxAgeInDays=90`
         const response = await fetch(url, {
-            headers: { 'Key': key, 'Accept': 'application/json' },
+            headers: {'Key': key, 'Accept': 'application/json'},
             signal: timeoutSignal(12000)
         })
         console.log('[abuseipdb] http status', response.status)
@@ -961,7 +1038,7 @@ async function fetchCloudflare(ip: string) {
     try {
         // 使用 ipwhois.io 的安全字段，计算一个简单分数作为替代
         const response = await fetch(`https://ipwhois.io/widget?ip=${encodeURIComponent(ip)}`, {
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+            headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'},
             signal: timeoutSignal(10000)
         })
         if (response.ok) {
@@ -996,13 +1073,5 @@ async function fetchCloudflare(ip: string) {
     }
 }
 
-
-// 静态资源路由（显式绑定首页）
-app.get('/', serveStatic({ manifest: manifest, path: '/index.html' }))
-app.get('/index.html', serveStatic({ manifest: manifest, path: '/index.html' }))
-app.get('/check.html', serveStatic({ manifest: manifest, path: '/check.html' }))
-
-// 通配静态资源（保持原有配置）
-app.use("*", serveStatic({manifest: manifest, root: "./"}));
 
 export default app
