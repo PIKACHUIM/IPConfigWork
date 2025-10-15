@@ -25,19 +25,19 @@ Demo: https://ipaddr.524228.xyz
     - IPv4：请求 `https://www.google.com/`，成功判定 “可达”。
     - IPv6：请求 `https://[2001:4860:4860::8888]/` 判定可达与否。
 - ASN/运营商：通过后端 `POST /api/asn` 查询 ASN 编号、ISP/组织信息。
-![20251015-103914.png](img/20251015-103914.png)
+  ![20251015-103914.png](img/20251015-103914.png)
 
 ### IP地址质量
 - 基础信息卡片：显示 IP、ASN、组织、坐标（含地图）、城市、时区、邮编、IP 类型（机房/任播/移动/匿名/卫星）、公司与 Abuse 联系信息。
 - IP 详细信息：渲染 `api.ipapi.is` 原始字段（is_*、数据中心、公司、ASN、位置等）。
+  ![20251015-103740.png](img/20251015-103740.png)
 
-![20251015-103805.png](img/20251015-103805.png)
 
 ### IP地址风险
 - 多源风险聚合：汇总 `ipinfo.io`、`ipapi.is`、`IP2Location`、`Scamalytics`、`ipregistry`、`IPQualityScore(IPQS)`、`IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare` 的使用类型、公司类型、国家代码与风险因子，并展示评分与风险等级。
 - 媒体可达性：并行检查 `TikTok`、`Disney+`、`Netflix`、`YouTube`、`Prime Video`、`Spotify`、`ChatGPT`、`动画疯` 是否可达
+  ![20251015-103805.png](img/20251015-103805.png)
 
-![20251015-103740.png](img/20251015-103740.png)
 
 
 ## 部署方法
