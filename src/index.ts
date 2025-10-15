@@ -532,10 +532,11 @@ app.get('/api/client-ip', (c) => {
 
 
 // 静态资源路由（显式绑定首页）
-app.get('/', async (c) => {
+app.use('/', async (c) => {
     const userAgent = c.req.header('User-Agent') || '';
     const browserRegex = /(Chrome|Firefox|Safari|Edge|Opera)/i;
-    const excludeRegex = /(bot|crawler|api-client)/i;
+    const excludeRegex = /(bot|crawler|api-client|curl|wget)/i;
+    console.log('user-agent', c.req.header('User-Agent'))
     if (browserRegex.test(userAgent) && !excludeRegex.test(userAgent))
         return c.redirect('index.html', 302);
     const header = (name: string) => c.req.header(name) || c.req.raw.headers.get(name) || ''
