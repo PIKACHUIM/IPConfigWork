@@ -443,6 +443,12 @@
         .overall-ring .ring-fg.low { stroke: var(--green); }
         .overall-ring .ring-fg.mid { stroke: var(--yellow); }
         .overall-ring .ring-fg.high { stroke: var(--red); }
+        /* 评分等级颜色 */
+        .overall-ring .ring-fg.score-excellent { stroke: #6EE7B7; }
+        .overall-ring .ring-fg.score-good { stroke: #38BDF8; }
+        .overall-ring .ring-fg.score-fair { stroke: #FBBF24; }
+        .overall-ring .ring-fg.score-poor { stroke: #FB7185; }
+        .overall-ring .ring-fg.score-bad { stroke: #DC2626; }
         .overall-ring-text {
             position: absolute; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 2px;
@@ -463,6 +469,67 @@
         .overall-desc {
             font-size: 13.5px; color: var(--text-2); line-height: 1.6;
             max-width: 360px;
+        }
+
+        /* ===== 风险评分布局（左侧环形图 + 右侧4个条形图） ===== */
+        .risk-score-layout {
+            display: flex; gap: 40px; align-items: flex-start;
+            padding: 24px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(99, 102, 241, 0.05));
+            border: 1px solid var(--border);
+        }
+        
+        /* 左侧环形图容器 */
+        .risk-ring-container {
+            display: flex; flex-direction: column; align-items: center; gap: 16px;
+            flex-shrink: 0;
+        }
+        .risk-ring-meta {
+            display: flex; flex-direction: column; gap: 8px; align-items: center;
+            text-align: center; max-width: 200px;
+        }
+        
+        /* 右侧条形图容器 */
+        .risk-bars-container {
+            flex: 1; display: flex; flex-direction: column; gap: 20px;
+            min-width: 0;
+        }
+        
+        /* 单个条形图项 */
+        .risk-bar-item {
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .risk-bar-header {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .risk-bar-label {
+            font-size: 14px; font-weight: 600; color: var(--text);
+            font-family: var(--font-head);
+        }
+        .risk-bar-value {
+            font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+            color: var(--accent);
+        }
+        
+        /* 条形图轨道 */
+        .risk-bar-track {
+            height: 10px; border-radius: 999px; background: var(--surface-hover);
+            overflow: hidden; position: relative;
+        }
+        .risk-bar-fill {
+            height: 100%; width: 0%; border-radius: 999px;
+            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+        }
+        /* 条形图颜色等级 */
+        .risk-bar-fill.score-excellent { background: linear-gradient(90deg, #6EE7B7, #34D399); }
+        .risk-bar-fill.score-good { background: linear-gradient(90deg, #38BDF8, #0EA5E9); }
+        .risk-bar-fill.score-fair { background: linear-gradient(90deg, #FBBF24, #F59E0B); }
+        .risk-bar-fill.score-poor { background: linear-gradient(90deg, #FB7185, #F43F5E); }
+        .risk-bar-fill.score-bad { background: linear-gradient(90deg, #DC2626, #B91C1C); }
+        
+        .risk-bar-hint {
+            font-size: 12px; color: var(--text-3); line-height: 1.4;
         }
 
         /* ===== 风险评分进度条 ===== */
@@ -781,21 +848,75 @@
     <section class="card" id="risk-scores">
         <div class="card-head"><span class="h2-icon">📊</span><h2 data-i18n="sub.riskScore">IP 风险评分</h2></div>
         
-        <!-- 综合评分 -->
-        <div class="overall-score">
-            <div class="overall-ring">
-                <svg width="140" height="140" viewBox="0 0 140 140">
-                    <circle class="ring-bg" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="0"/>
-                    <circle class="ring-fg" id="overallRing" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"/>
-                </svg>
-                <div class="overall-ring-text">
-                    <div class="overall-ring-score" id="overallScore">--</div>
-                    <div class="overall-ring-label" data-i18n="label.overall">综合评分</div>
+        <!-- 风险评分布局：左侧环形图 + 右侧4个条形图 -->
+        <div class="risk-score-layout">
+            <!-- 左侧：综合评分环形图 -->
+            <div class="risk-ring-container">
+                <div class="overall-ring">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <circle class="ring-bg" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="0"/>
+                        <circle class="ring-fg" id="riskOnlyRing" cx="70" cy="70" r="58" stroke-dasharray="364.42" stroke-dashoffset="364.42"/>
+                    </svg>
+                    <div class="overall-ring-text">
+                        <div class="overall-ring-score" id="riskOnlyScore">--</div>
+                        <div class="overall-ring-label" data-i18n="label.riskOnly">综合评分</div>
+                    </div>
+                </div>
+                <div class="risk-ring-meta">
+                    <div class="overall-level" id="riskOnlyLevel" data-i18n="level.calculating">计算中...</div>
+                    <div class="overall-desc" id="riskOnlyDesc" data-i18n="desc.riskOnly">基于4个维度的综合评估</div>
                 </div>
             </div>
-            <div class="overall-meta">
-                <div class="overall-level" id="overallLevel" data-i18n="level.calculating">计算中...</div>
-                <div class="overall-desc" id="overallDesc" data-i18n="desc.overall">基于 9 个数据源的综合风险评估</div>
+            
+            <!-- 右侧：4个维度条形图 -->
+            <div class="risk-bars-container">
+                <!-- A. 渠道风险评分 -->
+                <div class="risk-bar-item">
+                    <div class="risk-bar-header">
+                        <span class="risk-bar-label" data-i18n="risk.channel">渠道风险</span>
+                        <span class="risk-bar-value" id="channelRiskScore">--</span>
+                    </div>
+                    <div class="risk-bar-track">
+                        <div class="risk-bar-fill" id="channelRiskBar"></div>
+                    </div>
+                    <div class="risk-bar-hint" data-i18n="risk.channelHint">机房/VPN/代理/Tor</div>
+                </div>
+                
+                <!-- B. 原生检测评分 -->
+                <div class="risk-bar-item">
+                    <div class="risk-bar-header">
+                        <span class="risk-bar-label" data-i18n="risk.native">原生检测</span>
+                        <span class="risk-bar-value" id="nativeRiskScore">--</span>
+                    </div>
+                    <div class="risk-bar-track">
+                        <div class="risk-bar-fill" id="nativeRiskBar"></div>
+                    </div>
+                    <div class="risk-bar-hint" data-i18n="risk.nativeHint">IP原生地匹配度</div>
+                </div>
+                
+                <!-- C. 风险因子矩阵 -->
+                <div class="risk-bar-item">
+                    <div class="risk-bar-header">
+                        <span class="risk-bar-label" data-i18n="risk.factors">风险因子</span>
+                        <span class="risk-bar-value" id="factorsRiskScore">--</span>
+                    </div>
+                    <div class="risk-bar-track">
+                        <div class="risk-bar-fill" id="factorsRiskBar"></div>
+                    </div>
+                    <div class="risk-bar-hint" data-i18n="risk.factorsHint">滥用/爬虫/匿名等</div>
+                </div>
+                
+                <!-- D. 多源数据评分 -->
+                <div class="risk-bar-item">
+                    <div class="risk-bar-header">
+                        <span class="risk-bar-label" data-i18n="risk.sources">多源数据</span>
+                        <span class="risk-bar-value" id="sourcesRiskScore">--</span>
+                    </div>
+                    <div class="risk-bar-track">
+                        <div class="risk-bar-fill" id="sourcesRiskBar"></div>
+                    </div>
+                    <div class="risk-bar-hint" data-i18n="risk.sourcesHint">9个风险维度综合评估</div>
+                </div>
             </div>
         </div>
 
@@ -882,6 +1003,7 @@
             <div class="flag-chip"><span class="flabel" data-i18n="th.proxy">代理</span><span class="fvalue" id="ipapiIsProxy">--</span></div>
             <div class="flag-chip"><span class="flabel" data-i18n="th.vpn">VPN</span><span class="fvalue" id="ipapiIsVPN">--</span></div>
             <div class="flag-chip"><span class="flabel" data-i18n="th.abuser">滥用</span><span class="fvalue" id="ipapiIsAbuser">--</span></div>
+            <div class="flag-chip"><span class="flabel" data-i18n="th.commercial">商用网络</span><span class="fvalue" id="ipapiIsCommercial">--</span></div>
         </div>
 
         <div class="sub-title" data-i18n="sub.basic">基础信息</div>
@@ -1001,6 +1123,15 @@
             'label.satellite': '卫星IP',
             'label.overallQuality': '综合质量',
             'label.overall': '综合评分',
+            'label.riskOnly': '风险评分',
+            'risk.channel': '渠道风险',
+            'risk.channelHint': '机房/VPN/代理/Tor',
+            'risk.native': '原生检测',
+            'risk.nativeHint': 'IP原生地匹配度',
+            'risk.factors': '风险因子',
+            'risk.factorsHint': '滥用/爬虫/匿名等',
+            'risk.sources': '多源数据',
+            'risk.sourcesHint': '10个数据源平均',
             'level.calculating': '计算中...',
             'level.excellent': '优秀',
             'level.good': '良好',
@@ -1008,6 +1139,7 @@
             'level.poor': '较差',
             'level.bad': '极差',
             'desc.overall': '基于 10 个数据源的综合风险评估',
+            'desc.riskOnly': '基于机房、VPN、代理、Tor等9个风险维度的评估',
             'version.ipv4': 'IPv4',
             'version.ipv6': 'IPv6',
             'sub.basic': '基础信息',
@@ -1059,6 +1191,7 @@
             'th.proxy': '代理',
             'th.vpn': 'VPN',
             'th.abuser': '滥用',
+            'th.commercial': '商用网络',
             'th.flags': '属性标记',
             'th.riskFactorMatrix': '风险因子矩阵',
             'th.source': '数据源',
@@ -1139,6 +1272,15 @@
             'label.satellite': 'Satellite IP',
             'label.overallQuality': 'Overall Quality',
             'label.overall': 'Overall Score',
+            'label.riskOnly': 'Risk Score',
+            'risk.channel': 'Channel Risk',
+            'risk.channelHint': 'Datacenter/VPN/Proxy/Tor',
+            'risk.native': 'Native Detection',
+            'risk.nativeHint': 'IP Native Location Match',
+            'risk.factors': 'Risk Factors',
+            'risk.factorsHint': 'Abuser/Crawler/Anonymous',
+            'risk.sources': 'Multi-Source',
+            'risk.sourcesHint': 'Average from 10 sources',
             'level.calculating': 'Calculating...',
             'level.excellent': 'Excellent',
             'level.good': 'Good',
@@ -1146,6 +1288,7 @@
             'level.poor': 'Poor',
             'level.bad': 'Bad',
             'desc.overall': 'Comprehensive risk assessment based on 10 data sources',
+            'desc.riskOnly': 'Assessment based on 9 risk dimensions: datacenter, VPN, proxy, Tor, etc.',
             'version.ipv4': 'IPv4',
             'version.ipv6': 'IPv6',
             'sub.basic': 'Basic Info',
@@ -1197,6 +1340,7 @@
             'th.proxy': 'Proxy',
             'th.vpn': 'VPN',
             'th.abuser': 'Abuser',
+            'th.commercial': 'Commercial Network',
             'th.flags': 'Flags',
             'th.riskFactorMatrix': 'Risk Factor Matrix',
             'th.source': 'Source',
@@ -1952,6 +2096,17 @@
         setYN('ipapiIsProxy', raw.is_proxy);
         setYN('ipapiIsVPN', raw.is_vpn);
         setYN('ipapiIsAbuser', raw.is_abuser);
+        
+        // 判断是否商用网络：使用类型或公司类型有一个是商用的
+        var isCommercial = false;
+        var usageType = (raw.connection && raw.connection.type || '').toLowerCase();
+        var companyType = (raw.company && raw.company.type || '').toLowerCase();
+        if (usageType.includes('business') || usageType.includes('commercial') || usageType.includes('corporate') ||
+            companyType.includes('business') || companyType.includes('commercial') || companyType.includes('hosting') || 
+            companyType.includes('isp') || companyType.includes('carrier')) {
+            isCommercial = true;
+        }
+        setYN('ipapiIsCommercial', isCommercial);
 
         setText(document.getElementById('ipapiDCName'), raw.datacenter && raw.datacenter.datacenter || '');
         setText(document.getElementById('ipapiDCDomain'), raw.datacenter && raw.datacenter.domain || '');
@@ -2137,45 +2292,256 @@
     }
 
     async function getIPQuality(ip) {
+        console.log('[getIPQuality] 开始查询IP:', ip);
+        
+        // 尝试后端Worker API（带超时控制）
         try {
+            var controller = new AbortController();
+            var timeoutId = setTimeout(function() {
+                controller.abort();
+                console.warn('[getIPQuality] Worker API 超时 (30秒)');
+            }, 30000); // 30秒超时
+            
+            console.log('[getIPQuality] 调用 Worker API: /api/ip-quality');
             var response = await fetch('/api/ip-quality', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ ip: ip })
+                body: new URLSearchParams({ ip: ip }),
+                signal: controller.signal
             });
-            if (response.ok) return await response.json();
-            return null;
-        } catch (e) { return null; }
+            
+            clearTimeout(timeoutId);
+            console.log('[getIPQuality] 响应状态:', response.status, response.statusText);
+            
+            if (response.ok) {
+                var data = await response.json();
+                console.log('[getIPQuality] 响应数据:', data);
+                
+                // 验证原生检测所需的三个数据源
+                console.log('[getIPQuality] 验证原生检测数据源:');
+                console.log('  - ipinfo:', data.ipinfo ? '✓ 存在' : '✗ 缺失', data.ipinfo);
+                console.log('  - ipregistry:', data.ipregistry ? '✓ 存在' : '✗ 缺失', data.ipregistry);
+                console.log('  - ipapi:', data.ipapi ? '✓ 存在' : '✗ 缺失', data.ipapi);
+                
+                if (data.ipinfo) {
+                    console.log('  - ipinfo.usageType:', data.ipinfo.usageType);
+                    console.log('  - ipinfo.companyType:', data.ipinfo.companyType);
+                }
+                if (data.ipregistry) {
+                    console.log('  - ipregistry.usageType:', data.ipregistry.usageType);
+                    console.log('  - ipregistry.companyType:', data.ipregistry.companyType);
+                }
+                if (data.ipapi) {
+                    console.log('  - ipapi.usageType:', data.ipapi.usageType);
+                    console.log('  - ipapi.companyType:', data.ipapi.companyType);
+                }
+                
+                return data;
+            }
+            
+            console.error('[getIPQuality] HTTP错误:', response.status);
+            var errorText = await response.text();
+            console.error('[getIPQuality] 错误内容:', errorText);
+        } catch (e) { 
+            console.error('[getIPQuality] Worker API 失败:', e.name, e.message);
+            if (e.name === 'AbortError') {
+                console.error('[getIPQuality] 请求超时');
+            }
+        }
+        
+        // 回退：直接调用第三方API
+        console.warn('[getIPQuality] 回退到直接调用第三方API');
+        return await getIPQualityFallback(ip);
+    }
+    
+    async function getIPQualityFallback(ip) {
+        console.log('[Fallback] 开始直接查询第三方API');
+        var result = {
+            ipinfo: null,
+            ipregistry: null,
+            ipapi: null
+        };
+        
+        // 并行查询三个数据源
+        var promises = [
+            // IPinfo
+            fetchJSON('https://ipinfo.io/' + ip + '/json', 10000).then(function(data) {
+                if (data && data.ip) {
+                    var usageType = '未知';
+                    var companyType = '未知';
+                    
+                    // IPinfo 通过 company.type 判断
+                    if (data.company && data.company.type) {
+                        var type = data.company.type.toLowerCase();
+                        if (type.includes('hosting') || type.includes('isp')) {
+                            usageType = 'hosting';
+                            companyType = 'hosting';
+                        } else if (type.includes('business')) {
+                            companyType = 'business';
+                        }
+                    }
+                    
+                    // 通过 ASN 名称判断
+                    var org = (data.org || '').toLowerCase();
+                    if (org.includes('hosting') || org.includes('cloud') || org.includes('datacenter') || org.includes('server')) {
+                        usageType = 'hosting';
+                    }
+                    
+                    result.ipinfo = {
+                        usageType: usageType,
+                        companyType: companyType,
+                        usageTypeRaw: data.company?.type || org,
+                        companyTypeRaw: data.company?.type || org
+                    };
+                    console.log('[Fallback] IPinfo 查询成功:', result.ipinfo);
+                }
+            }).catch(function(e) {
+                console.error('[Fallback] IPinfo 查询失败:', e);
+            }),
+            
+            // ipregistry
+            fetchJSON('https://api.ipregistry.co/' + ip + '?key=tryout', 10000).then(function(data) {
+                if (data && data.ip) {
+                    var usageType = '未知';
+                    var companyType = '未知';
+                    
+                    if (data.connection && data.connection.type) {
+                        var type = data.connection.type.toLowerCase();
+                        if (type.includes('hosting') || type.includes('datacenter')) {
+                            usageType = 'hosting';
+                            companyType = 'hosting';
+                        } else if (type.includes('isp')) {
+                            usageType = 'isp';
+                            companyType = 'isp';
+                        } else if (type.includes('business')) {
+                            companyType = 'business';
+                        }
+                    }
+                    
+                    result.ipregistry = {
+                        usageType: usageType,
+                        companyType: companyType,
+                        usageTypeRaw: data.connection?.type || '',
+                        companyTypeRaw: data.company?.type || ''
+                    };
+                    console.log('[Fallback] ipregistry 查询成功:', result.ipregistry);
+                }
+            }).catch(function(e) {
+                console.error('[Fallback] ipregistry 查询失败:', e);
+            }),
+            
+            // ipapi
+            fetchJSON('http://ip-api.com/json/' + ip + '?fields=status,message,isp,org,as,hosting,mobile,proxy', 10000).then(function(data) {
+                if (data && data.status === 'success') {
+                    var usageType = '未知';
+                    var companyType = '未知';
+                    
+                    if (data.hosting) {
+                        usageType = 'hosting';
+                        companyType = 'hosting';
+                    } else if (data.mobile) {
+                        usageType = 'isp';
+                        companyType = 'isp';
+                    } else if (data.proxy) {
+                        usageType = 'hosting';
+                    }
+                    
+                    result.ipapi = {
+                        usageType: usageType,
+                        companyType: companyType,
+                        usageTypeRaw: data.org || data.isp || '',
+                        companyTypeRaw: data.org || data.isp || ''
+                    };
+                    console.log('[Fallback] ipapi 查询成功:', result.ipapi);
+                }
+            }).catch(function(e) {
+                console.error('[Fallback] ipapi 查询失败:', e);
+            })
+        ];
+        
+        await Promise.allSettled(promises);
+        console.log('[Fallback] 所有查询完成:', result);
+        return result;
     }
 
     function fillMultiSourceAttributes(q) {
-        if (!q) return;
+        if (!q) {
+            console.warn('[原生检测] 数据源q为空');
+            // 全部显示为查询失败
+            setText(document.getElementById('ipinfoUsageType'), t('queryFailed'), 'failed');
+            setText(document.getElementById('ipinfoCompanyType'), t('queryFailed'), 'failed');
+            setText(document.getElementById('ipregistryUsageType'), t('queryFailed'), 'failed');
+            setText(document.getElementById('ipregistryCompanyType'), t('queryFailed'), 'failed');
+            setText(document.getElementById('ipapiUsageType'), t('queryFailed'), 'failed');
+            setText(document.getElementById('ipapiCompanyType'), t('queryFailed'), 'failed');
+            return;
+        }
+        
+        console.log('[原生检测] 接收到的数据:', q);
+        console.log('[原生检测] ipinfo数据:', q.ipinfo);
+        console.log('[原生检测] ipregistry数据:', q.ipregistry);
+        console.log('[原生检测] ipapi数据:', q.ipapi);
+        
         function mapUsageType(type) {
-            switch (type && type.toLowerCase ? type.toLowerCase() : '') {
+            var lowerType = (type && type.toLowerCase ? type.toLowerCase() : String(type || '').toLowerCase());
+            switch (lowerType) {
                 case 'hosting': return '<span class="type-badge type-hosting">' + t('type.hosting') + '</span>';
                 case 'business': return '<span class="type-badge type-business">' + t('type.business') + '</span>';
                 case 'isp': return '<span class="type-badge type-isp">' + t('type.isp') + '</span>';
                 case 'education': return '<span class="type-badge type-education">' + t('type.education') + '</span>';
                 case 'government': return '<span class="type-badge type-government">' + t('type.government') + '</span>';
+                case '未知': return '<span class="type-badge type-unknown">' + t('unknown') + '</span>';
                 default: return null;
             }
         }
-        var setPair = function (usageEl, companyEl, item) {
+        
+        var setPair = function (usageEl, companyEl, item, sourceName) {
             if (!item) {
+                console.warn('[原生检测] ' + sourceName + ' item为空');
                 if (usageEl) setText(usageEl, t('queryFailed'), 'failed');
                 if (companyEl) setText(companyEl, t('queryFailed'), 'failed');
                 return;
             }
-            var usage = (item && item.usageType) || t('unknown');
-            var company = (item && item.companyType) || t('unknown');
+            
+            // 详细检查字段
+            console.log('[原生检测] ' + sourceName + ' usageType:', item.usageType);
+            console.log('[原生检测] ' + sourceName + ' companyType:', item.companyType);
+            console.log('[原生检测] ' + sourceName + ' usageTypeRaw:', item.usageTypeRaw);
+            console.log('[原生检测] ' + sourceName + ' companyTypeRaw:', item.companyTypeRaw);
+            
+            // 获取使用类型和公司类型
+            var usage = item.usageType || '未知';
+            var company = item.companyType || '未知';
+            
+            // 尝试映射到徽章样式
             var usageHTML = mapUsageType(usage);
             var companyHTML = mapUsageType(company);
-            if (usageEl) usageEl.innerHTML = usageHTML || escapeHtml(item.usageTypeRaw || usage);
-            if (companyEl) companyEl.innerHTML = companyHTML || escapeHtml(item.companyTypeRaw || company);
+            
+            // 如果有原始数据，优先显示映射后的徽章，否则显示原始文本
+            if (usageEl) {
+                if (usageHTML) {
+                    usageEl.innerHTML = usageHTML;
+                } else if (item.usageTypeRaw) {
+                    usageEl.innerHTML = '<span class="type-badge type-unknown">' + escapeHtml(item.usageTypeRaw) + '</span>';
+                } else {
+                    usageEl.innerHTML = '<span class="type-badge type-unknown">' + escapeHtml(usage) + '</span>';
+                }
+            }
+            
+            if (companyEl) {
+                if (companyHTML) {
+                    companyEl.innerHTML = companyHTML;
+                } else if (item.companyTypeRaw) {
+                    companyEl.innerHTML = '<span class="type-badge type-unknown">' + escapeHtml(item.companyTypeRaw) + '</span>';
+                } else {
+                    companyEl.innerHTML = '<span class="type-badge type-unknown">' + escapeHtml(company) + '</span>';
+                }
+            }
         };
-        setPair(document.getElementById('ipinfoUsageType'), document.getElementById('ipinfoCompanyType'), q.ipinfo);
-        setPair(document.getElementById('ipregistryUsageType'), document.getElementById('ipregistryCompanyType'), q.ipregistry);
-        setPair(document.getElementById('ipapiUsageType'), document.getElementById('ipapiCompanyType'), q.ipapi);
+        
+        setPair(document.getElementById('ipinfoUsageType'), document.getElementById('ipinfoCompanyType'), q.ipinfo, 'IPinfo');
+        setPair(document.getElementById('ipregistryUsageType'), document.getElementById('ipregistryCompanyType'), q.ipregistry, 'ipregistry');
+        setPair(document.getElementById('ipapiUsageType'), document.getElementById('ipapiCompanyType'), q.ipapi, 'ipapi');
     }
 
     function fillMultiSourceScores(q) {
@@ -2413,12 +2779,21 @@
         }
 
         var results = await Promise.allSettled([getASN(ip), getIPInfo(ip), getIPQuality(ip), getIpapi(ip), getIpregistryClient(ip), getIPPure(ip)]);
+        
+        console.log('[run] 所有API调用结果状态:');
+        results.forEach((r, i) => {
+            var names = ['getASN', 'getIPInfo', 'getIPQuality', 'getIpapi', 'getIpregistryClient', 'getIPPure'];
+            console.log('  ' + names[i] + ':', r.status, r.status === 'fulfilled' ? '✓' : '✗ ' + (r.reason || ''));
+        });
+        
         var asnInfo = results[0].status === 'fulfilled' ? results[0].value : { asn: t('unknown'), org: t('unknown') };
         var ipInfo = results[1].status === 'fulfilled' ? results[1].value : null;
         var quality = results[2].status === 'fulfilled' ? results[2].value : null;
         var ipapi = results[3].status === 'fulfilled' ? results[3].value : null;
         var ipregistryFront = results[4].status === 'fulfilled' ? results[4].value : null;
         var ippure = results[5].status === 'fulfilled' ? results[5].value : null;
+        
+        console.log('[run] quality数据:', quality);
 
         // ASN信息备用：如果getASN失败，从IPPure获取
         if ((!asnInfo || asnInfo.asn === t('unknown')) && ippure && ippure.asn) {
@@ -2604,15 +2979,48 @@
         }
     }
     
+    // 更新风险条形图的辅助函数
+    function updateRiskBar(scoreId, barId, score) {
+        var scoreEl = document.getElementById(scoreId);
+        var barEl = document.getElementById(barId);
+        
+        if (scoreEl) {
+            scoreEl.textContent = Math.round(score) + '%';
+        }
+        
+        if (barEl) {
+            // 更新宽度
+            setTimeout(function() {
+                barEl.style.width = score + '%';
+            }, 100);
+            
+            // 移除旧的样式
+            barEl.classList.remove('score-excellent', 'score-good', 'score-fair', 'score-poor', 'score-bad');
+            
+            // 根据分数添加对应样式
+            if (score >= 80) {
+                barEl.classList.add('score-excellent');
+            } else if (score >= 60) {
+                barEl.classList.add('score-good');
+            } else if (score >= 40) {
+                barEl.classList.add('score-fair');
+            } else if (score >= 20) {
+                barEl.classList.add('score-poor');
+            } else {
+                barEl.classList.add('score-bad');
+            }
+        }
+    }
+    
     // 计算综合评分（IP风险 + 网站可达性）
     function calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor) {
         var overallScoreNum = document.getElementById('overallScore');
         var overallScoreRing = document.getElementById('overallRing');
         
-        // ========== 1. IP风险评分（0-100，越高越好）==========
-        var riskScore = 100;
+        // ========== 1. 四维度风险评分计算 ==========
         
-        // 统计各数据源的风险判断数量，用于多源验证
+        // A. 渠道风险评分（机房/VPN/代理/Tor）- 采用"最差决定整体"策略
+        var channelScore = 100;
         var riskCounters = {
             dc: 0, vpn: 0, proxy: 0, tor: 0, 
             abuser: 0, crawler: 0, mobile: 0, satellite: 0
@@ -2623,7 +3031,7 @@
             var sources = ['ip2location', 'ipapi', 'ipregistry', 'ipqs', 'scamalytics', 'ipdata', 'ipinfo', 'ipwhois', 'ippure'];
             sources.forEach(function(src) {
                 var item = mergedQuality[src];
-                if (item && item.countryCode) { // 有效数据源
+                if (item && item.countryCode) {
                     totalSources++;
                     if (item.datacenter || item.server) riskCounters.dc++;
                     if (item.vpn) riskCounters.vpn++;
@@ -2635,91 +3043,206 @@
             });
         }
         
-        // 计算多源确认比例（需要至少2个数据源响应）
-        var minSources = Math.max(2, Math.floor(totalSources * 0.3)); // 至少30%数据源确认
+        // 渠道风险评分策略（降低扣分力度）
+        // Tor 最危险（1个渠道扣20分，2个以上扣35分）
+        if (riskCounters.tor >= 2) channelScore -= 35;
+        else if (isTor || riskCounters.tor > 0) channelScore -= 20;
         
-        // 【高危风险项】多源确认后重度扣分
-        // Tor洋葱路由：极高风险，多源确认扣40分，单源扣25分
-        if (riskCounters.tor >= minSources) {
-            riskScore -= 40;
-        } else if (isTor || riskCounters.tor > 0) {
-            riskScore -= 25;
-        }
+        // VPN 高风险（1个渠道扣12分，2个以上扣25分）
+        if (riskCounters.vpn >= 2) channelScore -= 25;
+        else if (isVPN || riskCounters.vpn > 0) channelScore -= 12;
         
-        // VPN：高风险，多源确认扣35分，单源扣20分
-        if (riskCounters.vpn >= minSources) {
-            riskScore -= 35;
-        } else if (isVPN || riskCounters.vpn > 0) {
-            riskScore -= 20;
-        }
+        // Proxy 高风险（1个渠道扣12分，2个以上扣25分）
+        if (riskCounters.proxy >= 2) channelScore -= 25;
+        else if (isProxy || riskCounters.proxy > 0) channelScore -= 12;
         
-        // 代理服务器：高风险，多源确认扣35分，单源扣20分
-        if (riskCounters.proxy >= minSources) {
-            riskScore -= 35;
-        } else if (isProxy || riskCounters.proxy > 0) {
-            riskScore -= 20;
-        }
+        // 机房IP 中等风险（1个渠道扣8分，3个以上扣18分）
+        if (riskCounters.dc >= 3) channelScore -= 18;
+        else if (isDC || riskCounters.dc > 0) channelScore -= 8;
         
-        // 【中危风险项】
-        // 机房IP：中风险，多源确认扣25分，单源扣12分
-        if (riskCounters.dc >= minSources) {
-            riskScore -= 25;
-        } else if (isDC || riskCounters.dc > 0) {
-            riskScore -= 12;
-        }
+        channelScore = Math.min(100, Math.max(0, channelScore));
         
-        // 滥用记录：中风险，多源确认扣30分，单源扣15分
-        if (riskCounters.abuser >= minSources) {
-            riskScore -= 30;
-        } else if (mergedDetail && mergedDetail.is_abuser) {
-            riskScore -= 15;
-        }
+        // B. 原生检测评分（基于 usageType 和 companyType）
+        var nativeScore = 100;
+        var hasNativeData = false;
         
-        // 【低危风险项】
-        // 爬虫IP：低风险，多源确认扣15分，单源扣8分
-        if (riskCounters.crawler >= minSources) {
-            riskScore -= 15;
-        } else if (mergedDetail && mergedDetail.is_crawler) {
-            riskScore -= 8;
-        }
-        
-        // 匿名IP：中风险，扣20分
-        if (mergedDetail && mergedDetail.is_anonymous) riskScore -= 20;
-        
-        // 移动网络和卫星网络不扣分：这些是正常的网络类型，不属于风险
-        // if (mergedDetail && mergedDetail.is_mobile) riskScore -= 0;
-        // if (mergedDetail && mergedDetail.is_satellite) riskScore -= 0;
-        
-        // 保留IP（Bogon）：严重问题，扣50分
-        if (mergedDetail && mergedDetail.is_bogon) riskScore -= 50;
-        
-        // 参考多源风险评分
-        var validScores = [];
+        // 检查三个数据源的 usageType 和 companyType
         if (mergedQuality) {
-            var sources = ['ip2location', 'ipapi', 'ipregistry', 'ipqs', 'scamalytics', 'ipdata', 'ipinfo', 'ippure'];
-            sources.forEach(function(src) {
+            var nativeSources = ['ipinfo', 'ipregistry', 'ipapi'];
+            var businessCount = 0; // 商用网络计数
+            var residentialCount = 0; // 家宽计数
+            var validCount = 0;
+            
+            nativeSources.forEach(function(src) {
                 var item = mergedQuality[src];
-                if (item && item.score != null && item.countryCode) { // 确保是有效数据源
-                    var scoreStr = String(item.score).replace('%', '');
-                    var riskNum = parseFloat(scoreStr);
-                    if (!isNaN(riskNum) && riskNum >= 0 && riskNum <= 100) {
-                        // 风险分转为安全分
-                        var safetyScore = 100 - riskNum;
-                        validScores.push(safetyScore);
-                    }
+                if (item && (item.usageType || item.companyType)) {
+                    validCount++;
+                    var usage = String(item.usageType || '').toLowerCase();
+                    var company = String(item.companyType || '').toLowerCase();
+                    
+                    // 判断是否为商用网络
+                    var isBusiness = (
+                        usage.indexOf('business') >= 0 || 
+                        usage.indexOf('hosting') >= 0 || 
+                        usage.indexOf('isp') >= 0 ||
+                        company.indexOf('business') >= 0 || 
+                        company.indexOf('hosting') >= 0 || 
+                        company.indexOf('isp') >= 0
+                    );
+                    
+                    // 判断是否为家宽
+                    var isResidential = (
+                        usage.indexOf('residential') >= 0 || 
+                        company.indexOf('residential') >= 0
+                    );
+                    
+                    if (isBusiness) businessCount++;
+                    if (isResidential) residentialCount++;
+                }
+            });
+            
+            if (validCount > 0) {
+                hasNativeData = true;
+                // 原生检测判定为机房IP（hosting/business），大幅扣分
+                if (businessCount > 0) {
+                    // 1个源判定机房扣40分，2个扣60分，3个扣80分
+                    if (businessCount >= 3) nativeScore -= 80;
+                    else if (businessCount >= 2) nativeScore -= 60;
+                    else nativeScore -= 40;
+                }
+                // 家宽是好的，不扣分
+            } else {
+                // 没有有效的原生检测数据，给中等分
+                nativeScore = 70;
+            }
+        } else {
+            // 没有数据，给中等分
+            nativeScore = 70;
+        }
+        
+        nativeScore = Math.min(100, Math.max(0, nativeScore));
+        
+        // C. 风险因子评分（滥用/爬虫/匿名等）- 采用严格扣分策略
+        var factorsScore = 100;
+        
+        // 滥用记录：只要有1个渠道报告就扣30分，2个以上扣45分
+        if (riskCounters.abuser >= 2) factorsScore -= 45;
+        else if (riskCounters.abuser > 0 || (mergedDetail && mergedDetail.is_abuser)) factorsScore -= 30;
+        
+        // 爬虫：1个渠道扣20分，2个以上扣30分
+        if (riskCounters.crawler >= 2) factorsScore -= 30;
+        else if (riskCounters.crawler > 0 || (mergedDetail && mergedDetail.is_crawler)) factorsScore -= 20;
+        
+        // 匿名IP：直接扣25分（高风险）
+        if (mergedDetail && mergedDetail.is_anonymous) factorsScore -= 25;
+        
+        // 保留IP（Bogon）：直接扣60分（极高风险）
+        if (mergedDetail && mergedDetail.is_bogon) factorsScore -= 60;
+        
+        factorsScore = Math.min(100, Math.max(0, factorsScore));
+        
+        // D. 多源数据评分 - 基于风险因子矩阵统计
+        // 统计所有数据源对各风险维度的判定结果
+        var sourcesScore = 100;
+        var riskPositiveCount = 0; // 判定为风险的总条数
+        var totalChecks = 0; // 总检查次数
+        
+        // 风险维度映射表（共9个维度）
+        var riskDimensions = {
+            'datacenter': ['datacenter', 'server', 'hosting'],     // 机房IP
+            'vpn': ['vpn'],                                         // VPN
+            'proxy': ['proxy'],                                     // 代理
+            'tor': ['tor'],                                         // Tor洋葱路由
+            'crawler': ['robot', 'crawler'],                        // 爬虫
+            'abuser': ['abuser', 'attacker', 'threat'],            // 滥用记录
+            'mobile': ['mobile'],                                   // 移动网络
+            'satellite': ['satellite'],                             // 卫星网络
+            'bogon': ['bogon', 'reserved']                         // 保留IP
+        };
+        
+        if (mergedQuality) {
+            var matrixSources = ['ip2location', 'ipapi', 'ipregistry', 'ipqs', 'scamalytics', 'ipdata', 'ipinfo', 'ipwhois', 'ippure'];
+            
+            matrixSources.forEach(function(src) {
+                var item = mergedQuality[src];
+                if (item && item.countryCode) {
+                    // 遍历9个风险维度
+                    Object.keys(riskDimensions).forEach(function(dimension) {
+                        var fields = riskDimensions[dimension];
+                        totalChecks++;
+                        
+                        // 检查该维度的所有字段
+                        var hasRisk = fields.some(function(field) {
+                            var value = item[field];
+                            return value === true || value === 'true' || value === 1 || value === '1' || value === 'yes';
+                        });
+                        
+                        if (hasRisk) {
+                            riskPositiveCount++;
+                        }
+                    });
                 }
             });
         }
         
-        // 如果有多源评分（至少2个），与本地计算加权平均
-        // 数据源越多，越信任多源评分
-        if (validScores.length >= 2) {
-            var avgSourceScore = validScores.reduce(function(a, b) { return a + b; }, 0) / validScores.length;
-            var sourceWeight = Math.min(0.7, 0.3 + validScores.length * 0.05); // 2源=0.4，5源=0.55，8源=0.7
-            riskScore = Math.round(riskScore * (1 - sourceWeight) + avgSourceScore * sourceWeight);
+        console.log('[多源数据评分] 总检查次数:', totalChecks, '风险条数:', riskPositiveCount);
+        
+        if (totalChecks > 0) {
+            // 根据风险判定条数进行扣分
+            // 策略：只要有一条判定为风险就扣分，条数越多扣分越多
+            if (riskPositiveCount >= 7) {
+                // 极高风险：7条以上，扣50分
+                sourcesScore -= 50;
+                console.log('[多源数据评分] 极高风险 (>=7条)，扣50分');
+            } else if (riskPositiveCount >= 5) {
+                // 高风险：5-6条，扣40分
+                sourcesScore -= 40;
+                console.log('[多源数据评分] 高风险 (5-6条)，扣40分');
+            } else if (riskPositiveCount >= 3) {
+                // 中等风险：3-4条，扣30分
+                sourcesScore -= 30;
+                console.log('[多源数据评分] 中等风险 (3-4条)，扣30分');
+            } else if (riskPositiveCount >= 1) {
+                // 低风险：1-2条，扣15分
+                sourcesScore -= 15;
+                console.log('[多源数据评分] 低风险 (1-2条)，扣15分');
+            }
+            // 0条不扣分
         }
         
+        sourcesScore = Math.min(100, Math.max(0, sourcesScore));
+        console.log('[多源数据评分] 最终评分:', sourcesScore);
+        
+        // 综合IP风险评分 - 采用"最差决定整体"策略（温和版）
+        // 找出四个维度中的最低分
+        var dimensionScores = [channelScore, nativeScore, factorsScore, sourcesScore];
+        var minDimension = Math.min.apply(null, dimensionScores);
+        var avgDimension = (channelScore * 0.25 + nativeScore * 0.30 + factorsScore * 0.25 + sourcesScore * 0.20);
+        
+        // 最差维度有影响，但不会过度主导整体评分
+        var riskScore;
+        if (minDimension < 30) {
+            // 最差维度<30分：最低分占40%，加权平均占60%
+            riskScore = Math.round(minDimension * 0.40 + avgDimension * 0.60);
+        } else if (minDimension < 50) {
+            // 最差维度30-50分：最低分占30%，加权平均占70%
+            riskScore = Math.round(minDimension * 0.30 + avgDimension * 0.70);
+        } else if (minDimension < 70) {
+            // 最差维度50-70分：最低分占20%，加权平均占80%
+            riskScore = Math.round(minDimension * 0.20 + avgDimension * 0.80);
+        } else {
+            // 最差维度>=70分：使用加权平均
+            riskScore = Math.round(avgDimension);
+        }
         riskScore = Math.min(100, Math.max(0, riskScore));
+        
+        console.log('[综合评分] 渠道:', channelScore, '原生:', nativeScore, '因子:', factorsScore, '多源:', sourcesScore, '最差:', minDimension, '→ 综合:', riskScore);
+        
+        // 更新4个维度的条形图
+        updateRiskBar('channelRiskScore', 'channelRiskBar', channelScore);
+        updateRiskBar('nativeRiskScore', 'nativeRiskBar', nativeScore);
+        updateRiskBar('factorsRiskScore', 'factorsRiskBar', factorsScore);
+        updateRiskBar('sourcesRiskScore', 'sourcesRiskBar', sourcesScore);
         
         // ========== 2. 网站可达性评分（0-100，越高越好）==========
         var reachScore = 0;
@@ -2769,12 +3292,26 @@
             }
         });
         
-        // 计算可达性评分
+        // 计算可达性评分 - 采用更严格的策略
         var totalSites = reachCount + unreachCount;
         if (siteScores.length > 0) {
-            reachScore = siteScores.reduce(function(a, b) { return a + b; }, 0) / siteScores.length;
-            // 不可达惩罚：每个不可达网站额外扣5分
-            reachScore -= unreachCount * 5;
+            var avgReach = siteScores.reduce(function(a, b) { return a + b; }, 0) / siteScores.length;
+            var minReach = Math.min.apply(null, siteScores);
+            
+            // 不可达网站的惩罚
+            var unreachPenalty = unreachCount * 8; // 每个不可达网站扣8分
+            
+            // 如果有不可达网站，使用最低分和平均分的加权
+            if (unreachCount > 0) {
+                // 有不可达网站：最低分占40%，平均分占60%
+                reachScore = Math.round(minReach * 0.40 + avgReach * 0.60) - unreachPenalty;
+            } else if (minReach < 60) {
+                // 全部可达但有低分：最低分占30%
+                reachScore = Math.round(minReach * 0.30 + avgReach * 0.70);
+            } else {
+                // 全部可达且分数都不错：使用平均分
+                reachScore = Math.round(avgReach);
+            }
         } else {
             reachScore = 50; // 无测试数据，给中等分
         }
@@ -2782,21 +3319,117 @@
         reachScore = Math.min(100, Math.max(0, reachScore));
         
         // ========== 3. 综合评分 ==========
-        // 权重：IP干净程度70%，延迟可达性30%
-        var finalScore = Math.round(riskScore * 0.70 + reachScore * 0.30);
+        // IP风险主导，但给予可达性固定20%权重
+        var finalScore = Math.round(riskScore * 0.80 + reachScore * 0.20);
         finalScore = Math.min(100, Math.max(0, finalScore));
         
-        // 更新UI
-        if (overallScoreNum) {
-            overallScoreNum.textContent = finalScore;
+        // 更新UI - "IP 风险评分"卡片只显示纯风险评分（riskScore）
+        var riskOnlyScoreNum = document.getElementById('riskOnlyScore');
+        var riskOnlyRing = document.getElementById('riskOnlyRing');
+        var riskOnlyLevel = document.getElementById('riskOnlyLevel');
+        
+        if (riskOnlyScoreNum) {
+            riskOnlyScoreNum.textContent = Math.round(riskScore);
         }
         
-        if (overallScoreRing) {
+        if (riskOnlyRing) {
             var circumference = 364.42;  // 2 * π * 58
-            var offset = circumference - (finalScore / 100) * circumference;
-            overallScoreRing.style.strokeDashoffset = offset;
+            var offset = circumference - (riskScore / 100) * circumference;
+            riskOnlyRing.style.strokeDashoffset = offset;
             
-
+            // 移除旧的评分等级样式
+            riskOnlyRing.classList.remove('score-excellent', 'score-good', 'score-fair', 'score-poor', 'score-bad');
+            
+            // 根据分数添加对应样式
+            if (riskScore >= 80) {
+                riskOnlyRing.classList.add('score-excellent');
+            } else if (riskScore >= 60) {
+                riskOnlyRing.classList.add('score-good');
+            } else if (riskScore >= 40) {
+                riskOnlyRing.classList.add('score-fair');
+            } else if (riskScore >= 20) {
+                riskOnlyRing.classList.add('score-poor');
+            } else {
+                riskOnlyRing.classList.add('score-bad');
+            }
+        }
+        
+        // 更新等级文字
+        if (riskOnlyLevel) {
+            var levelText, levelClass;
+            if (riskScore >= 80) {
+                levelText = t('level.excellent');
+                levelClass = 'level-excellent';
+            } else if (riskScore >= 60) {
+                levelText = t('level.good');
+                levelClass = 'level-good';
+            } else if (riskScore >= 40) {
+                levelText = t('level.fair');
+                levelClass = 'level-fair';
+            } else if (riskScore >= 20) {
+                levelText = t('level.poor');
+                levelClass = 'level-poor';
+            } else {
+                levelText = t('level.bad');
+                levelClass = 'level-bad';
+            }
+            riskOnlyLevel.textContent = levelText;
+            riskOnlyLevel.className = 'overall-level ' + levelClass;
+        }
+        
+        // 更新顶部概览区域的环形图
+        var overviewScoreNum = document.getElementById('overviewScoreNum');
+        var overviewScoreRing = document.getElementById('overviewScoreRing');
+        
+        if (overviewScoreNum) {
+            overviewScoreNum.textContent = finalScore;
+        }
+        
+        if (overviewScoreRing) {
+            var circumference2 = 301.59;  // 2 * π * 48
+            var offset2 = circumference2 - (finalScore / 100) * circumference2;
+            overviewScoreRing.style.strokeDashoffset = offset2;
+            
+            // 移除旧的评分等级样式
+            overviewScoreRing.classList.remove('score-excellent', 'score-good', 'score-fair', 'score-poor', 'score-bad');
+            
+            // 根据分数添加对应样式
+            if (finalScore >= 80) {
+                overviewScoreRing.classList.add('score-excellent');
+            } else if (finalScore >= 60) {
+                overviewScoreRing.classList.add('score-good');
+            } else if (finalScore >= 40) {
+                overviewScoreRing.classList.add('score-fair');
+            } else if (finalScore >= 20) {
+                overviewScoreRing.classList.add('score-poor');
+            } else {
+                overviewScoreRing.classList.add('score-bad');
+            }
+        }
+        
+        // 更新等级文字
+        var overallLevelEl = document.getElementById('overallLevel');
+        if (overallLevelEl) {
+            var level = '', levelClass = '';
+            if (finalScore >= 80) {
+                level = t('level.excellent');  // 优秀
+                levelClass = 'ok';
+            } else if (finalScore >= 60) {
+                level = t('level.good');       // 良好
+                levelClass = 'ok';
+            } else if (finalScore >= 40) {
+                level = t('level.fair');       // 一般
+                levelClass = 'warn';
+            } else if (finalScore >= 20) {
+                level = t('level.poor');       // 较差
+                levelClass = 'bad';
+            } else {
+                level = t('level.bad');        // 极差
+                levelClass = 'bad';
+            }
+            
+            overallLevelEl.textContent = level;
+            overallLevelEl.className = 'overall-level ' + levelClass;
         }
         
         // 调试信息（开发环境可用）

@@ -124,71 +124,97 @@
 
 ### 1️⃣ IP 风险评分（满分 100 分，占比 70%）
 
-从 100 分基准开始，根据风险因素扣分：
+采用 **四维度风险评估模型**，从 100 分基准开始扣分：
+
+#### A. 渠道风险评分（VPN/代理/Tor/机房）
+
+基于多数据源投票机制，避免单一渠道误判：
 
 <table>
 <thead>
   <tr>
     <th width="25%">风险类型</th>
-    <th width="15%">扣分</th>
+    <th width="35%">扣分策略</th>
     <th>说明</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td>🏢 数据中心 IP</td>
-    <td><strong>-35分</strong></td>
-    <td>⚠️ <strong>严重风险</strong>：机房 IP 常被用于自动化操作</td>
-  </tr>
-  <tr>
-    <td>🔒 VPN</td>
-    <td><strong>-30分</strong></td>
-    <td>⚠️ <strong>严重风险</strong>：匿名化工具</td>
-  </tr>
-  <tr>
-    <td>🌐 代理 (Proxy)</td>
-    <td><strong>-30分</strong></td>
-    <td>⚠️ <strong>严重风险</strong>：流量中转节点</td>
-  </tr>
-  <tr>
-    <td>🧅 Tor 洋葱路由</td>
-    <td><strong>-40分</strong></td>
+    <td>🧅 <strong>Tor 洋葱路由</strong></td>
+    <td>1个渠道报告：<strong>-20分</strong><br>2个以上报告：<strong>-35分</strong></td>
     <td>🚨 <strong>极高风险</strong>：暗网匿名网络</td>
   </tr>
   <tr>
-    <td>🤖 爬虫 (Crawler)</td>
-    <td><strong>-25分</strong></td>
-    <td>⚠️ <strong>高风险</strong>：自动化工具</td>
+    <td>🔒 <strong>VPN</strong></td>
+    <td>1个渠道报告：<strong>-12分</strong><br>2个以上报告：<strong>-25分</strong></td>
+    <td>⚠️ <strong>高风险</strong>：匿名化工具</td>
   </tr>
   <tr>
-    <td>⚠️ 滥用记录 (Abuser)</td>
-    <td><strong>-30分</strong></td>
-    <td>⚠️ <strong>高风险</strong>：历史恶意行为</td>
+    <td>🌐 <strong>代理 (Proxy)</strong></td>
+    <td>1个渠道报告：<strong>-12分</strong><br>2个以上报告：<strong>-25分</strong></td>
+    <td>⚠️ <strong>高风险</strong>：流量中转节点</td>
   </tr>
   <tr>
-    <td>🎭 匿名 IP</td>
-    <td><strong>-20分</strong></td>
-    <td>⚠️ <strong>中等风险</strong>：隐藏真实身份</td>
-  </tr>
-  <tr>
-    <td>🚫 保留 IP (Bogon)</td>
-    <td><strong>-50分</strong></td>
-    <td>🚨 <strong>极严重</strong>：非法或保留地址段</td>
-  </tr>
-  <tr>
-    <td>📱 移动网络</td>
-    <td><strong>0分</strong></td>
-    <td>✅ 正常网络类型，不扣分</td>
-  </tr>
-  <tr>
-    <td>🛰️ 卫星网络</td>
-    <td><strong>0分</strong></td>
-    <td>✅ 正常网络类型，不扣分</td>
+    <td>🏢 <strong>数据中心 IP</strong></td>
+    <td>1个渠道报告：<strong>-8分</strong><br>3个以上报告：<strong>-18分</strong></td>
+    <td>⚠️ <strong>中等风险</strong>：机房 IP 常被用于自动化操作</td>
   </tr>
 </tbody>
 </table>
 
-> **💡 数据源整合**：综合 `ipinfo.io`、`ipapi.is`、`IP2Location`、`Scamalytics`、`ipregistry`、`IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare` 等 **10+ 权威数据源**，通过多数表决机制确保准确性。
+#### B. 原生检测评分（基于 usageType 和 companyType）
+
+**重点关注机房IP判定**，原生检测判定为 hosting/business/isp 时大幅扣分：
+
+| 商用网络判定数 | 扣分 | 说明 |
+|---------------|------|------|
+| **1个数据源** | **-40分** | 🚨 疑似机房IP |
+| **2个数据源** | **-60分** | 🚨 高置信度机房IP |
+| **3个数据源** | **-80分** | 🚨 确认为机房IP |
+
+> **数据源**：ipinfo.io、ipregistry.net、ip-api.com
+
+#### C. 黑名单评分（滥用记录）
+
+基于 AbuseIPDB、Scamalytics 等滥用数据库：
+
+| 滥用置信度 | 扣分 | 说明 |
+|-----------|------|------|
+| **低置信度（<30%）** | **-10分** | 轻微滥用记录 |
+| **中置信度（30-70%）** | **-25分** | 明确滥用记录 |
+| **高置信度（>70%）** | **-40分** | 🚨 严重滥用记录 |
+
+#### D. 风险因子评分（多源数据汇总）
+
+检测 **9个风险维度**，采用风险条数阈值判定：
+
+**风险维度**：机房IP、VPN、代理、Tor、爬虫、滥用记录、移动网络、卫星网络、保留IP
+
+| 风险条数 | 扣分 | 说明 |
+|---------|------|------|
+| **1-2条** | **-15分** | ⚠️ 低风险 |
+| **3-4条** | **-30分** | ⚠️ 中等风险 |
+| **5-6条** | **-40分** | 🚨 高风险 |
+| **≥7条** | **-50分** | 🚨 极高风险 |
+
+#### 综合评分策略
+
+**"最差决定整体"温和版**：采用四维度平衡加权 + 最低分影响机制
+
+1. **四维度加权平均**：
+   ```
+   加权平均 = 渠道评分×25% + 原生检测×30% + 黑名单×25% + 风险因子×20%
+   ```
+
+2. **最差维度影响**（防止木桶短板）：
+   - 最差维度 < 30分：`综合评分 = 最低分×40% + 加权平均×60%`
+   - 最差维度 30-50分：`综合评分 = 最低分×30% + 加权平均×70%`
+   - 最差维度 50-70分：`综合评分 = 最低分×20% + 加权平均×80%`
+   - 最差维度 ≥ 70分：`综合评分 = 加权平均`
+
+> **设计理念**：最差维度对整体有影响，但不会过度主导。即使某一维度很差，其他维度表现好仍能拉高整体评分。
+
+> **💡 数据源整合**：综合 `ipinfo.io`、`ipapi.is`、`IP2Location`、`Scamalytics`、`ipregistry`、`IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare`、`IPPure` 等 **10+ 权威数据源**。
 
 ### 2️⃣ 可达性评分（满分 100 分，占比 30%）
 
