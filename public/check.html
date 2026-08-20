@@ -2597,8 +2597,8 @@
     
     // 计算综合评分（IP风险 + 网站可达性）
     function calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor) {
-        var overallScoreNum = document.getElementById('overallScoreNum');
-        var overallScoreRing = document.getElementById('overallScoreRing');
+        var overallScoreNum = document.getElementById('overallScore');
+        var overallScoreRing = document.getElementById('overallRing');
         
         // ========== 1. IP风险评分（0-100，越高越好）==========
         var riskScore = 100;
@@ -2783,18 +2783,40 @@
         }
         
         if (overallScoreRing) {
-            var circumference = 301.59;
+            var circumference = 364.42;  // 2 * π * 58
             var offset = circumference - (finalScore / 100) * circumference;
             overallScoreRing.style.strokeDashoffset = offset;
             
-            // 根据分数设置颜色（更严格的评级）
+            // 根据分数设置颜色
             var scoreClass = '';
-            if (finalScore >= 85) scoreClass = 'score-excellent';      // 优秀：85+
-            else if (finalScore >= 70) scoreClass = 'score-good';      // 良好：70-84
-            else if (finalScore >= 50) scoreClass = 'score-fair';      // 一般：50-69
-            else scoreClass = 'score-poor';                             // 较差：<50
+            var levelText = '';
+            var levelKey = '';
+            if (finalScore >= 80) {
+                scoreClass = 'score-excellent';
+                levelText = '优秀';
+                levelKey = 'level.excellent';
+            } else if (finalScore >= 60) {
+                scoreClass = 'score-good';
+                levelText = '良好';
+                levelKey = 'level.good';
+            } else if (finalScore >= 40) {
+                scoreClass = 'score-fair';
+                levelText = '一般';
+                levelKey = 'level.fair';
+            } else {
+                scoreClass = 'score-poor';
+                levelText = '较差';
+                levelKey = 'level.poor';
+            }
             
             overallScoreRing.className = 'ring-fg ' + scoreClass;
+            
+            // 更新等级文本
+            var overallLevel = document.getElementById('overallLevel');
+            if (overallLevel) {
+                overallLevel.textContent = levelText;
+                overallLevel.setAttribute('data-i18n', levelKey);
+            }
         }
         
         // 调试信息（开发环境可用）
