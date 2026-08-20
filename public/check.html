@@ -2399,7 +2399,16 @@
                 els.media[name].style.background = '';
                 els.media[name].style.borderColor = '';
             });
-            reachabilityPromise = fillSiteReachability();
+            // 添加15秒超时保护，防止卡死
+            reachabilityPromise = Promise.race([
+                fillSiteReachability(),
+                new Promise(function(resolve) {
+                    setTimeout(function() {
+                        console.warn('网站可达性检测超时(15秒)，继续执行');
+                        resolve();
+                    }, 15000);
+                })
+            ]);
             addMediaLinks();
         }
 
