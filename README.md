@@ -34,7 +34,7 @@ Demo: https://ipaddr.524228.xyz
 
 
 ### IP地址风险
-- 多源风险聚合：汇总 `ipinfo.io`、`ipapi.is`、`IP2Location`、`Scamalytics`、`ipregistry`、`IPQualityScore(IPQS)`、`IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare` 的使用类型、公司类型、国家代码与风险因子，并展示评分与风险等级。
+- 多源风险聚合：汇总 `ipinfo.io`、`ipapi.is`、`IP2Location`、`Scamalytics`、`ipregistry`、`IPPure`、`IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare` 的使用类型、公司类型、国家代码与风险因子，并展示评分与风险等级。
 - 媒体可达性：并行检查 `TikTok`、`Disney+`、`Netflix`、`YouTube`、`Prime Video`、`Spotify`、`ChatGPT`、`动画疯` 是否可达
   ![20251015-103805.png](img/20251015-103805.png)
 
@@ -68,10 +68,9 @@ Demo: https://ipaddr.524228.xyz
 
 **环境变量与密钥**
 - `ABUSEIPDB_KEY`：用于 AbuseIPDB 查询。
-- `IPQS_KEY`：用于 IPQualityScore 查询。
 - `IP2LOCATION_KEY`（可选）：用于 IP2Location 官方接口。
 - Cloudflare 配置方式：
-  - 推荐使用密钥：`wrangler secret put ABUSEIPDB_KEY`、`wrangler secret put IPQS_KEY`、`wrangler secret put IP2LOCATION_KEY`；
+  - 推荐使用密钥：`wrangler secret put ABUSEIPDB_KEY`、`wrangler secret put IP2LOCATION_KEY`；
   - 或在 `wrangler.jsonc` 的 `vars` 中设置（示例参考 `wrangler.encrypt.jsonc`）。
 
 ## 调试代码
@@ -140,7 +139,7 @@ Demo: https://ipaddr.524228.xyz
 > - `IP2Location`（风险评分与数据中心/代理标记）
 > - `Scamalytics`（欺诈分与风险等级）
 > - `ipregistry`（用途类型，演示使用 `tryout` Key）
-> - `IPQualityScore`（风险评分、代理/VPN/Tor 检测）
+> - `IPPure`（公共 API，无需密钥，提供风险评分、住宅/数据中心判定）
 > - `IPData`、`IPWhois`、`DB-IP`、`AbuseIPDB`、`Cloudflare`（补充评分与安全标记）
 >
 

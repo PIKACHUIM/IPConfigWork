@@ -1,4 +1,1040 @@
-<!DOCTYPE html>
+// 本文件由 public/*.html 自动生成，请勿手动修改。
+// 页面以内联字符串形式提供，访问 /、/check、/speed 无需 .html 后缀。
+export const INDEX_HTML: string = String.raw`<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>获取我的IP地址</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg-soft: #0b1220;
+      --surface: rgba(255, 255, 255, 0.03);
+      --surface-hover: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #f2f6fc;
+      --text-2: #9aa8bd;
+      --text-3: #5c6b82;
+      --accent: #38bdf8;
+      --accent-2: #6366f1;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #fb7185;
+      --ring-track: rgba(255, 255, 255, 0.07);
+      --glow: 0 0 80px rgba(56, 189, 248, 0.16);
+      --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --header-bg: rgba(10, 15, 28, 0.72);
+    }
+
+    :root[data-theme='light'] {
+      --bg: #f4f7fb;
+      --bg-soft: #ffffff;
+      --surface: rgba(15, 23, 42, 0.03);
+      --surface-hover: rgba(15, 23, 42, 0.06);
+      --border: rgba(15, 23, 42, 0.09);
+      --border-strong: rgba(15, 23, 42, 0.16);
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+      --accent: #0284c7;
+      --accent-2: #4f46e5;
+      --green: #059669;
+      --yellow: #d97706;
+      --red: #e11d48;
+      --ring-track: rgba(15, 23, 42, 0.08);
+      --glow: 0 0 80px rgba(2, 132, 199, 0.12);
+      --card-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --header-bg: rgba(255, 255, 255, 0.72);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+    }
+
+    /* ---- 背景装饰 ---- */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(56, 189, 248, 0.14), transparent 60%),
+        radial-gradient(900px 500px at 90% 110%, rgba(99, 102, 241, 0.14), transparent 60%);
+      transition: opacity 0.4s ease;
+    }
+    :root[data-theme='light'] .bg {
+      opacity: 0.55;
+    }
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+      opacity: 0.5;
+      transition: background-image 0.4s ease;
+    }
+
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    /* ---- 顶部工具条 ---- */
+    .topbar {
+      position: fixed;
+      top: 20px;
+      right: 28px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      width: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--header-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .icon-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+    .icon-btn svg { width: 19px; height: 19px; }
+    .theme-toggle .sun { display: none; }
+    :root[data-theme='light'] .theme-toggle .sun { display: block; }
+    :root[data-theme='light'] .theme-toggle .moon { display: none; }
+
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      padding: 3px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--header-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .lang-btn {
+      height: 32px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text-2);
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #04121f;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+    }
+    :root[data-theme='light'] .lang-btn.active { color: #ffffff; }
+
+    /* ---- 页头 ---- */
+    .header {
+      padding: 108px 0 32px;
+      text-align: center;
+      animation: fadeUp 0.7s ease both;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.35);
+      color: #04121f;
+    }
+    :root[data-theme='light'] .logo { color: #ffffff; }
+    .logo svg { width: 32px; height: 32px; }
+    .header h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(120deg, var(--text) 30%, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header p {
+      margin-top: 14px;
+      color: var(--text-2);
+      font-size: 16px;
+    }
+
+    /* ---- TAB 菜单 ---- */
+    .tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px;
+      margin-top: 24px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 22px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #04121f;
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35);
+    }
+    :root[data-theme='light'] .tab.active { color: #ffffff; }
+    .tab svg { width: 16px; height: 16px; }
+
+    /* ---- 进度条 ---- */
+    .progress {
+      max-width: 620px;
+      margin: 0 auto 40px;
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+    .progress-track {
+      height: 6px;
+      border-radius: 99px;
+      background: var(--ring-track);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+    .progress-text {
+      margin-top: 12px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* ---- 测试卡片 ---- */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 22px;
+    }
+    .test-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+    .test-card:nth-child(1) { animation-delay: 0.15s; }
+    .test-card:nth-child(2) { animation-delay: 0.25s; }
+    .test-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      background: var(--surface-hover);
+    }
+
+    .test-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+    .version-badge .dot-v {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18);
+    }
+    .test-card[data-version='6'] .version-badge .dot-v {
+      background: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+    }
+
+    .score-ring {
+      --p: 0;
+      --c: var(--accent);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--ring-track) 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 7px;
+      box-sizing: border-box;
+    }
+    .score-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: background 0.3s ease;
+    }
+    .score-num {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-unit {
+      font-size: 11px;
+      color: var(--text-3);
+      transform: translateY(-1px);
+    }
+
+    .test-list { display: flex; flex-direction: column; }
+    .test-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .test-row:last-child { border-bottom: none; }
+    .test-label {
+      font-size: 14px;
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .test-value {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      min-height: 22px;
+      text-align: right;
+    }
+    .val-text.mono {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot.ok { background: var(--green); box-shadow: 0 0 8px rgba(52, 211, 153, 0.7); }
+    .dot.bad { background: var(--red); box-shadow: 0 0 8px rgba(251, 113, 133, 0.7); }
+    .dot.wait {
+      background: var(--yellow);
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.7);
+      animation: pulse 1.2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- 按钮 ---- */
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 36px;
+      animation: fadeUp 0.7s ease 0.3s both;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 34px;
+      border: none;
+      border-radius: 14px;
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 600;
+      color: #04121f;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    :root[data-theme='light'] .btn-primary { color: #ffffff; }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(56, 189, 248, 0.45);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary svg { width: 18px; height: 18px; }
+
+    /* ---- 页脚 ---- */
+    footer {
+      margin-top: 64px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 13px;
+      animation: fadeUp 0.7s ease 0.4s both;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .topbar { top: 14px; right: 16px; }
+      .header { padding-top: 96px; }
+      .test-card { padding: 20px; }
+      .test-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .test-value { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="bg-grid"></div>
+
+  <div class="topbar">
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button class="icon-btn theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换主题">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <h1 data-i18n="header.title">获取我的IP地址</h1>
+      <p data-i18n="header.desc">检测您的 IPv4 与 IPv6 连接状态及网络质量</p>
+      <nav class="tabs">
+        <a href="/" class="tab active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="nav.ip">获取IP地址</span>
+        </a>
+        <a href="/check" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span data-i18n="nav.quality">IP质量检测</span>
+        </a>
+        <a href="/speed" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 12l5-5"/><circle cx="12" cy="12" r="1.5"/></svg>
+          <span data-i18n="nav.speed">网速测试</span>
+        </a>
+      </nav>
+    </header>
+
+    <div class="progress">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-text" id="progress-text" data-i18n="progress.preparing">准备开始检测...</div>
+    </div>
+
+    <div class="test-grid">
+      <section class="test-card" data-version="4">
+        <div class="test-card-head">
+          <div class="version-badge"><span class="dot-v"></span>IPv4</div>
+          <div class="score-ring" id="ipv4-ring">
+            <div class="score-inner">
+              <span class="score-num" id="ipv4-score">--</span><span class="score-unit">分</span>
+            </div>
+          </div>
+        </div>
+        <div class="test-list">
+          <div class="test-row"><span class="test-label" data-i18n="test.address">IP地址</span><span class="test-value" id="ipv4-address"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.asn">ASN编号</span><span class="test-value" id="ipv4-asn-code"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.isp">运营商</span><span class="test-value" id="ipv4-asn-isp"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.dns">DNS解析</span><span class="test-value" id="ipv4-dns"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.google">谷歌连通性</span><span class="test-value" id="ipv4-google"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.domestic">国内连通性</span><span class="test-value" id="ipv4-domestic"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.international">海外连通性</span><span class="test-value" id="ipv4-international"></span></div>
+
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpAws">亚马逊出口IP</span><span class="test-value" id="ipv4-aws-ip"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpSb">ip.sb出口IP</span><span class="test-value" id="ipv4-ipsb-ip"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpCan">icanhazip出口IP</span><span class="test-value" id="ipv4-icanhazip-ip"></span></div>
+        </div>
+      </section>
+
+      <section class="test-card" data-version="6">
+        <div class="test-card-head">
+          <div class="version-badge"><span class="dot-v"></span>IPv6</div>
+          <div class="score-ring" id="ipv6-ring">
+            <div class="score-inner">
+              <span class="score-num" id="ipv6-score">--</span><span class="score-unit">分</span>
+            </div>
+          </div>
+        </div>
+        <div class="test-list">
+          <div class="test-row"><span class="test-label" data-i18n="test.address">IP地址</span><span class="test-value" id="ipv6-address"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.asn">ASN编号</span><span class="test-value" id="ipv6-asn-code"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.isp">运营商</span><span class="test-value" id="ipv6-asn-isp"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.dns">DNS解析</span><span class="test-value" id="ipv6-dns"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.google">谷歌连通性</span><span class="test-value" id="ipv6-google"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.domestic">国内连通性</span><span class="test-value" id="ipv6-domestic"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.international">海外连通性</span><span class="test-value" id="ipv6-international"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpIpify">ipify出口IP</span><span class="test-value" id="ipv6-ipify-ip"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpIdentme">ident.me出口IP</span><span class="test-value" id="ipv6-identme-ip"></span></div>
+          <div class="test-row"><span class="test-label" data-i18n="test.outIpIfconfig">icanhazip出口IP6</span><span class="test-value" id="ipv6-icanhazip-ip"></span></div>
+
+        </div>
+      </section>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" id="refresh-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span data-i18n="btn.refresh">重新检测</span>
+      </button>
+    </div>
+
+    <footer>
+      <span data-i18n="footer.notice">本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。</span>
+      <div style="margin-top: 16px;">
+        <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>IPConfigWork</span>
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------- 多语言 ---------- */
+      const I18N = {
+        zh: {
+          'page.title': '获取我的IP地址',
+          'header.title': '获取我的IP地址',
+          'header.desc': '检测您的 IPv4 与 IPv6 连接状态及网络质量',
+          'nav.ip': '获取IP地址',
+          'nav.quality': 'IP质量检测',
+          'nav.speed': '网速测试',
+          'progress.preparing': '准备开始检测...',
+          'progress.done': '检测完成',
+          'progress.running': '检测进度：{done}/{total}（{percent}%）',
+          'test.address': 'IP出口地址',
+          'test.asn': 'IP ASN编号',
+          'test.isp': '网络运营商',
+          'test.dns': 'IP DNS解析',
+          'test.domestic': '国内连通性',
+          'test.international': '海外连通性',
+          'test.google': '谷歌连通性',
+          'test.outIpAws': '亚马逊出口',
+          'test.outIpSb': 'IP.SB 出口',
+          'test.outIpCan': 'ICANHAZIP4',
+          'test.outIpIpify': 'IPIFY IPV6',
+          'test.outIpIdentme':  'IDENT IPV6',
+          'test.outIpIfconfig': 'ICANHAZIP6',
+          'score.unit': '分',
+          'status.testing': '检测中...',
+          'status.calculating': '计算中...',
+          'status.reachable': '可达',
+          'status.unreachable': '不可达',
+          'status.supported': '支持',
+          'status.dnsFail': '未正确解析DNS',
+          'status.queryFailed': '查询失败',
+          'status.connectFailed': '连接失败',
+          'status.getFailed': '获取失败',
+          'status.unknown': '未知',
+          'btn.refresh': '重新检测',
+          'footer.notice': '本站仅提供IP地址查询的功能，不提供其它任何服务，也不与别的网站有任何合作。',
+          'footer.project': 'IPConfigWork',
+          'theme.dark': '切换亮色模式',
+          'theme.light': '切换暗色模式'
+        },
+        en: {
+          'page.title': 'Get My IP Address',
+          'header.title': 'Get My IP Address',
+          'header.desc': 'Check your IPv4 & IPv6 connectivity and network quality',
+          'nav.ip': 'Get IP',
+          'nav.quality': 'IP Quality',
+          'nav.speed': 'Speed Test',
+          'progress.preparing': 'Preparing to start...',
+          'progress.done': 'Detection complete',
+          'progress.running': 'Progress: {done}/{total} ({percent}%)',
+          'test.address': 'IP Address',
+          'test.asn': 'ASN',
+          'test.isp': 'ISP',
+          'test.dns': 'DNS',
+          'test.domestic': 'Domestic Connectivity',
+          'test.international': 'International Connectivity',
+          'test.google': 'Google Connectivity',
+          'test.outIpAws': 'AWS Outbound IP',
+          'test.outIpSb': 'ip.sb Outbound IP',
+          'test.outIpCan': 'icanhazip Outbound IP',
+          'test.outIpIpify': 'ipify Outbound IP',
+          'test.outIpIdentme': 'ident.me Outbound IP',
+          'test.outIpIfconfig': 'icanhazip Outbound IP (IPv6)',
+          'score.unit': 'pts',
+          'status.testing': 'Testing...',
+          'status.calculating': 'Calculating...',
+          'status.reachable': 'Reachable',
+          'status.unreachable': 'Unreachable',
+          'status.supported': 'Supported',
+          'status.dnsFail': 'DNS resolution failed',
+          'status.queryFailed': 'Query failed',
+          'status.connectFailed': 'Connection failed',
+          'status.getFailed': 'Failed to fetch',
+          'status.unknown': 'Unknown',
+          'btn.refresh': 'Re-test',
+          'footer.notice': 'This site only provides IP address lookup and does not provide any other services or cooperate with any other websites.',
+          'footer.project': 'IPConfigWork',
+          'theme.dark': 'Switch to light mode',
+          'theme.light': 'Switch to dark mode'
+        }
+      };
+
+      // 优先使用已保存的语言设置，否则根据浏览器语言自动检测
+      let currentLang = localStorage.getItem('lang');
+      if (!currentLang) {
+        const browserLang = navigator.language || navigator.languages[0] || 'zh-CN';
+        currentLang = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+      }
+
+      function t(key, vars) {
+        let str = (I18N[currentLang] && I18N[currentLang][key]) || I18N.zh[key] || key;
+        if (vars) {
+          Object.keys(vars).forEach(function (k) {
+            str = str.replace('{' + k + '}', vars[k]);
+          });
+        }
+        return str;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+        document.title = t('page.title');
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          el.textContent = t(el.getAttribute('data-i18n'));
+        });
+        document.querySelectorAll('.lang-btn').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
+        });
+        document.querySelectorAll('.score-unit').forEach(function (el) {
+          el.textContent = t('score.unit');
+        });
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.title = t(document.documentElement.getAttribute('data-theme') === 'light' ? 'theme.light' : 'theme.dark');
+        themeBtn.setAttribute('aria-label', themeBtn.title);
+        // 刷新运行时状态文案
+        updateProgress();
+        updateScores();
+      }
+
+      document.querySelectorAll('.lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          currentLang = btn.getAttribute('data-lang');
+          localStorage.setItem('lang', currentLang);
+          applyLanguage();
+        });
+      });
+
+      /* ---------- 主题切换 ---------- */
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        const btn = document.getElementById('theme-toggle');
+        btn.title = t(theme === 'light' ? 'theme.light' : 'theme.dark');
+        btn.setAttribute('aria-label', btn.title);
+      }
+
+      document.getElementById('theme-toggle').addEventListener('click', function () {
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'light' ? 'dark' : 'light');
+      });
+
+      /* ---------- 工具函数 ---------- */
+      function escapeHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      /* ---------- 检测状态 ---------- */
+      const totalTests = 14; // 7 项 × 2 个版本
+      let completedTests = 0;
+      let ipv4Score = 0;
+      let ipv6Score = 0;
+
+      const allTestIds = [
+        'ipv4-address', 'ipv4-asn-code', 'ipv4-asn-isp', 'ipv4-dns', 'ipv4-domestic', 'ipv4-international', 'ipv4-google',
+        'ipv6-address', 'ipv6-asn-code', 'ipv6-asn-isp', 'ipv6-dns', 'ipv6-domestic', 'ipv6-international', 'ipv6-google'
+      ];
+
+      function updateProgress() {
+        const percent = Math.round((completedTests / totalTests) * 100);
+        document.getElementById('progress-fill').style.width = percent + '%';
+        const textEl = document.getElementById('progress-text');
+        if (completedTests >= totalTests) {
+          textEl.textContent = t('progress.done');
+        } else if (completedTests === 0) {
+          textEl.textContent = t('progress.preparing');
+        } else {
+          textEl.textContent = t('progress.running', {
+            done: completedTests,
+            total: totalTests,
+            percent: percent
+          });
+        }
+      }
+
+      function scoreColor(score) {
+        if (score >= 80) return 'var(--green)';
+        if (score >= 60) return 'var(--accent)';
+        if (score >= 40) return 'var(--yellow)';
+        return 'var(--red)';
+      }
+
+      function updateScores() {
+        ['ipv4', 'ipv6'].forEach(function (v) {
+          const score = v === 'ipv4' ? ipv4Score : ipv6Score;
+          document.getElementById(v + '-score').textContent = score;
+          const ring = document.getElementById(v + '-ring');
+          ring.style.setProperty('--p', score);
+          ring.style.setProperty('--c', scoreColor(score));
+        });
+      }
+
+      function latencyRGB(latency) {
+        // 绿 #34d399 (52,211,153) -> 黄 #fbbf24 (251,191,36)
+        // <=300ms 纯绿，之后平滑渐变，>=1500ms 纯黄
+        const t = typeof latency === 'number' ? Math.min(1, Math.max(0, (latency - 300) / 1200)) : 0;
+        const r = Math.round(52 + (251 - 52) * t);
+        const g = Math.round(211 + (191 - 211) * t);
+        const b = Math.round(153 + (36 - 153) * t);
+        return [r, g, b];
+      }
+
+      function updateResult(elementId, success, message, score, mono, latency) {
+        const el = document.getElementById(elementId);
+        if (el) {
+          if (success) {
+            const rgb = latencyRGB(latency);
+            const c = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+            el.innerHTML = '<span class="dot" style="background:' + c + ';box-shadow:0 0 8px ' + c + '"></span><span class="val-text' + (mono ? ' mono' : '') + '">' + escapeHtml(message) + '</span>';
+          } else {
+            el.innerHTML = '<span class="dot bad"></span><span class="val-text' + (mono ? ' mono' : '') + '">' + escapeHtml(message) + '</span>';
+          }
+        }
+        if (success) {
+          if (elementId.startsWith('ipv4')) ipv4Score += score;
+          else if (elementId.startsWith('ipv6')) ipv6Score += score;
+        }
+        completedTests++;
+        updateProgress();
+        updateScores();
+      }
+
+      function setTesting(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+          el.innerHTML = '<span class="dot wait"></span><span class="val-text">' + escapeHtml(t('status.testing')) + '</span>';
+        }
+      }
+
+      function setCalculating(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+          el.innerHTML = '<span class="dot wait"></span><span class="val-text">' + escapeHtml(t('status.calculating')) + '</span>';
+        }
+      }
+
+      /* ---------- 服务检测 ---------- */
+      function extractIPFromText(text, version) {
+        if (version === 4) {
+          const m = text.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/);
+          return m ? m[1] : null;
+        }
+        const m = text.match(/((?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4})/);
+        return m ? m[1] : null;
+      }
+
+      function extractIPFromJson(data, version) {
+        try {
+          const d = typeof data === 'string' ? JSON.parse(data) : data;
+          if (!d) return null;
+          const candidates = [d.ip, d.query, d.ipv4, d.ipv6, d.client_ip, d.ip_address];
+          for (const c of candidates) {
+            if (!c) continue;
+            if (version === 4 && /^\d{1,3}(\.\d{1,3}){3}$/.test(c)) return c;
+            if (version === 6 && c.indexOf(':') !== -1) return c;
+          }
+        } catch (e) { /* ignore */ }
+        return null;
+      }
+
+      async function tryService(serviceUrl, version) {
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, 8000);
+        const start = performance.now();
+        try {
+          const response = await fetch(serviceUrl, {
+            method: 'GET',
+            redirect: 'follow',
+            cache: 'no-cache',
+            signal: controller.signal
+          });
+          if (response.status < 200 || response.status >= 400) throw new Error('HTTP ' + response.status);
+          const latency = Math.round(performance.now() - start);
+          const rawText = await response.text();
+          let ip = extractIPFromText(rawText, version);
+          if (ip) return { ip: ip, latency: latency };
+          ip = extractIPFromJson(rawText, version);
+          if (ip) return { ip: ip, latency: latency };
+          throw new Error('无法解析IP');
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      async function checkReachable(url, timeout) {
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, timeout || 5000);
+        const start = performance.now();
+        try {
+          const resp = await fetch(url, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            redirect: 'follow',
+            signal: controller.signal
+          });
+          return { ok: true, latency: Math.round(performance.now() - start) };
+        } catch (e) {
+          return { ok: false, latency: null };
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      async function getASNInfo(ip) {
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, 10000);
+        try {
+          const response = await fetch('/api/asn', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'ip=' + encodeURIComponent(ip),
+            signal: controller.signal
+          });
+          if (!response.ok) throw new Error('ASN查询失败');
+          const text = await response.text();
+          return JSON.parse(text);
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      async function runVersionTests(version) {
+        const prefix = version === 4 ? 'ipv4' : 'ipv6';
+        const domesticUrl = version === 4 ? 'https://ipv4.ddnspod.com/' : 'https://ipv6.ddnspod.com/';
+        const overseasUrl = version === 4 ? 'https://api.ipify.org/' : 'https://api6.ipify.org/';
+        const googleUrl = version === 4 ? 'https://www.google.com/' : 'https://[2001:4860:4860::8888]/';
+
+        const domesticPromise = tryService(domesticUrl, version).then(function (r) {
+          updateResult(prefix + '-domestic', true, r.ip + ' · ' + r.latency + 'ms', 20, true, r.latency);
+          return r.ip;
+        }).catch(function () {
+          updateResult(prefix + '-domestic', false, t('status.connectFailed'), 0);
+          return null;
+        });
+
+        const overseasPromise = tryService(overseasUrl, version).then(function (r) {
+          updateResult(prefix + '-international', true, r.ip + ' · ' + r.latency + 'ms', 20, true, r.latency);
+          return r.ip;
+        }).catch(function () {
+          updateResult(prefix + '-international', false, t('status.connectFailed'), 0);
+          return null;
+        });
+
+        const googlePromise = checkReachable(googleUrl, 5000).then(function (r) {
+          const msg = r.ok
+            ? t('status.reachable') + (r.latency != null ? ' · ' + r.latency + 'ms' : '')
+            : t('status.unreachable');
+          updateResult(prefix + '-google', r.ok, msg, r.ok ? 20 : 0, false, r.latency);
+        });
+
+        const ip = (await domesticPromise) || (await overseasPromise);
+        await googlePromise;
+
+        if (ip) {
+          updateResult(prefix + '-address', true, ip, 20, true);
+          updateResult(prefix + '-dns', true, t('status.supported'), 20);
+          try {
+            const asnData = await getASNInfo(ip);
+            updateResult(prefix + '-asn-code', true, asnData.ASN || t('status.unknown'), 0, true);
+            updateResult(prefix + '-asn-isp', true, asnData.as_info || t('status.unknown'), 0);
+          } catch (e) {
+            updateResult(prefix + '-asn-code', false, t('status.unknown'), 0);
+            updateResult(prefix + '-asn-isp', false, t('status.unknown'), 0);
+          }
+        } else {
+          updateResult(prefix + '-address', false, t('status.getFailed'), 0);
+          updateResult(prefix + '-dns', false, t('status.dnsFail'), 0);
+          updateResult(prefix + '-asn-code', false, t('status.queryFailed'), 0);
+          updateResult(prefix + '-asn-isp', false, t('status.queryFailed'), 0);
+        }
+      }
+
+      async function fetchOutboundIP(url) {
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, 8000);
+        try {
+          const resp = await fetch(url, {
+            method: 'GET',
+            cache: 'no-cache',
+            signal: controller.signal
+          });
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          const text = (await resp.text()).trim();
+          const v6 = text.match(/((?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4})/);
+          if (v6) return v6[1];
+          const m = text.match(/(\d{1,3}(?:\.\d{1,3}){3})/);
+          return m ? m[1] : null;
+        } catch (e) {
+          return null;
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      function setOutboundIP(elId, ip) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.innerHTML = ip
+          ? '<span class="dot ok"></span><span class="val-text mono">' + escapeHtml(ip) + '</span>'
+          : '<span class="dot bad"></span><span class="val-text">' + escapeHtml(t('status.getFailed')) + '</span>';
+      }
+
+      async function updateOutboundIPs() {
+        const sources = [
+          { url: 'https://checkip.amazonaws.com/', el: 'ipv4-aws-ip' },
+          { url: 'https://api.ip.sb/ip', el: 'ipv4-ipsb-ip' },
+          { url: 'https://icanhazip.com/', el: 'ipv4-icanhazip-ip' },
+          { url: 'https://api6.ipify.org/', el: 'ipv6-ipify-ip' },
+          { url: 'https://v6.ident.me/', el: 'ipv6-identme-ip' },
+          { url: 'https://ipv6.icanhazip.com/', el: 'ipv6-icanhazip-ip' }
+        ];
+        await Promise.all(sources.map(function (s) {
+          return fetchOutboundIP(s.url).then(function (ip) { setOutboundIP(s.el, ip); });
+        }));
+      }
+
+      async function runTests() {
+        completedTests = 0;
+        ipv4Score = 0;
+        ipv6Score = 0;
+        allTestIds.forEach(setTesting);
+        updateProgress();
+        updateScores();
+        await Promise.all([runVersionTests(4), runVersionTests(6), updateOutboundIPs()]);
+        updateProgress();
+        updateScores();
+      }
+
+      document.getElementById('refresh-btn').addEventListener('click', runTests);
+
+      /* ---------- 初始化 ---------- */
+      // 优先使用已保存的主题设置，否则根据系统暗黑模式偏好自动检测
+      let savedTheme = localStorage.getItem('theme');
+      if (!savedTheme) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        savedTheme = prefersDark ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      applyLanguage();
+      runTests();
+    })();
+  </script>
+</body>
+</html>
+`;
+
+export const CHECK_HTML: string = String.raw`<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8"/>
@@ -2801,3 +3837,1081 @@
 </footer>
 </body>
 </html>
+`;
+
+export const SPEED_HTML: string = String.raw`<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>网速测试</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg-soft: #0b1220;
+      --surface: rgba(255, 255, 255, 0.03);
+      --surface-hover: rgba(255, 255, 255, 0.06);
+      --surface-solid: #0d1626;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f2f6fc;
+      --text-2: #9aa8bd;
+      --text-3: #5c6b82;
+      --accent: #38bdf8;
+      --accent-2: #6366f1;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #fb7185;
+      --ring-track: rgba(255, 255, 255, 0.07);
+      --glow: 0 0 80px rgba(56, 189, 248, 0.16);
+      --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --header-bg: rgba(10, 15, 28, 0.72);
+    }
+
+    :root[data-theme='light'] {
+      --bg: #f4f7fb;
+      --bg-soft: #ffffff;
+      --surface: rgba(15, 23, 42, 0.03);
+      --surface-hover: rgba(15, 23, 42, 0.06);
+      --surface-solid: #ffffff;
+      --border: rgba(15, 23, 42, 0.09);
+      --border-strong: rgba(15, 23, 42, 0.18);
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+      --accent: #0284c7;
+      --accent-2: #4f46e5;
+      --green: #059669;
+      --yellow: #d97706;
+      --red: #e11d48;
+      --ring-track: rgba(15, 23, 42, 0.08);
+      --glow: 0 0 80px rgba(2, 132, 199, 0.12);
+      --card-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --header-bg: rgba(255, 255, 255, 0.72);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+    }
+
+    .bg {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(56, 189, 248, 0.14), transparent 60%),
+        radial-gradient(900px 500px at 90% 110%, rgba(99, 102, 241, 0.14), transparent 60%);
+      transition: opacity 0.4s ease;
+    }
+    :root[data-theme='light'] .bg { opacity: 0.55; }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%);
+      opacity: 0.5;
+    }
+
+    .app { max-width: 1080px; margin: 0 auto; padding: 0 24px 64px; }
+
+    .topbar {
+      position: fixed; top: 20px; right: 28px; z-index: 60;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 40px; width: 40px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--header-bg);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      color: var(--text-2); cursor: pointer; transition: all 0.25s ease;
+    }
+    .icon-btn:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-1px); }
+    .icon-btn svg { width: 19px; height: 19px; }
+    .theme-toggle .sun { display: none; }
+    :root[data-theme='light'] .theme-toggle .sun { display: block; }
+    :root[data-theme='light'] .theme-toggle .moon { display: none; }
+
+    .lang-switch {
+      display: flex; align-items: center; height: 40px; padding: 3px;
+      border-radius: 12px; border: 1px solid var(--border); background: var(--header-bg);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .lang-btn {
+      height: 32px; padding: 0 12px; border: none; border-radius: 9px;
+      background: transparent; color: var(--text-2);
+      font-family: var(--font-head); font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .lang-btn.active { background: var(--accent); color: #04121f; box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35); }
+    :root[data-theme='light'] .lang-btn.active { color: #ffffff; }
+
+    .header { padding: 108px 0 32px; text-align: center; animation: fadeUp 0.7s ease both; }
+    .logo {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px; border-radius: 18px; margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.35); color: #04121f;
+    }
+    :root[data-theme='light'] .logo { color: #ffffff; }
+    .logo svg { width: 32px; height: 32px; }
+    .header h1 {
+      font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+      background: linear-gradient(120deg, var(--text) 30%, var(--accent));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header p { margin-top: 14px; color: var(--text-2); font-size: 16px; }
+
+    .tabs {
+      display: inline-flex; align-items: center; gap: 4px; padding: 5px; margin-top: 24px;
+      border-radius: 14px; border: 1px solid var(--border); background: var(--surface);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .tab {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 22px;
+      border-radius: 10px; border: none; background: transparent; color: var(--text-2);
+      font-family: var(--font-head); font-size: 14px; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: all 0.25s ease;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #04121f; box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35); }
+    :root[data-theme='light'] .tab.active { color: #ffffff; }
+    .tab svg { width: 16px; height: 16px; }
+
+    /* ---------- 自定义下拉 ---------- */
+    .node-panel { width: 100%; margin: 0 auto 28px; animation: fadeUp 0.7s ease 0.1s both; position: relative; z-index: 40; }
+    .node-panel > label {
+      display: block; font-family: var(--font-head); font-size: 13px; font-weight: 600;
+      color: var(--text-2); margin-bottom: 10px; letter-spacing: 0.02em;
+    }
+    .node-panel > label:not(:first-child) { margin-top: 18px; }
+    .node-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .node-col > label { display: block; font-family: var(--font-head); font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 10px; letter-spacing: 0.02em; }
+    .select-wrap { position: relative; }
+    .select-trigger {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      min-height: 56px; padding: 8px 16px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--surface);
+      cursor: pointer; transition: all 0.25s ease; text-align: left;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .select-trigger:hover, .select-trigger.open { border-color: var(--accent); background: var(--surface-hover); }
+    .select-trigger .flag { font-size: 24px; line-height: 1; flex-shrink: 0; }
+    .select-trigger .info { flex: 1; min-width: 0; }
+    .select-trigger .info .name {
+      font-family: var(--font-head); font-weight: 600; font-size: 15px; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .select-trigger .info .group { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+    .select-trigger .chevron {
+      width: 20px; height: 20px; color: var(--text-3); flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .select-trigger.open .chevron { transform: rotate(180deg); color: var(--accent); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
+      font-family: var(--font-head); font-size: 10.5px; font-weight: 700;
+      padding: 3px 8px; border-radius: 99px; letter-spacing: 0.02em; line-height: 1.2;
+    }
+    .badge.direct { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+    .badge.proxy { background: rgba(56, 189, 248, 0.15); color: var(--accent); }
+    :root[data-theme='light'] .badge.direct { background: rgba(5, 150, 105, 0.12); color: #059669; }
+    :root[data-theme='light'] .badge.proxy { background: rgba(2, 132, 199, 0.12); color: #0284c7; }
+
+    .select-dropdown {
+      position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+      border-radius: 20px; border: 1px solid var(--border-strong);
+      background: var(--surface-solid); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      max-height: 380px; overflow-y: auto; padding: 8px;
+      display: none; animation: dropIn 0.22s ease both;
+      overscroll-behavior: contain;
+    }
+    .select-dropdown.open { display: block; }
+    :root[data-theme='light'] .select-dropdown { box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18); }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .opt-group-label {
+      padding: 10px 12px 6px; font-family: var(--font-head); font-size: 11px;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3);
+    }
+    .opt-group-label:first-child { padding-top: 6px; }
+    .opt {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      padding: 10px 12px; border-radius: 11px; border: none; background: transparent;
+      cursor: pointer; transition: background 0.15s ease; text-align: left;
+    }
+    .opt:hover { background: var(--surface-hover); }
+    .opt.selected { background: rgba(56, 189, 248, 0.12); }
+    :root[data-theme='light'] .opt.selected { background: rgba(2, 132, 199, 0.1); }
+    .opt .flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
+    .opt .info { flex: 1; min-width: 0; }
+    .opt .info .name { font-size: 14px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .opt .info .sub { font-size: 11.5px; color: var(--text-3); margin-top: 1px; }
+    .opt .check {
+      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--accent); opacity: 0; transition: opacity 0.15s ease;
+    }
+    .opt.selected .check { opacity: 1; }
+    .opt .check svg { width: 20px; height: 20px; }
+
+    .select-dropdown::-webkit-scrollbar { width: 8px; }
+    .select-dropdown::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+    .select-dropdown::-webkit-scrollbar-track { background: transparent; }
+
+    .node-hint { margin-top: 10px; font-size: 12.5px; color: var(--text-3); text-align: center; }
+
+    /* ---------- 指标卡片 ---------- */
+    .metrics { width: 100%; margin: 0 auto 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .metric {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 26px; box-shadow: var(--card-shadow); backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); text-align: center;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+    .metric:nth-child(1) { animation-delay: 0.15s; }
+    .metric:nth-child(2) { animation-delay: 0.22s; }
+    .metric:nth-child(3) { animation-delay: 0.29s; }
+    .metric:nth-child(4) { animation-delay: 0.36s; }
+    .metric:hover { transform: translateY(-3px); border-color: var(--border-strong); }
+    .metric .m-label {
+      font-size: 12.5px; color: var(--text-3); font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .metric .m-value {
+      font-family: var(--font-mono); font-size: 30px; font-weight: 600; line-height: 1.15;
+      color: var(--text); white-space: nowrap;
+    }
+    .metric .m-sub { margin-top: 6px; font-size: 12px; color: var(--text-3); min-height: 18px; }
+    .metric .m-value.accent { color: var(--accent); }
+    .metric .m-value.green { color: var(--green); }
+
+    /* ---------- 进度 ---------- */
+    .progress { width: 100%; max-width: 620px; margin: 22px auto 28px; animation: fadeUp 0.7s ease 0.1s both; }
+    .progress-track { height: 5px; border-radius: 99px; background: var(--ring-track); overflow: hidden; }
+    .progress-fill {
+      height: 100%; width: 0%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+    .progress-text { margin-top: 12px; text-align: center; font-family: var(--font-mono); font-size: 13px; color: var(--text-3); }
+
+    /* ---------- 按钮 ---------- */
+    .actions { display: flex; justify-content: center; animation: fadeUp 0.7s ease 0.3s both; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px; padding: 15px 38px;
+      border: none; border-radius: 14px; font-family: var(--font-head); font-size: 15px;
+      font-weight: 600; color: #04121f; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+    :root[data-theme='light'] .btn-primary { color: #ffffff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(56, 189, 248, 0.45); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn-primary svg { width: 18px; height: 18px; }
+
+    footer { margin-top: 56px; text-align: center; color: var(--text-3); font-size: 13px; animation: fadeUp 0.7s ease 0.4s both; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .edu-links { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; }
+    footer .edu-links a { font-size: 12.5px; color: var(--text-2); }
+    footer .edu-links a:hover { color: var(--accent); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 860px) {
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .topbar { top: 14px; right: 16px; }
+      .header { padding-top: 96px; }
+      .metrics { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .metric .m-value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="bg-grid"></div>
+
+  <div class="topbar">
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button class="icon-btn theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换主题">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 12l5-5"/><circle cx="12" cy="12" r="1.5"/></svg>
+      </div>
+      <h1 data-i18n="header.title">网速测试</h1>
+      <p data-i18n="header.desc">选择测试节点，测量下载 / 上传速度与延迟、抖动</p>
+      <nav class="tabs">
+        <a href="/" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span data-i18n="nav.ip">获取IP地址</span>
+        </a>
+        <a href="/check" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span data-i18n="nav.quality">IP质量检测</span>
+        </a>
+        <a href="/speed" class="tab active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 12l5-5"/><circle cx="12" cy="12" r="1.5"/></svg>
+          <span data-i18n="nav.speed">网速测试</span>
+        </a>
+      </nav>
+
+      <div class="progress">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text" data-i18n="progress.preparing">准备开始测试...</div>
+      </div>
+    </header>
+
+    <section class="node-panel">
+      <div class="node-row">
+        <div class="node-col">
+          <label data-i18n="node.downloadLabel">下载节点（100MB）</label>
+          <div class="select-wrap" id="download-select"></div>
+        </div>
+        <div class="node-col">
+          <label data-i18n="node.uploadLabel">上传节点</label>
+          <div class="select-wrap" id="upload-select"></div>
+        </div>
+      </div>
+      <div class="node-hint" data-i18n="node.hint">全部节点均支持浏览器直连测速，结果反映你到该节点的真实链路质量</div>
+    </section>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="m-label" data-i18n="metric.latency">延迟 Latency</div>
+        <div class="m-value accent" id="m-latency">--</div>
+        <div class="m-sub" id="m-latency-sub"></div>
+      </div>
+      <div class="metric">
+        <div class="m-label" data-i18n="metric.jitter">抖动 Jitter</div>
+        <div class="m-value" id="m-jitter">--</div>
+        <div class="m-sub" data-i18n="metric.jitterSub">标准差</div>
+      </div>
+      <div class="metric">
+        <div class="m-label" data-i18n="metric.download">下载速度</div>
+        <div class="m-value green" id="m-download">--</div>
+        <div class="m-sub" id="m-download-sub"></div>
+      </div>
+      <div class="metric">
+        <div class="m-label" data-i18n="metric.upload">上传速度</div>
+        <div class="m-value" id="m-upload">--</div>
+        <div class="m-sub" id="m-upload-sub"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" id="run-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span data-i18n="btn.run">开始测试</span>
+      </button>
+    </div>
+
+    <footer>
+      <span data-i18n="footer.notice">本站仅提供IP地址查询与网络测速功能，不提供其它任何服务，也不与别的网站有任何合作。</span>
+      <div class="edu-links">
+        <span data-i18n="footer.edu">教育网测速站：</span>
+        <a href="http://test.ustc.edu.cn/" target="_blank" rel="noopener">中科大 IPv4</a>
+        <a href="http://test6.ustc.edu.cn/" target="_blank" rel="noopener">中科大 IPv6</a>
+        <a href="https://test.nju.edu.cn/" target="_blank" rel="noopener">南京大学</a>
+        <a href="http://speed.nuaa.edu.cn/" target="_blank" rel="noopener">南京航空航天大学</a>
+        <a href="http://speedtest.sec.edu.cn/" target="_blank" rel="noopener">CERNET</a>
+      </div>
+      <div style="margin-top: 16px;">
+        <a href="https://github.com/PIKACHUIM/IPConfigWork" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>IPConfigWork</span>
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------- 多语言 ---------- */
+      var I18N = {
+        zh: {
+          'page.title': '网速测试',
+          'header.title': '网速测试',
+          'header.desc': '选择测试节点，测量下载 / 上传速度与延迟、抖动',
+          'nav.ip': '获取IP地址',
+          'nav.quality': 'IP质量检测',
+          'nav.speed': '网速测试',
+          'node.downloadLabel': '下载节点（100MB）',
+          'node.uploadLabel': '上传节点',
+          'node.hint': '全部节点均支持浏览器直连测速，结果反映你到该节点的真实链路质量',
+          'metric.latency': '延迟 Latency',
+          'metric.jitter': '抖动 Jitter',
+          'metric.jitterSub': '标准差',
+          'metric.download': '下载速度',
+          'metric.download.sub': '已下载',
+          'metric.upload': '上传速度',
+          'metric.upload.sub': '已上传',
+          'progress.preparing': '准备开始测试...',
+          'progress.ping': '正在测量延迟与抖动...',
+          'progress.download': '正在测试下载速度...',
+          'progress.upload': '正在测试上传速度...',
+          'progress.done': '测试完成',
+          'status.testing': '测试中...',
+          'status.failed': '失败',
+          'status.pingFailed': '无法测通',
+          'btn.run': '开始测试',
+          'btn.running': '测试中...',
+          'footer.notice': '本站仅提供IP地址查询与网络测速功能，不提供其它任何服务，也不与别的网站有任何合作。',
+          'footer.edu': '教育网测速站：',
+          'footer.project': 'IPConfigWork',
+          'badge.direct': '直连',
+          'badge.proxy': '代理',
+          'theme.dark': '切换亮色模式',
+          'theme.light': '切换暗色模式',
+          'region.anycast': '全球 Anycast',
+          'region.asia': '亚洲',
+          'region.europe': '欧洲',
+          'region.nawest': '北美 · 美西',
+          'region.naeast': '北美 · 美东/中部',
+          'region.southamerica': '南美',
+          'region.oceania': '大洋洲',
+          'node.cloudflare': 'Cloudflare 全球',
+          'node.hongkong': '中国香港',
+          'node.singapore': '新加坡',
+          'node.tokyo': '日本东京',
+          'node.frankfurt': '德国法兰克福',
+          'node.amsterdam': '荷兰阿姆斯特丹',
+          'node.london': '英国伦敦',
+          'node.paris': '法国巴黎',
+          'node.madrid': '西班牙马德里',
+          'node.milan': '意大利米兰',
+          'node.stockholm': '瑞典斯德哥尔摩',
+          'node.losangeles': '洛杉矶',
+          'node.seattle': '西雅图',
+          'node.newyork': '纽约',
+          'node.miami': '迈阿密',
+          'node.ashburn': '阿什本（弗吉尼亚）',
+          'node.chicago': '芝加哥',
+          'node.dallas': '达拉斯',
+          'node.toronto': '多伦多（加拿大）',
+          'node.saopaulo': '圣保罗（巴西）',
+          'node.sydney': '悉尼（澳大利亚）'
+        },
+        en: {
+          'page.title': 'Speed Test',
+          'header.title': 'Speed Test',
+          'header.desc': 'Pick a node to measure download / upload speed, latency and jitter',
+          'nav.ip': 'Get IP',
+          'nav.quality': 'IP Quality',
+          'nav.speed': 'Speed Test',
+          'node.downloadLabel': 'Download node (100MB)',
+          'node.uploadLabel': 'Upload node',
+          'node.hint': 'All nodes support direct browser speed test, reflecting the real path quality to that node',
+          'metric.latency': 'Latency',
+          'metric.jitter': 'Jitter',
+          'metric.jitterSub': 'std. deviation',
+          'metric.download': 'Download',
+          'metric.download.sub': 'downloaded',
+          'metric.upload': 'Upload',
+          'metric.upload.sub': 'uploaded',
+          'progress.preparing': 'Preparing...',
+          'progress.ping': 'Measuring latency & jitter...',
+          'progress.download': 'Testing download speed...',
+          'progress.upload': 'Testing upload speed...',
+          'progress.done': 'Test complete',
+          'status.testing': 'Testing...',
+          'status.failed': 'Failed',
+          'status.pingFailed': 'Unreachable',
+          'btn.run': 'Start Test',
+          'btn.running': 'Testing...',
+          'footer.notice': 'This site only provides IP lookup and network speed test; it provides no other services nor cooperates with any other website.',
+          'footer.edu': 'Campus networks: ',
+          'footer.project': 'IPConfigWork',
+          'badge.direct': 'Direct',
+          'badge.proxy': 'Proxy',
+          'theme.dark': 'Switch to light mode',
+          'theme.light': 'Switch to dark mode',
+          'region.anycast': 'Global Anycast',
+          'region.asia': 'Asia',
+          'region.europe': 'Europe',
+          'region.nawest': 'North America · West',
+          'region.naeast': 'North America · East/Central',
+          'region.southamerica': 'South America',
+          'region.oceania': 'Oceania',
+          'node.cloudflare': 'Cloudflare Global',
+          'node.hongkong': 'Hong Kong',
+          'node.singapore': 'Singapore',
+          'node.tokyo': 'Tokyo, Japan',
+          'node.frankfurt': 'Frankfurt, Germany',
+          'node.amsterdam': 'Amsterdam, Netherlands',
+          'node.london': 'London, UK',
+          'node.paris': 'Paris, France',
+          'node.madrid': 'Madrid, Spain',
+          'node.milan': 'Milan, Italy',
+          'node.stockholm': 'Stockholm, Sweden',
+          'node.losangeles': 'Los Angeles',
+          'node.seattle': 'Seattle',
+          'node.newyork': 'New York',
+          'node.miami': 'Miami',
+          'node.ashburn': 'Ashburn (Virginia)',
+          'node.chicago': 'Chicago',
+          'node.dallas': 'Dallas',
+          'node.toronto': 'Toronto, Canada',
+          'node.saopaulo': 'São Paulo, Brazil',
+          'node.sydney': 'Sydney, Australia'
+        }
+      };
+
+      // 优先使用已保存的语言设置，否则根据浏览器语言自动检测
+      var currentLang = localStorage.getItem('lang');
+      if (!currentLang) {
+        var browserLang = navigator.language || navigator.languages[0] || 'zh-CN';
+        currentLang = browserLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+      }
+
+      function t(key) {
+        return (I18N[currentLang] && I18N[currentLang][key]) || I18N.zh[key] || key;
+      }
+
+      /* ---------- 下载测速节点（仅 100MB，支持 CORS 直连） ---------- */
+      var DOWNLOAD_NODES = [
+        { group: 'region.anycast', items: [
+          { flag: '☁️', nameKey: 'node.cloudflare', sub: 'Anycast · 100MB', type: 'direct', url: 'https://speed.cloudflare.com/__down?bytes=104857600' }
+        ]},
+        { group: 'region.asia', items: [
+          { flag: '🇭🇰', nameKey: 'node.hongkong', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://hkg.download.datapacket.com/100mb.bin' },
+          { flag: '🇸🇬', nameKey: 'node.singapore', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://sgp.download.datapacket.com/100mb.bin' },
+          { flag: '🇯🇵', nameKey: 'node.tokyo', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://tyo.download.datapacket.com/100mb.bin' }
+        ]},
+        { group: 'region.europe', items: [
+          { flag: '🇩🇪', nameKey: 'node.frankfurt', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://fra.download.datapacket.com/100mb.bin' },
+          { flag: '🇳🇱', nameKey: 'node.amsterdam', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://ams.download.datapacket.com/100mb.bin' },
+          { flag: '🇬🇧', nameKey: 'node.london', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://lon.download.datapacket.com/100mb.bin' },
+          { flag: '🇫🇷', nameKey: 'node.paris', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://par.download.datapacket.com/100mb.bin' },
+          { flag: '🇪🇸', nameKey: 'node.madrid', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://mad.download.datapacket.com/100mb.bin' },
+          { flag: '🇮🇹', nameKey: 'node.milan', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://mil.download.datapacket.com/100mb.bin' },
+          { flag: '🇸🇪', nameKey: 'node.stockholm', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://sto.download.datapacket.com/100mb.bin' }
+        ]},
+        { group: 'region.nawest', items: [
+          { flag: '🇺🇸', nameKey: 'node.losangeles', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://lax.download.datapacket.com/100mb.bin' },
+          { flag: '🇺🇸', nameKey: 'node.seattle', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://sea.download.datapacket.com/100mb.bin' }
+        ]},
+        { group: 'region.naeast', items: [
+          { flag: '🇺🇸', nameKey: 'node.newyork', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://nyc.download.datapacket.com/100mb.bin' },
+          { flag: '🇺🇸', nameKey: 'node.miami', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://mia.download.datapacket.com/100mb.bin' },
+          { flag: '🇺🇸', nameKey: 'node.ashburn', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://ash.download.datapacket.com/100mb.bin' },
+          { flag: '🇺🇸', nameKey: 'node.chicago', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://chi.download.datapacket.com/100mb.bin' },
+          { flag: '🇺🇸', nameKey: 'node.dallas', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://dal.download.datapacket.com/100mb.bin' },
+          { flag: '🇨🇦', nameKey: 'node.toronto', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://tor.download.datapacket.com/100mb.bin' }
+        ]},
+        { group: 'region.southamerica', items: [
+          { flag: '🇧🇷', nameKey: 'node.saopaulo', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://sao.download.datapacket.com/100mb.bin' }
+        ]},
+        { group: 'region.oceania', items: [
+          { flag: '🇦🇺', nameKey: 'node.sydney', sub: 'CDN77 · 100MB', type: 'direct', url: 'https://syd.download.datapacket.com/100mb.bin' }
+        ]}
+      ];
+
+      /* ---------- 上传测速节点 ---------- */
+      var UPLOAD_NODES = [
+        { group: 'region.anycast', items: [
+          { flag: '☁️', nameKey: 'node.cloudflare', sub: 'Worker · 100MB', type: 'direct', url: '/api/upload' }
+        ]}
+      ];
+
+      var DOWNLOAD_FLAT = [];
+      for (var gi = 0; gi < DOWNLOAD_NODES.length; gi++) {
+        for (var ni = 0; ni < DOWNLOAD_NODES[gi].items.length; ni++) {
+          var it = DOWNLOAD_NODES[gi].items[ni];
+          DOWNLOAD_FLAT.push({ group: DOWNLOAD_NODES[gi].group, flag: it.flag, nameKey: it.nameKey, sub: it.sub, type: it.type, url: it.url, ping: it.ping || it.url });
+        }
+      }
+
+      var UPLOAD_FLAT = [];
+      for (var gi = 0; gi < UPLOAD_NODES.length; gi++) {
+        for (var ni = 0; ni < UPLOAD_NODES[gi].items.length; ni++) {
+          var it = UPLOAD_NODES[gi].items[ni];
+          UPLOAD_FLAT.push({ group: UPLOAD_NODES[gi].group, flag: it.flag, nameKey: it.nameKey, sub: it.sub, type: it.type, url: it.url, ping: 'https://speed.cloudflare.com/__down?bytes=0' });
+        }
+      }
+
+      /* ---------- 自定义下拉（下载） ---------- */
+      var downloadSelectedIdx = 0;
+      var uploadSelectedIdx = 0;
+
+      function renderSelect(containerID, nodes, flat, selectedIdx, onChange) {
+        var container = document.getElementById(containerID);
+        container.innerHTML = '';
+
+        var trigger = document.createElement('div');
+        trigger.className = 'select-trigger';
+        trigger.innerHTML =
+          '<span class="flag"></span>' +
+          '<div class="info"><div class="name"></div><div class="group"></div></div>' +
+          '<span class="badge"></span>' +
+          '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+        var dropdown = document.createElement('div');
+        dropdown.className = 'select-dropdown';
+
+        function updateTrigger() {
+          var node = flat[selectedIdx];
+          trigger.querySelector('.flag').textContent = node.flag;
+          trigger.querySelector('.name').textContent = t(node.nameKey);
+          trigger.querySelector('.group').textContent = t(node.group);
+          var badge = trigger.querySelector('.badge');
+          badge.className = 'badge ' + node.type;
+          badge.textContent = t(node.type === 'direct' ? 'badge.direct' : 'badge.proxy');
+          var opts = dropdown.querySelectorAll('.opt');
+          for (var i = 0; i < opts.length; i++) {
+            opts[i].classList.toggle('selected', i === selectedIdx);
+          }
+        }
+
+        function renderDropdown() {
+          dropdown.innerHTML = '';
+          var flatIdx = 0;
+          for (var i = 0; i < nodes.length; i++) {
+            var label = document.createElement('div');
+            label.className = 'opt-group-label';
+            label.textContent = t(nodes[i].group);
+            dropdown.appendChild(label);
+            for (var j = 0; j < nodes[i].items.length; j++) {
+              (function (idx) {
+                var node = flat[idx];
+                var opt = document.createElement('button');
+                opt.type = 'button';
+                opt.className = 'opt' + (idx === selectedIdx ? ' selected' : '');
+                opt.innerHTML =
+                  '<span class="flag">' + node.flag + '</span>' +
+                  '<div class="info"><div class="name"></div><div class="sub"></div></div>' +
+                  '<span class="badge ' + node.type + '"></span>' +
+                  '<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
+                opt.querySelector('.name').textContent = t(node.nameKey);
+                opt.querySelector('.sub').textContent = node.sub;
+                opt.querySelector('.badge').textContent = t(node.type === 'direct' ? 'badge.direct' : 'badge.proxy');
+                opt.addEventListener('click', function () {
+                  selectedIdx = idx;
+                  updateTrigger();
+                  closeDropdown();
+                  if (onChange) onChange(idx);
+                });
+                dropdown.appendChild(opt);
+              })(flatIdx);
+              flatIdx++;
+            }
+          }
+        }
+
+        function openDropdown() {
+          dropdown.classList.add('open');
+          trigger.classList.add('open');
+        }
+        function closeDropdown() {
+          dropdown.classList.remove('open');
+          trigger.classList.remove('open');
+        }
+
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (dropdown.classList.contains('open')) closeDropdown();
+          else openDropdown();
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!trigger.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeDropdown();
+        });
+
+        renderDropdown();
+        updateTrigger();
+
+        container.appendChild(trigger);
+        container.appendChild(dropdown);
+
+        return { updateTrigger: updateTrigger, renderDropdown: renderDropdown };
+      }
+
+      var downloadSelect = renderSelect('download-select', DOWNLOAD_NODES, DOWNLOAD_FLAT, downloadSelectedIdx, function (idx) {
+        downloadSelectedIdx = idx;
+      });
+
+      var uploadSelect = renderSelect('upload-select', UPLOAD_NODES, UPLOAD_FLAT, uploadSelectedIdx, function (idx) {
+        uploadSelectedIdx = idx;
+      });
+
+      /* ---------- 语言/主题切换时刷新下拉 ---------- */
+      function refreshDropdownLabels() {
+        downloadSelect.renderDropdown();
+        downloadSelect.updateTrigger();
+        uploadSelect.renderDropdown();
+        uploadSelect.updateTrigger();
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+        document.title = t('page.title');
+        var els = document.querySelectorAll('[data-i18n]');
+        for (var i = 0; i < els.length; i++) {
+          els[i].textContent = t(els[i].getAttribute('data-i18n'));
+        }
+        var btns = document.querySelectorAll('.lang-btn');
+        for (var j = 0; j < btns.length; j++) {
+          if (btns[j].getAttribute('data-lang') === currentLang) btns[j].classList.add('active');
+          else btns[j].classList.remove('active');
+        }
+        var themeBtn = document.getElementById('theme-toggle');
+        var theme = document.documentElement.getAttribute('data-theme');
+        themeBtn.title = t(theme === 'light' ? 'theme.light' : 'theme.dark');
+        themeBtn.setAttribute('aria-label', themeBtn.title);
+        refreshDropdownLabels();
+        updateRunBtn();
+      }
+
+      var langBtns = document.querySelectorAll('.lang-btn');
+      for (var li = 0; li < langBtns.length; li++) {
+        langBtns[li].addEventListener('click', function () {
+          currentLang = this.getAttribute('data-lang');
+          localStorage.setItem('lang', currentLang);
+          applyLanguage();
+        });
+      }
+
+      /* ---------- 主题 ---------- */
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        var btn = document.getElementById('theme-toggle');
+        btn.title = t(theme === 'light' ? 'theme.light' : 'theme.dark');
+        btn.setAttribute('aria-label', btn.title);
+      }
+      document.getElementById('theme-toggle').addEventListener('click', function () {
+        var current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'light' ? 'dark' : 'light');
+      });
+
+      /* ---------- 工具 ---------- */
+      var DOWNLOAD_SIZE = 104857600; // 100 MiB
+      var UPLOAD_SIZE = 100 * 1024 * 1024; // 100 MiB，上传测速数据量
+      var PING_COUNT = 8;
+
+      function fmtMs(v) { return Math.round(v) + ' ms'; }
+
+      function fmtSpeed(bytesPerSec) {
+        if (!isFinite(bytesPerSec) || bytesPerSec <= 0) return '--';
+        var mbps = bytesPerSec * 8 / 1000000;
+        if (mbps >= 1) return mbps.toFixed(2) + ' Mbps';
+        var kbps = bytesPerSec * 8 / 1000;
+        return kbps.toFixed(1) + ' Kbps';
+      }
+
+      function fmtBytes(v) {
+        if (v >= 1048576) return (v / 1048576).toFixed(1) + ' MB';
+        if (v >= 1024) return (v / 1024).toFixed(1) + ' KB';
+        return v + ' B';
+      }
+
+      function setMetric(id, value, className, sub) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.textContent = value;
+          el.className = 'm-value' + (className ? ' ' + className : '');
+        }
+        var subEl = document.getElementById(id + '-sub');
+        if (subEl && sub != null) subEl.textContent = sub;
+      }
+
+      function setProgress(pct, text) {
+        var fill = document.getElementById('progress-fill');
+        fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+        document.getElementById('progress-text').textContent = text;
+      }
+
+      var running = false;
+      function updateRunBtn() {
+        var btn = document.getElementById('run-btn');
+        btn.disabled = running;
+        var span = btn.querySelector('span');
+        if (span) span.textContent = t(running ? 'btn.running' : 'btn.run');
+      }
+
+      /* ---------- 延迟 / 抖动 ---------- */
+      function pingOnce(node) {
+        var t0 = performance.now();
+        var target;
+        if (node.type === 'direct') {
+          // 直连：浏览器直接请求（带 Range 只测 TTFB，随后取消 body）
+          target = fetch(node.ping, {
+            cache: 'no-store',
+            referrerPolicy: 'origin',
+            headers: { 'Range': 'bytes=0-0' }
+          }).then(function (resp) {
+            if (resp.body) resp.body.cancel();
+            return performance.now() - t0;
+          });
+        } else {
+          // 代理：经本站 Worker
+          target = fetch('/api/ping?url=' + encodeURIComponent(node.ping), { cache: 'no-store' })
+            .then(function (resp) {
+              if (resp.ok) return performance.now() - t0;
+              throw new Error('HTTP ' + resp.status);
+            });
+        }
+        return target.catch(function () { return -1; });
+      }
+
+      function measurePing(node) {
+        var samples = [];
+        function loop(i) {
+          if (i >= PING_COUNT) return Promise.resolve();
+          return pingOnce(node).then(function (dt) {
+            if (dt > 0) samples.push(dt);
+            return loop(i + 1);
+          });
+        }
+        return loop(0).then(function () {
+          if (samples.length < 3) throw new Error('ping failed');
+          var sum = 0;
+          for (var i = 0; i < samples.length; i++) sum += samples[i];
+          var avg = sum / samples.length;
+          var varSum = 0;
+          for (var k = 0; k < samples.length; k++) {
+            var d = samples[k] - avg;
+            varSum += d * d;
+          }
+          var std = Math.sqrt(varSum / samples.length);
+          return { latency: avg, jitter: std, count: samples.length };
+        });
+      }
+
+      /* ---------- 下载测速（直连或代理，流式读取） ---------- */
+      function testDownload(node) {
+        var target;
+        if (node.type === 'direct') {
+          target = node.url; // 直连
+        } else {
+          target = '/api/download?url=' + encodeURIComponent(node.url); // 代理
+        }
+        return fetch(target, { cache: 'no-store', referrerPolicy: 'origin' })
+          .then(function (resp) {
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var reader = resp.body.getReader();
+            var total = 0;
+            var start = performance.now();
+            var lastTime = start;
+            var lastBytes = 0;
+            var peak = 0;
+
+            function read() {
+              return reader.read().then(function (res) {
+                if (res.done) {
+                  var elapsed = (performance.now() - start) / 1000;
+                  var avg = elapsed > 0 ? total / elapsed : 0;
+                  return { bytes: total, avg: avg, peak: peak, seconds: elapsed };
+                }
+                total += res.value.length;
+                var now = performance.now();
+                var dt = (now - lastTime) / 1000;
+                if (dt >= 0.5) {
+                  var cur = (total - lastBytes) / dt;
+                  if (cur > peak) peak = cur;
+                  lastTime = now;
+                  lastBytes = total;
+                  var pct = (total / DOWNLOAD_SIZE) * 100;
+                  setProgress(15 + pct * 0.7, t('progress.download') + ' ' + fmtSpeed(cur) + ' · ' + fmtBytes(total));
+                  setMetric('m-download', fmtSpeed(cur), 'green', fmtBytes(total) + ' / ~100MB');
+                }
+                return read();
+              });
+            }
+            return read();
+          });
+      }
+
+      /* ---------- 上传测速（Cloudflare __up 直连，全球 Anycast；失败回退本站 Worker） ---------- */
+      function testUpload() {
+        var blob = new Blob([new Uint8Array(UPLOAD_SIZE)]);
+        setMetric('m-upload', t('status.testing'), '', '');
+
+        return new Promise(function (resolve, reject) {
+          var start = performance.now();
+
+          function attemptUpload(url) {
+            return new Promise(function (res, rej) {
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST', url, true);
+              xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+              // 移除 Cache-Control，避免 Cloudflare CORS preflight 失败
+
+              var progressCount = 0;
+              xhr.upload.onprogress = function (e) {
+                progressCount++;
+                if (e.lengthComputable && e.loaded > 0) {
+                  var now = performance.now();
+                  var elapsed = (now - start) / 1000;
+                  if (elapsed > 0) {
+                    var currentSpeed = e.loaded / elapsed;
+                    var progress = Math.floor(e.loaded / e.total * 100);
+                    console.log('[Upload Progress]', progressCount, 'loaded:', e.loaded, 'total:', e.total, 'speed:', fmtSpeed(currentSpeed), 'progress:', progress + '%');
+                    setMetric('m-upload', fmtSpeed(currentSpeed), 'purple', t('metric.upload.sub') + ' (' + progress + '%)');
+                  }
+                }
+              };
+
+              xhr.onloadstart = function () {
+                console.log('[Upload Start]', url);
+              };
+
+              xhr.onload = function () {
+                console.log('[Upload Complete] status:', xhr.status, 'progress events:', progressCount);
+                if (xhr.status >= 200 && xhr.status < 300) {
+                  var elapsed = (performance.now() - start) / 1000;
+                  var speed = elapsed > 0 ? UPLOAD_SIZE / elapsed : 0;
+                  res({ bytes: UPLOAD_SIZE, speed: speed, seconds: elapsed });
+                } else {
+                  rej(new Error('HTTP ' + xhr.status));
+                }
+              };
+
+              xhr.onerror = function () { 
+                console.log('[Upload Error]', url);
+                rej(new Error('Network error')); 
+              };
+              xhr.ontimeout = function () { 
+                console.log('[Upload Timeout]', url);
+                rej(new Error('Timeout')); 
+              };
+              
+              console.log('[Upload Sending]', UPLOAD_SIZE, 'bytes to', url);
+              xhr.send(blob);
+            });
+          }
+
+          // 优先 Cloudflare 直连；失败回退本站 Worker
+          attemptUpload('https://speed.cloudflare.com/__up')
+            .then(resolve)
+            .catch(function (err) {
+              console.log('[Upload Fallback] Cloudflare failed, trying local:', err.message);
+              start = performance.now(); // 重置计时
+              return attemptUpload('/api/upload').then(resolve).catch(reject);
+            });
+        });
+      }
+
+      /* ---------- 主流程 ---------- */
+      var phase = 'ping';
+
+      function run() {
+        if (running) return;
+        running = true;
+        updateRunBtn();
+        
+        var downloadNode = DOWNLOAD_FLAT[downloadSelectedIdx];
+        var uploadNode = UPLOAD_FLAT[uploadSelectedIdx];
+
+        phase = 'ping';
+
+        setMetric('m-latency', t('status.testing'), 'accent', '');
+        setMetric('m-jitter', '--', '', t('metric.jitterSub'));
+        setMetric('m-download', '--', 'green', '');
+        setMetric('m-upload', '--', '', '');
+        setProgress(2, t('progress.ping'));
+
+        measurePing(downloadNode)
+          .then(function (ping) {
+            phase = 'download';
+            setMetric('m-latency', fmtMs(ping.latency), 'accent', ping.count + ' 次采样');
+            setMetric('m-jitter', fmtMs(ping.jitter), '', t('metric.jitterSub'));
+            setProgress(15, t('progress.download'));
+            return testDownload(downloadNode);
+          })
+          .then(function (dl) {
+            phase = 'upload';
+            setMetric('m-download', fmtSpeed(dl.avg), 'green', fmtBytes(dl.bytes) + ' · ' + dl.seconds.toFixed(1) + 's');
+            setProgress(88, t('progress.upload'));
+            return testUpload();
+          })
+          .then(function (up) {
+            setMetric('m-upload', fmtSpeed(up.speed), '', fmtBytes(up.bytes) + ' · ' + up.seconds.toFixed(1) + 's');
+            setProgress(100, t('progress.done'));
+          })
+          .catch(function (err) {
+            var msg = (err && err.message) || t('status.failed');
+            if (phase === 'ping') {
+              setMetric('m-latency', t('status.failed'), '', '');
+              setMetric('m-jitter', '--', '', t('metric.jitterSub'));
+            }
+            if (phase === 'ping' || phase === 'download') {
+              setMetric('m-download', t('status.failed'), '', msg);
+            }
+            if (phase === 'upload') {
+              setMetric('m-upload', t('status.failed'), '', msg);
+            }
+            setProgress(0, t('status.failed') + ': ' + msg);
+          })
+          .then(function () {
+            running = false;
+            updateRunBtn();
+          });
+      }
+
+      document.getElementById('run-btn').addEventListener('click', run);
+
+      /* ---------- 初始化 ---------- */
+      // 优先使用已保存的主题设置，否则根据系统暗黑模式偏好自动检测
+      var savedTheme = localStorage.getItem('theme');
+      if (!savedTheme) {
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        savedTheme = prefersDark ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      downloadSelect.renderDropdown();
+      downloadSelect.updateTrigger();
+      uploadSelect.renderDropdown();
+      uploadSelect.updateTrigger();
+      applyLanguage();
+      setProgress(0, t('progress.preparing'));
+    })();
+  </script>
+</body>
+</html>
+`;

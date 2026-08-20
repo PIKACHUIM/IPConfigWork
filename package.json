@@ -6,12 +6,13 @@
     "build-js": "webpack --mode production",
     "deploy-js": "node dist/bundle.js",
     "dev-cf": "wrangler dev",
-    "deploy-cf": "wrangler deploy --minify",
+    "deploy-cf": "wrangler deploy --minify -c wrangler.encrypt.jsonc",
+    "gen:pages": "node scripts/generate-pages.mjs",
     "dev-eo": "edgeone pages dev",
     "build-eo": "edgeone pages build",
     "deploy-eo": "edgeone pages deploy ./ -n workacme-web -t ",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify",
+    "deploy": "wrangler deploy --minify -c wrangler.encrypt.jsonc",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
