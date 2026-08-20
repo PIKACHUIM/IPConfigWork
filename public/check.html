@@ -2233,10 +2233,10 @@
             if (overallScoreEl) overallScoreEl.textContent = roundedScore;
 
             var level = '', levelClass = '';
-            if (roundedScore >= 90) { level = t('risk.low'); levelClass = 'ok'; }
-            else if (roundedScore >= 60) { level = t('risk.lowmid'); levelClass = 'ok'; }
-            else if (roundedScore >= 40) { level = t('risk.mid'); levelClass = 'warn'; }
-            else { level = t('risk.high'); levelClass = 'bad'; }
+            if (roundedScore >= 80) { level = t('level.excellent'); levelClass = 'ok'; }
+            else if (roundedScore >= 60) { level = t('level.good'); levelClass = 'ok'; }
+            else if (roundedScore >= 40) { level = t('level.fair'); levelClass = 'warn'; }
+            else { level = t('level.poor'); levelClass = 'bad'; }
 
             if (overallLevelEl) {
                 overallLevelEl.textContent = level;
@@ -2247,7 +2247,7 @@
             var offset = circumference - (roundedScore / 100) * circumference;
             if (overallRingEl) {
                 overallRingEl.style.strokeDashoffset = offset;
-                overallRingEl.className = 'ring-fg ' + (roundedScore >= 90 ? 'low' : roundedScore >= 60 ? 'mid' : 'high');
+                overallRingEl.className = 'ring-fg ' + (roundedScore >= 80 ? 'low' : roundedScore >= 60 ? 'mid' : roundedScore >= 40 ? 'warn' : 'high');
             }
         } else {
             if (overallScoreEl) overallScoreEl.textContent = '--';
@@ -2787,36 +2787,7 @@
             var offset = circumference - (finalScore / 100) * circumference;
             overallScoreRing.style.strokeDashoffset = offset;
             
-            // 根据分数设置颜色
-            var scoreClass = '';
-            var levelText = '';
-            var levelKey = '';
-            if (finalScore >= 80) {
-                scoreClass = 'score-excellent';
-                levelText = '优秀';
-                levelKey = 'level.excellent';
-            } else if (finalScore >= 60) {
-                scoreClass = 'score-good';
-                levelText = '良好';
-                levelKey = 'level.good';
-            } else if (finalScore >= 40) {
-                scoreClass = 'score-fair';
-                levelText = '一般';
-                levelKey = 'level.fair';
-            } else {
-                scoreClass = 'score-poor';
-                levelText = '较差';
-                levelKey = 'level.poor';
-            }
-            
-            overallScoreRing.className = 'ring-fg ' + scoreClass;
-            
-            // 更新等级文本
-            var overallLevel = document.getElementById('overallLevel');
-            if (overallLevel) {
-                overallLevel.textContent = levelText;
-                overallLevel.setAttribute('data-i18n', levelKey);
-            }
+
         }
         
         // 调试信息（开发环境可用）
