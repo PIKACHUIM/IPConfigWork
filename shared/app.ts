@@ -709,6 +709,18 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
                 const company: any = d.company || {}
                 const privacy: any = d.privacy || {}
                 const hosting = privacy.hosting === true || d.is_hosting === true
+                
+                let usageType = normalizeType(asn.type || '')
+                let companyType = normalizeType(company.type || '')
+                
+                // 如果 type 字段为空，通过 org/company name 推断
+                if (usageType === '未知' && d.org) {
+                    usageType = normalizeType(d.org)
+                }
+                if (companyType === '未知' && company.name) {
+                    companyType = normalizeType(company.name)
+                }
+                
                 return {
                     countryCode: d.country || null,
                     proxy: privacy.proxy === true,
@@ -719,15 +731,17 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
                     datacenter: hosting,
                     abuser: false,
                     robot: false,
-                    usageType: asn.type || '未知',
-                    companyType: company.type || '未知',
+                    usageType: usageType,
+                    companyType: companyType,
+                    usageTypeRaw: asn.type || d.org || '',
+                    companyTypeRaw: company.type || company.name || '',
                     score: null,
                     risk: null
                 }
             }
         } catch { /* 回退公开接口 */ }
 
-        // 备用：ipinfo.io/{ip}/json 公开接口（无隐私标志，但稳定可用）
+        // 备用：ipinfo.io/{ip}/json 公开接口（通过 org 字段推断类型）
         try {
             const response = await fetch(`https://ipinfo.io/${encodeURIComponent(ipAddress)}/json`, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
@@ -736,18 +750,22 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
             if (response.ok) {
                 const d: any = await response.json()
                 if (d && !d.error) {
+                    const org = d.org || ''
+                    const type = normalizeType(org)
                     return {
                         countryCode: d.country || null,
                         proxy: false,
                         vpn: false,
                         tor: false,
                         relay: false,
-                        server: false,
-                        datacenter: false,
+                        server: type === 'hosting',
+                        datacenter: type === 'hosting',
                         abuser: false,
                         robot: false,
-                        usageType: '未知',
-                        companyType: '未知',
+                        usageType: type,
+                        companyType: type,
+                        usageTypeRaw: org,
+                        companyTypeRaw: org,
                         score: null,
                         risk: null
                     }
@@ -796,6 +814,17 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
                             risk = null
                     }
 
+                    let usageType = mapType(data.asn?.type || '')
+                    let companyType = mapType(data.company?.type || '')
+                    
+                    // 如果 type 为空，通过公司名称推断
+                    if (usageType === '未知' && data.asn?.org) {
+                        usageType = mapType(data.asn.org)
+                    }
+                    if (companyType === '未知' && data.company?.name) {
+                        companyType = mapType(data.company.name)
+                    }
+
                     return {
                         countryCode: data.location?.country_code || null,
                         proxy: data.is_proxy || false,
@@ -806,10 +835,10 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
                         datacenter: data.is_datacenter || false,
                         abuser: data.is_abuser || false,
                         robot: data.is_crawler || false,
-                        usageTypeRaw: data.asn?.type || '',
-                        companyTypeRaw: data.company?.type || '',
-                        usageType: mapType(data.asn?.type || ''),
-                        companyType: mapType(data.company?.type || ''),
+                        usageTypeRaw: data.asn?.type || data.asn?.org || '',
+                        companyTypeRaw: data.company?.type || data.company?.name || '',
+                        usageType: usageType,
+                        companyType: companyType,
                         score: score,
                         risk: risk
                     }
@@ -823,7 +852,20 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
             const hosting = data.hosting === true
             const proxy = data.proxy === true
             const mobile = data.mobile === true
-            const usageType = hosting ? 'hosting' : mobile ? 'isp' : '未知'
+            
+            // 通过 ISP/ORG 名称智能推断类型
+            const orgText = (data.org || data.isp || '').toLowerCase()
+            let inferredType = '未知'
+            if (hosting) {
+                inferredType = 'hosting'
+            } else if (mobile) {
+                inferredType = 'isp'
+            } else if (orgText) {
+                inferredType = normalizeType(orgText)
+            }
+            
+            const usageType = inferredType
+            const companyType = inferredType
             const score = hosting || proxy ? '50.00%' : '0.00%'
             const risk = hosting || proxy ? '中风险' : '低风险'
             return {
@@ -836,8 +878,10 @@ export function createApp(): Hono<{ Bindings: { ABUSEIPDB_KEY?: string, IPQS_KEY
                 datacenter: hosting,
                 abuser: false,
                 robot: false,
+                usageTypeRaw: data.org || data.isp || '',
+                companyTypeRaw: data.org || data.isp || '',
                 usageType: usageType,
-                companyType: usageType,
+                companyType: companyType,
                 score: score,
                 risk: risk
             }

@@ -33,3 +33,4 @@ lerna-debug.log*
 .DS_Store
 .idea
 wrangler.encrypt.jsonc
+.edgeone

@@ -2744,6 +2744,9 @@
             } catch (e) {}
         }
         if (!ip) { try { ip = await getPublicIP(); } catch (e) {} }
+        
+        // 如果仍然获取不到IP，记录标记用于后续评分
+        var ipFetchFailed = !ip;
         setText(els.ip, ip || '--');
 
         updateProgress(t('progress.fetching'));
@@ -2970,7 +2973,7 @@
         
         // 计算综合评分
         updateProgress(t('progress.calculating'));
-        calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor);
+        calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor, ipFetchFailed);
 
         updateProgress(t('progress.done'), totalSteps - currentProgress);
         if (els.status) {
@@ -3013,7 +3016,7 @@
     }
     
     // 计算综合评分（IP风险 + 网站可达性）
-    function calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor) {
+    function calculateOverallScore(mergedQuality, mergedDetail, isDC, isVPN, isProxy, isTor, ipFetchFailed) {
         var overallScoreNum = document.getElementById('overallScore');
         var overallScoreRing = document.getElementById('overallRing');
         
@@ -3316,6 +3319,11 @@
             }
         } else {
             reachScore = 50; // 无测试数据，给中等分
+        }
+        
+        // 如果IP获取失败，可达性评分为0
+        if (ipFetchFailed) {
+            reachScore = 0;
         }
         
         reachScore = Math.min(100, Math.max(0, reachScore));
